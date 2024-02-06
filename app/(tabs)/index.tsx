@@ -7,19 +7,21 @@ import PrimaryButton from "@/components/PrimaryButton";
 
 export default function Screen() {
   return (
-    <Page style={styles.container}>
-      <View style={styles.headerContainer}>
-        <Text style={styles.title}>Cleft Care</Text>
-        <View style={styles.iconsContainer}>
-          <TouchableOpacity style={styles.icon}>
-            <Feather name="search" size={25} color={Colors.text} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.icon}>
-            <Feather name="edit" size={23} color={Colors.text} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.icon}>
-            <Feather name="mail" size={25} color={Colors.text} />
-          </TouchableOpacity>
+    <Page style={{ flex: 1 }}>
+      <View style={styles.container}>
+        <View style={styles.headerContainer}>
+          <Text style={styles.title}>Cleft Care</Text>
+          <View style={styles.iconsContainer}>
+            <TouchableOpacity style={styles.icon}>
+              <Feather name="search" size={25} color={Colors.text} />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.icon}>
+              <Feather name="edit" size={23} color={Colors.text} />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.icon}>
+              <Feather name="mail" size={25} color={Colors.text} />
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </Page>
@@ -28,9 +30,7 @@ export default function Screen() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: "center",
-    margin: 20,
+    padding: 20,
   },
   headerContainer: {
     display: "flex",
