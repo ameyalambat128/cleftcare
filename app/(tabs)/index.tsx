@@ -2,6 +2,8 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 
 import Page from "@/components/Page";
+import Colors from "@/constants/Colors";
+import PrimaryButton from "@/components/PrimaryButton";
 
 export default function Screen() {
   return (
@@ -10,13 +12,13 @@ export default function Screen() {
         <Text style={styles.title}>Cleft Care</Text>
         <View style={styles.iconsContainer}>
           <TouchableOpacity style={styles.icon}>
-            <Feather name="search" size={25} color="black" />
+            <Feather name="search" size={25} color={Colors.text} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.icon}>
-            <Feather name="edit" size={23} color="black" />
+            <Feather name="edit" size={23} color={Colors.text} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.icon}>
-            <Feather name="mail" size={25} color="black" />
+            <Feather name="mail" size={25} color={Colors.text} />
           </TouchableOpacity>
         </View>
       </View>
