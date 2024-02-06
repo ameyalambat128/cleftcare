@@ -5,13 +5,12 @@ type ViewProps = View["props"];
 
 export default function Page(props: ViewProps) {
   const { children, style, ...otherProps } = props;
-  const insets = useSafeAreaInsets();
+  const { top } = useSafeAreaInsets();
   return (
     <View
       style={[
         {
-          paddingTop: insets.top,
-          paddingBottom: insets.bottom,
+          paddingTop: top,
         },
         style,
       ]}
