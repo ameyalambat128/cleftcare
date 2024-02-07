@@ -1,30 +1,77 @@
+import { useCallback, useMemo, useRef } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
+import {
+  BottomSheetModal,
+  BottomSheetModalProvider,
+} from "@gorhom/bottom-sheet";
 
 import Page from "@/components/Page";
 import Colors from "@/constants/Colors";
 import PrimaryButton from "@/components/PrimaryButton";
 
 export default function Screen() {
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+
+  const snapPoints = useMemo(() => ["45%"], []);
+
+  const handlePresentModalPress = useCallback(() => {
+    bottomSheetModalRef.current?.present();
+  }, []);
+
+  const handleCloseModalPress = useCallback(() => {
+    bottomSheetModalRef.current?.close();
+  }, []);
+
   return (
-    <Page style={{ flex: 1 }}>
-      <View style={styles.container}>
-        <View style={styles.headerContainer}>
-          <Text style={styles.title}>Cleft Care</Text>
-          <View style={styles.iconsContainer}>
-            <TouchableOpacity style={styles.icon}>
-              <Feather name="search" size={25} color={Colors.text} />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.icon}>
-              <Feather name="edit" size={23} color={Colors.text} />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.icon}>
-              <Feather name="mail" size={25} color={Colors.text} />
-            </TouchableOpacity>
+    <BottomSheetModalProvider>
+      <Page style={{ flex: 1 }}>
+        <View style={styles.container}>
+          <View style={styles.headerContainer}>
+            <Text style={styles.title}>Cleft Care</Text>
+            <View style={styles.iconsContainer}>
+              <TouchableOpacity style={styles.icon}>
+                <Feather name="search" size={25} color={Colors.text} />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.icon}>
+                <Feather name="edit" size={23} color={Colors.text} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.icon}
+                onPress={handlePresentModalPress}
+              >
+                <Feather name="mail" size={25} color={Colors.text} />
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-      </View>
-    </Page>
+        <BottomSheetModal
+          ref={bottomSheetModalRef}
+          index={0}
+          snapPoints={snapPoints}
+          // bottomInset={24}
+          // detached={true}
+          style={styles.bottomSheetContainer}
+        >
+          <View style={styles.bottomSheetContentContainer}>
+            <View style={styles.iconCircle}>
+              <Feather name="mail" size={40} color={Colors.tint} />
+            </View>
+            <Text style={styles.helpTitle}>Need Help?</Text>
+            <Text style={styles.helpText}>
+              Please send email us if you need any assistance
+            </Text>
+            <PrimaryButton
+              style={{ marginBottom: 20 }}
+              type="small"
+              onPress={handleCloseModalPress}
+            >
+              Email Us
+            </PrimaryButton>
+          </View>
+        </BottomSheetModal>
+      </Page>
+    </BottomSheetModalProvider>
   );
 }
 
@@ -39,6 +86,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: "100%",
   },
+  title: {
+    fontSize: 28,
+    fontWeight: "bold",
+  },
   iconsContainer: {
     display: "flex",
     flexDirection: "row",
@@ -47,8 +98,33 @@ const styles = StyleSheet.create({
   icon: {
     marginLeft: 25,
   },
-  title: {
-    fontSize: 28,
+  bottomSheetContainer: {
+    // marginHorizontal: 24,
+  },
+  bottomSheetContentContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  iconCircle: {
+    backgroundColor: "#F5F8FF",
+    borderRadius: 40,
+    width: 80,
+    height: 80,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 20,
+  },
+  helpTitle: {
+    fontSize: 22,
     fontWeight: "bold",
+    marginBottom: 14,
+  },
+  helpText: {
+    fontSize: 16,
+    color: "#7C7C7C",
+    textAlign: "center",
+    marginBottom: 22,
+    width: "80%",
   },
 });
