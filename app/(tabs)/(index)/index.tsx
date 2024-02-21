@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
   },
   helpText: {
     fontSize: 16,
-    color: "#7C7C7C",
+    color: Colors.secondaryText,
     textAlign: "center",
     marginBottom: 22,
     width: "80%",
