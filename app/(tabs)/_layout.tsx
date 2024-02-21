@@ -15,9 +15,13 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors.tint,
-        tabBarShowLabel: false,
         headerShown: false,
+        tabBarShowLabel: false,
+        tabBarActiveTintColor: Colors.tint,
+        tabBarStyle: {
+          borderTopStartRadius: 20,
+          borderTopEndRadius: 20,
+        },
       }}
     >
       <Tabs.Screen
@@ -31,6 +35,14 @@ export default function TabLayout() {
         options={{
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="mic-outline" color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="tutorials"
+        options={{
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="reader-outline" color={color} />
           ),
         }}
       />
