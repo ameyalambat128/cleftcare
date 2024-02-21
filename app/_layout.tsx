@@ -52,38 +52,6 @@ function RootLayoutNav() {
       <SafeAreaProvider>
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen
-            name="searchRecord"
-            options={{
-              title: "Search",
-              headerShadowVisible: false,
-              headerStyle: { backgroundColor: "transparent" },
-              headerLeft: () => (
-                <TouchableOpacity onPress={() => router.back()}>
-                  <Ionicons
-                    name="chevron-back-outline"
-                    size={30}
-                    color="black"
-                  />
-                </TouchableOpacity>
-              ),
-            }}
-          />
-          <Stack.Screen
-            name="addRecord"
-            options={{
-              title: "Add Children Record",
-              headerLeft: () => (
-                <TouchableOpacity onPress={() => router.back()}>
-                  <Ionicons
-                    name="chevron-back-outline"
-                    size={30}
-                    color="black"
-                  />
-                </TouchableOpacity>
-              ),
-            }}
-          />
         </Stack>
       </SafeAreaProvider>
     </GestureHandlerRootView>
