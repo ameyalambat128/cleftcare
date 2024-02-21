@@ -13,7 +13,7 @@ export default function Layout() {
           headerShown: false,
         }}
       />
-      {/* <Stack.Screen
+      <Stack.Screen
         name="searchRecord"
         options={{
           title: "Search",
@@ -25,8 +25,8 @@ export default function Layout() {
             </TouchableOpacity>
           ),
         }}
-      /> */}
-      {/* <Stack.Screen
+      />
+      <Stack.Screen
         name="addRecord"
         options={{
           title: "Add Children Record",
@@ -36,7 +36,7 @@ export default function Layout() {
             </TouchableOpacity>
           ),
         }}
-      /> */}
+      />
     </Stack>
   );
 }
