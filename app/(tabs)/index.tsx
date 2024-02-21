@@ -9,11 +9,20 @@ import {
 import Page from "@/components/Page";
 import Colors from "@/constants/Colors";
 import PrimaryButton from "@/components/PrimaryButton";
+import { Stack, useRouter } from "expo-router";
 
 export default function Screen() {
+  const router = useRouter();
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-
   const snapPoints = useMemo(() => ["45%"], []);
+
+  const handleSearchPress = () => {
+    router.push("/searchRecord");
+  };
+
+  const handleAddRecordPress = () => {
+    router.push("/addRecord");
+  };
 
   const handlePresentModalPress = useCallback(() => {
     bottomSheetModalRef.current?.present();
@@ -25,15 +34,18 @@ export default function Screen() {
 
   return (
     <BottomSheetModalProvider>
-      <Page style={{ flex: 1 }}>
+      <Page style={{ flex: 1 }} headerShown={false}>
         <View style={styles.container}>
           <View style={styles.headerContainer}>
             <Text style={styles.title}>Cleft Care</Text>
             <View style={styles.iconsContainer}>
-              <TouchableOpacity style={styles.icon}>
+              <TouchableOpacity style={styles.icon} onPress={handleSearchPress}>
                 <Feather name="search" size={25} color={Colors.text} />
               </TouchableOpacity>
-              <TouchableOpacity style={styles.icon}>
+              <TouchableOpacity
+                style={styles.icon}
+                onPress={handleAddRecordPress}
+              >
                 <Feather name="edit" size={23} color={Colors.text} />
               </TouchableOpacity>
               <TouchableOpacity
