@@ -7,9 +7,8 @@ export default function Layout() {
         name="index"
         options={{
           title: "Record Audio",
-          // headerLargeTitle: true,
           headerShadowVisible: false,
-          headerStyle: { backgroundColor: "transparent" },
+          headerStyle: { backgroundColor: "white" },
         }}
       />
     </Stack>
