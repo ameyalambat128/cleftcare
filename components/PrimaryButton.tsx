@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
   buttonLarge: {
     backgroundColor: Colors.tint,
     width: "100%",
-    borderRadius: 30,
+    borderRadius: 32,
     paddingVertical: 20,
     paddingHorizontal: 10,
     alignItems: "center",
@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
   buttonSmall: {
     backgroundColor: Colors.tint,
     width: "50%",
-    borderRadius: 309,
+    borderRadius: 32,
     paddingVertical: 20,
     paddingHorizontal: 10,
     alignItems: "center",
