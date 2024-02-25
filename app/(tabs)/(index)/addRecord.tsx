@@ -227,6 +227,7 @@ export default function Screen() {
             </Modal>
           </>
         )}
+
         {/* Address Input */}
         <View style={styles.inputField}>
           <Feather name="home" size={20} color="#8E8E93" style={styles.icon} />
@@ -238,6 +239,7 @@ export default function Screen() {
             style={styles.inputText}
           />
         </View>
+
         {/* Contact Number Input */}
         <View style={styles.inputField}>
           <Feather name="phone" size={20} color="#8E8E93" style={styles.icon} />
@@ -250,6 +252,7 @@ export default function Screen() {
             keyboardType="phone-pad"
           />
         </View>
+
         {/* Attachment Input */}
         <TouchableOpacity style={styles.inputField} onPress={selectFile}>
           <Feather
