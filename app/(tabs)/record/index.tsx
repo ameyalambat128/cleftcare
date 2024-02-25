@@ -8,7 +8,10 @@ export default function Screen() {
   const [completed, setCompleted] = useState(false);
 
   return (
-    <Page style={{ flex: 1 }} headerShown={false}>
+    <Page
+      style={{ flex: 1, backgroundColor: Colors.background }}
+      headerShown={false}
+    >
       <Stack.Screen
         options={{
           headerRight: () => (
