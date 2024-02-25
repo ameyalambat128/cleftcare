@@ -3,6 +3,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { Link, Tabs } from "expo-router";
 
 import Colors from "@/constants/Colors";
+import { Octicons } from "@expo/vector-icons";
 
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof Ionicons>["name"];
@@ -27,7 +28,14 @@ export default function TabLayout() {
       <Tabs.Screen
         name="(index)"
         options={{
-          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
+          tabBarIcon: ({ color }) => (
+            <Octicons
+              name="home"
+              size={24}
+              style={{ marginBottom: 0 }}
+              color={color}
+            />
+          ),
         }}
       />
       <Tabs.Screen
