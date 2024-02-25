@@ -3,7 +3,6 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { Link, Tabs } from "expo-router";
 
 import Colors from "@/constants/Colors";
-import { Octicons } from "@expo/vector-icons";
 
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof Ionicons>["name"];
@@ -24,11 +23,9 @@ export default function TabLayout() {
       <Tabs.Screen
         name="(index)"
         options={{
-          tabBarIcon: ({ color }) => (
-            <Octicons
-              name="home"
-              size={24}
-              style={{ marginBottom: 0 }}
+          tabBarIcon: ({ focused, color }) => (
+            <TabBarIcon
+              name={focused ? "home-sharp" : "home-outline"}
               color={color}
             />
           ),
@@ -37,24 +34,30 @@ export default function TabLayout() {
       <Tabs.Screen
         name="record"
         options={{
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="mic-outline" color={color} />
+          tabBarIcon: ({ focused, color }) => (
+            <TabBarIcon name={focused ? "mic" : "mic-outline"} color={color} />
           ),
         }}
       />
       <Tabs.Screen
         name="tutorials"
         options={{
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="reader-outline" color={color} />
+          tabBarIcon: ({ focused, color }) => (
+            <TabBarIcon
+              name={focused ? "reader" : "reader-outline"}
+              color={color}
+            />
           ),
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="person-outline" color={color} />
+          tabBarIcon: ({ focused, color }) => (
+            <TabBarIcon
+              name={focused ? "person" : "person-outline"}
+              color={color}
+            />
           ),
         }}
       />
