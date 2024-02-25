@@ -19,10 +19,6 @@ export default function TabLayout() {
         headerShown: false,
         tabBarShowLabel: false,
         tabBarActiveTintColor: Colors.tint,
-        tabBarStyle: {
-          borderTopStartRadius: 20,
-          borderTopEndRadius: 20,
-        },
       }}
     >
       <Tabs.Screen
