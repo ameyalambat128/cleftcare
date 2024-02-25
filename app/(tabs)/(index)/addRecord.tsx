@@ -7,35 +7,64 @@ import {
   Text,
   Modal,
   Platform,
+  Alert,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
+import DateTimePicker, {
+  DateTimePickerEvent,
+} from "@react-native-community/datetimepicker";
+import * as DocumentPicker from "expo-document-picker";
 import Page from "@/components/Page";
 import Colors from "@/constants/Colors";
 
 export default function Screen() {
   const [name, setName] = useState("");
   const [birthDate, setBirthDate] = useState<Date | null>(null);
+  const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
   const [gender, setGender] = useState("");
   const [isPickerVisible, setPickerVisible] = useState(false);
-  const [datePickerVisible, setDatePickerVisible] = useState(false);
   const [address, setAddress] = useState("");
   const [contactNumber, setContactNumber] = useState("");
 
-  const formatDate = (date: Date) => {
-    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+  const onDateChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
+    const currentDate = selectedDate || birthDate;
+    setBirthDate(currentDate);
+    if (Platform.OS === "android") {
+      setIsDatePickerVisible(false);
+    }
+  };
+
+  const selectFile = async () => {
+    try {
+      const result: any = await DocumentPicker.getDocumentAsync({});
+      if (result.type === "success") {
+        const { uri, name, size }: any = result;
+        // Show an alert with the title 'File Selected' and the name of the file
+        Alert.alert("File Selected", name);
+      }
+    } catch (error) {
+      Alert.alert("Error", "An error occurred while selecting the file.");
+    }
   };
 
   return (
-    <Page style={{ flex: 1 }} headerShown={true}>
+    <Page
+      style={{ flex: 1, backgroundColor: Colors.background }}
+      headerShown={true}
+    >
       <View style={styles.container}>
         <Text style={styles.headerText}>
           Please enter child's information to continue with the audio recording
         </Text>
-
         {/* Name Input */}
         <View style={styles.inputField}>
-          <Feather name="user" size={20} color="#8E8E93" style={styles.icon} />
+          <Feather
+            name="user"
+            size={20}
+            color={Colors.secondaryText}
+            style={styles.icon}
+          />
           <TextInput
             placeholder="Enter your name"
             placeholderTextColor={Colors.secondaryText}
@@ -49,13 +78,13 @@ export default function Screen() {
         <TouchableOpacity
           style={styles.inputField}
           onPress={() => {
-            // You need to implement a way to show the date picker on press
+            setIsDatePickerVisible(true);
           }}
         >
           <Feather
             name="calendar"
             size={20}
-            color="#8E8E93"
+            color={Colors.secondaryText}
             style={styles.icon}
           />
           {birthDate ? (
@@ -73,13 +102,65 @@ export default function Screen() {
           )}
         </TouchableOpacity>
 
+        {Platform.OS === "ios" && isDatePickerVisible && (
+          <Modal
+            transparent={true}
+            animationType="slide"
+            visible={isDatePickerVisible}
+            onRequestClose={() => {
+              setIsDatePickerVisible(false);
+            }}
+          >
+            <View style={styles.modalOverlay}>
+              <View style={styles.pickerContainer}>
+                <DateTimePicker
+                  testID="dateTimePicker"
+                  value={birthDate ? birthDate : new Date()}
+                  mode="date"
+                  display={Platform.OS === "ios" ? "inline" : "calendar"}
+                  onChange={onDateChange}
+                  style={styles.dateTimePicker}
+                />
+                <View style={styles.dateTimePickerFooter}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setIsDatePickerVisible(false);
+                    }}
+                    style={{ padding: 10 }}
+                  >
+                    <Text style={styles.dateTimePickerFooterText}>Cancel</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setIsDatePickerVisible(false);
+                    }}
+                    style={{ padding: 10 }}
+                  >
+                    <Text style={styles.dateTimePickerFooterText}>Ok</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </Modal>
+        )}
+
+        {Platform.OS === "android" && isDatePickerVisible && (
+          <DateTimePicker
+            testID="dateTimePicker"
+            value={birthDate ? birthDate : new Date()}
+            mode="date"
+            display="calendar"
+            onChange={onDateChange}
+          />
+        )}
+
         {/* Gender Picker */}
         {Platform.OS === "android" && (
           <TouchableOpacity
             style={styles.dateInputField}
             onPress={() => setPickerVisible(!isPickerVisible)}
           >
-            <Feather name="user" size={20} color="#8E8E93" />
+            <Feather name="user" size={20} color={Colors.secondaryText} />
 
             <Picker
               selectedValue={gender}
@@ -101,6 +182,7 @@ export default function Screen() {
             </Picker>
           </TouchableOpacity>
         )}
+
         {Platform.OS === "ios" && (
           <>
             <TouchableOpacity
@@ -110,10 +192,14 @@ export default function Screen() {
               <Feather
                 name="user"
                 size={20}
-                color="#8E8E93"
+                color={Colors.secondaryText}
                 style={styles.icon}
               />
-              <Text style={{ color: Colors.secondaryText }}>Select Gender</Text>
+              <Text style={{ color: Colors.secondaryText }}>
+                <Text style={styles.inputText}>
+                  {gender ? gender : "Select Gender"}
+                </Text>
+              </Text>
             </TouchableOpacity>
             <Modal
               visible={isPickerVisible}
@@ -141,7 +227,6 @@ export default function Screen() {
             </Modal>
           </>
         )}
-
         {/* Address Input */}
         <View style={styles.inputField}>
           <Feather name="home" size={20} color="#8E8E93" style={styles.icon} />
@@ -153,7 +238,6 @@ export default function Screen() {
             style={styles.inputText}
           />
         </View>
-
         {/* Contact Number Input */}
         <View style={styles.inputField}>
           <Feather name="phone" size={20} color="#8E8E93" style={styles.icon} />
@@ -166,9 +250,8 @@ export default function Screen() {
             keyboardType="phone-pad"
           />
         </View>
-
         {/* Attachment Input */}
-        <View style={styles.inputField}>
+        <TouchableOpacity style={styles.inputField} onPress={selectFile}>
           <Feather
             name="paperclip"
             size={22}
@@ -176,8 +259,7 @@ export default function Screen() {
             style={styles.icon}
           />
           <Text style={{ color: Colors.secondaryText }}>Attachment</Text>
-          {/* Implement attachment functionality */}
-        </View>
+        </TouchableOpacity>
       </View>
     </Page>
   );
@@ -196,18 +278,24 @@ const styles = StyleSheet.create({
   inputField: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: Colors.background,
-    borderRadius: 10,
-    padding: 15,
     marginTop: 10,
+    backgroundColor: "#F9FAFB",
+    borderColor: "#E5E7EB",
+    height: 56,
+    borderWidth: 1,
+    borderRadius: 24,
+    paddingHorizontal: 15,
   },
   dateInputField: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: Colors.background,
-    borderRadius: 10,
-    paddingHorizontal: 15,
     marginTop: 10,
+    backgroundColor: "#F9FAFB",
+    borderColor: "#E5E7EB",
+    height: 56,
+    borderWidth: 1,
+    borderRadius: 24,
+    paddingHorizontal: 15,
   },
   icon: {
     marginRight: 10,
@@ -223,18 +311,28 @@ const styles = StyleSheet.create({
   },
   pickerContainer: {
     backgroundColor: "white",
-    borderRadius: 20,
+    borderRadius: 18,
     padding: 20,
-    width: "80%", // You might need to adjust the width
+    width: "90%", // You might need to adjust the width
     alignItems: "center",
   },
   picker: {
-    width: "100%", // Picker should fill its container
+    width: "100%",
   },
-  modalContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  dateTimePicker: {
+    width: "100%",
+    backgroundColor: "white",
+  },
+  dateTimePickerFooter: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingBottom: 10,
+  },
+  dateTimePickerFooterText: {
+    fontSize: 18,
+    fontWeight: "normal",
+
+    color: "#006ee6",
+    // Additional styling if needed
   },
 });
