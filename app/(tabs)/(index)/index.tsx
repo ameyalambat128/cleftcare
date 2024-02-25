@@ -1,5 +1,11 @@
 import { useCallback, useMemo, useRef } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { Feather } from "@expo/vector-icons";
 import {
   BottomSheetModal,
@@ -57,13 +63,14 @@ export default function Screen() {
             </View>
           </View>
         </View>
+
+        {/* Email Us Bottom Sheet */}
         <BottomSheetModal
           ref={bottomSheetModalRef}
           index={0}
           snapPoints={snapPoints}
-          // bottomInset={24}
-          // detached={true}
-          style={styles.bottomSheetContainer}
+          containerStyle={Platform.OS === "ios" && styles.bottomSheetContainer}
+          style={Platform.OS === "android" && styles.bottomSheetContainer}
         >
           <View style={styles.bottomSheetContentContainer}>
             <View style={styles.iconCircle}>
@@ -111,7 +118,17 @@ const styles = StyleSheet.create({
     marginLeft: 25,
   },
   bottomSheetContainer: {
-    // marginHorizontal: 24,
+    borderTopStartRadius: 20, // Round the top left corner
+    borderTopEndRadius: 20, // Round the top right corner
+    elevation: 7, // Only works on Android for shadow
+    shadowColor: "#000", // Shadow color for iOS
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.6, // Shadow opacity for iOS
+    shadowRadius: 4, // Shadow blur radius for iOS
+    overflow: "hidden", // Ensures the children don't overlap the rounded corners
   },
   bottomSheetContentContainer: {
     flex: 1,
