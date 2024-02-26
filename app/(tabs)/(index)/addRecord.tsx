@@ -35,6 +35,15 @@ export default function Screen() {
     useState<boolean>(false);
   const [address, setAddress] = useState<string>("");
   const [contactNumber, setContactNumber] = useState<string>(""); // TODO: change contact number to number type if needed
+  const [photo, setPhoto] = useState<string>(""); // TODO: change photo to Image type if needed
+
+  const getInputStyle = (inputValue: string) => ({
+    borderColor: inputValue ? Colors.tint : "#E5E7EB",
+  });
+
+  const getIconColor = (inputValue: string): string => {
+    return inputValue ? Colors.tint : Colors.secondaryText;
+  };
 
   const onDateChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
     const currentDate = selectedDate || birthDate;
@@ -105,12 +114,13 @@ export default function Screen() {
             Please enter child's information to continue with the audio
             recording
           </Text>
+
           {/* Name Input */}
-          <View style={styles.inputField}>
+          <View style={[styles.inputField, getInputStyle(name)]}>
             <Feather
               name="user"
               size={20}
-              color={Colors.secondaryText}
+              color={getIconColor(name)}
               style={styles.icon}
             />
             <TextInput
@@ -124,7 +134,7 @@ export default function Screen() {
 
           {/* Birth Date Picker */}
           <TouchableOpacity
-            style={styles.inputField}
+            style={[styles.inputField, getInputStyle(birthDate ? "1" : "")]}
             onPress={() => {
               setIsDatePickerVisible(true);
             }}
@@ -132,7 +142,7 @@ export default function Screen() {
             <Feather
               name="calendar"
               size={20}
-              color={Colors.secondaryText}
+              color={getIconColor(birthDate ? "1" : "")}
               style={styles.icon}
             />
             {birthDate ? (
@@ -207,10 +217,17 @@ export default function Screen() {
           {/* Gender Picker */}
           {Platform.OS === "android" && (
             <TouchableOpacity
-              style={styles.androidInputField}
+              style={[
+                styles.androidInputField,
+                getInputStyle(gender ? "gender" : ""),
+              ]}
               onPress={() => setIsGenderPickerVisible(!isGenderPickerVisible)}
             >
-              <Feather name="users" size={20} color={Colors.secondaryText} />
+              <Feather
+                name="users"
+                size={20}
+                color={getIconColor(gender ? "gender" : "")}
+              />
 
               <Picker
                 selectedValue={gender}
@@ -236,13 +253,16 @@ export default function Screen() {
           {Platform.OS === "ios" && (
             <>
               <TouchableOpacity
-                style={styles.inputField}
+                style={[
+                  styles.inputField,
+                  getInputStyle(gender ? "gender" : ""),
+                ]}
                 onPress={() => setIsGenderPickerVisible(!isGenderPickerVisible)}
               >
                 <Feather
                   name="users"
                   size={20}
-                  color={Colors.secondaryText}
+                  color={getIconColor(gender ? "gender" : "")}
                   style={styles.icon}
                 />
                 {gender ? (
@@ -285,10 +305,17 @@ export default function Screen() {
           {/* Hearing Status Picker */}
           {Platform.OS === "android" && (
             <TouchableOpacity
-              style={styles.androidInputField}
+              style={[
+                styles.androidInputField,
+                getInputStyle(hearingStatus ? "hearingStatus" : ""),
+              ]}
               onPress={() => setIsHearingPickerVisible(!isHearingPickerVisible)}
             >
-              <Feather name="users" size={20} color={Colors.secondaryText} />
+              <Feather
+                name="users"
+                size={20}
+                color={getIconColor(hearingStatus ? "hearingStatus" : "")}
+              />
 
               <Picker
                 selectedValue={hearingStatus}
@@ -313,7 +340,10 @@ export default function Screen() {
           {Platform.OS === "ios" && (
             <>
               <TouchableOpacity
-                style={styles.inputField}
+                style={[
+                  styles.inputField,
+                  getInputStyle(hearingStatus ? "hearingStatus" : ""),
+                ]}
                 onPress={() =>
                   setIsHearingPickerVisible(!isHearingPickerVisible)
                 }
@@ -321,7 +351,7 @@ export default function Screen() {
                 <Feather
                   name="smile"
                   size={20}
-                  color={Colors.secondaryText}
+                  color={getIconColor(hearingStatus ? "hearingStatus" : "")}
                   style={styles.icon}
                 />
                 {hearingStatus ? (
@@ -371,11 +401,11 @@ export default function Screen() {
           )}
 
           {/* Address Input */}
-          <View style={styles.inputField}>
+          <View style={[styles.inputField, getInputStyle(address)]}>
             <Feather
-              name="home"
+              name="map-pin"
               size={20}
-              color="#8E8E93"
+              color={getIconColor(address)}
               style={styles.icon}
             />
             <TextInput
@@ -388,11 +418,11 @@ export default function Screen() {
           </View>
 
           {/* Contact Number Input */}
-          <View style={styles.inputField}>
+          <View style={[styles.inputField, getInputStyle(contactNumber)]}>
             <Feather
               name="phone"
               size={20}
-              color={Colors.secondaryText}
+              color={getIconColor(contactNumber)}
               style={styles.icon}
             />
             <TextInput
@@ -407,7 +437,7 @@ export default function Screen() {
 
           {/* Attachment Input */}
           <TouchableOpacity
-            style={styles.inputField}
+            style={[styles.inputField, getInputStyle(photo)]}
             onPress={() => {
               Alert.alert(
                 "Upload Photo",
@@ -452,7 +482,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 10,
     backgroundColor: "#F9FAFB",
-    borderColor: "#E5E7EB",
     height: 56,
     borderWidth: 1,
     borderRadius: 24,
