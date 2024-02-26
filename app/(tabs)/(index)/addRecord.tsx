@@ -14,7 +14,7 @@ import { Picker } from "@react-native-picker/picker";
 import DateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
-import * as DocumentPicker from "expo-document-picker";
+import * as ImagePicker from "expo-image-picker";
 import Page from "@/components/Page";
 import Colors from "@/constants/Colors";
 
@@ -35,16 +35,49 @@ export default function Screen() {
     }
   };
 
-  const selectFile = async () => {
-    try {
-      const result: any = await DocumentPicker.getDocumentAsync({});
-      if (result.type === "success") {
-        const { uri, name, size }: any = result;
-        // Show an alert with the title 'File Selected' and the name of the file
-        Alert.alert("File Selected", name);
-      }
-    } catch (error) {
-      Alert.alert("Error", "An error occurred while selecting the file.");
+  const handlePickImage = async () => {
+    // Ask for permission
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
+      Alert.alert(
+        "Sorry",
+        "We need camera roll permissions to make this work!"
+      );
+      return;
+    }
+
+    // Launch image picker
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      // Do something with the image URI
+      console.log(result.assets[0].uri);
+    }
+  };
+
+  const handleTakePhoto = async () => {
+    // Ask for permission
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+    if (status !== "granted") {
+      Alert.alert("Sorry", "We need camera permissions to make this work!");
+      return;
+    }
+
+    // Launch camera
+    let result = await ImagePicker.launchCameraAsync({
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      // Do something with the photo URI
+      console.log(result.assets[0].uri);
     }
   };
 
@@ -160,7 +193,7 @@ export default function Screen() {
             style={styles.dateInputField}
             onPress={() => setPickerVisible(!isPickerVisible)}
           >
-            <Feather name="user" size={20} color={Colors.secondaryText} />
+            <Feather name="users" size={20} color={Colors.secondaryText} />
 
             <Picker
               selectedValue={gender}
@@ -190,16 +223,18 @@ export default function Screen() {
               onPress={() => setPickerVisible(!isPickerVisible)}
             >
               <Feather
-                name="user"
+                name="users"
                 size={20}
                 color={Colors.secondaryText}
                 style={styles.icon}
               />
-              <Text style={{ color: Colors.secondaryText }}>
-                <Text style={styles.inputText}>
-                  {gender ? gender : "Select Gender"}
+              {gender ? (
+                <Text style={styles.inputText}>{gender}</Text>
+              ) : (
+                <Text style={{ color: Colors.secondaryText }}>
+                  Select Gender
                 </Text>
-              </Text>
+              )}
             </TouchableOpacity>
             <Modal
               visible={isPickerVisible}
@@ -242,7 +277,12 @@ export default function Screen() {
 
         {/* Contact Number Input */}
         <View style={styles.inputField}>
-          <Feather name="phone" size={20} color="#8E8E93" style={styles.icon} />
+          <Feather
+            name="phone"
+            size={20}
+            color={Colors.secondaryText}
+            style={styles.icon}
+          />
           <TextInput
             placeholder="Contact number"
             placeholderTextColor={Colors.secondaryText}
@@ -254,14 +294,28 @@ export default function Screen() {
         </View>
 
         {/* Attachment Input */}
-        <TouchableOpacity style={styles.inputField} onPress={selectFile}>
+        <TouchableOpacity
+          style={styles.inputField}
+          onPress={() => {
+            Alert.alert(
+              "Upload Photo",
+              "Choose an option",
+              [
+                { text: "Take Photo", onPress: handleTakePhoto },
+                { text: "Choose from Gallery", onPress: handlePickImage },
+                { text: "Cancel", style: "cancel" },
+              ],
+              { cancelable: true }
+            );
+          }}
+        >
           <Feather
-            name="paperclip"
+            name="camera"
             size={22}
-            color="#8E8E93"
+            color={Colors.secondaryText}
             style={styles.icon}
           />
-          <Text style={{ color: Colors.secondaryText }}>Attachment</Text>
+          <Text style={{ color: Colors.secondaryText }}>Take/Choose Photo</Text>
         </TouchableOpacity>
       </View>
     </Page>
@@ -310,13 +364,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.3)", // Dim the background
+    backgroundColor: "rgba(0, 0, 0, 0.3)", // Dim the background for modal
   },
   pickerContainer: {
     backgroundColor: "white",
     borderRadius: 18,
     padding: 20,
-    width: "90%", // You might need to adjust the width
+    width: "90%",
     alignItems: "center",
   },
   picker: {
@@ -334,8 +388,6 @@ const styles = StyleSheet.create({
   dateTimePickerFooterText: {
     fontSize: 18,
     fontWeight: "normal",
-
     color: "#006ee6",
-    // Additional styling if needed
   },
 });

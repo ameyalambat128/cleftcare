@@ -30,9 +30,9 @@
     "plugins": [
       "expo-router",
       [
-        "expo-document-picker",
+        "expo-image-picker",
         {
-          "iCloudContainerEnvironment": "Production"
+          "photosPermission": "The app accesses your photos."
         }
       ]
     ],
