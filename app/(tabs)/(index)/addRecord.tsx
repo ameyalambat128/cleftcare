@@ -8,6 +8,8 @@ import {
   Modal,
   Platform,
   Alert,
+  ScrollView,
+  KeyboardAvoidingView,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
@@ -21,11 +23,18 @@ import Colors from "@/constants/Colors";
 export default function Screen() {
   const [name, setName] = useState("");
   const [birthDate, setBirthDate] = useState<Date | null>(null);
-  const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
-  const [gender, setGender] = useState("");
-  const [isPickerVisible, setPickerVisible] = useState(false);
-  const [address, setAddress] = useState("");
-  const [contactNumber, setContactNumber] = useState("");
+  const [isDatePickerVisible, setIsDatePickerVisible] =
+    useState<boolean>(false);
+  const [gender, setGender] = useState<"Male" | "Female" | "Other">();
+  const [isGenderPickerVisible, setIsGenderPickerVisible] =
+    useState<boolean>(false);
+  const [hearingStatus, setHearingStatus] = useState<
+    "Yes, I have hearing loss" | "No, I have no hearing loss"
+  >();
+  const [isHearingPickerVisible, setIsHearingPickerVisible] =
+    useState<boolean>(false);
+  const [address, setAddress] = useState<string>("");
+  const [contactNumber, setContactNumber] = useState<string>(""); // TODO: change contact number to number type if needed
 
   const onDateChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
     const currentDate = selectedDate || birthDate;
@@ -86,238 +95,344 @@ export default function Screen() {
       style={{ flex: 1, backgroundColor: Colors.background }}
       headerShown={true}
     >
-      <View style={styles.container}>
-        <Text style={styles.headerText}>
-          Please enter child's information to continue with the audio recording
-        </Text>
-        {/* Name Input */}
-        <View style={styles.inputField}>
-          <Feather
-            name="user"
-            size={20}
-            color={Colors.secondaryText}
-            style={styles.icon}
-          />
-          <TextInput
-            placeholder="Enter your name"
-            placeholderTextColor={Colors.secondaryText}
-            value={name}
-            onChangeText={setName}
-            style={styles.inputText}
-          />
-        </View>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.select({ ios: 60, android: 100 })}
+      >
+        <ScrollView style={styles.container}>
+          <Text style={styles.headerText}>
+            Please enter child's information to continue with the audio
+            recording
+          </Text>
+          {/* Name Input */}
+          <View style={styles.inputField}>
+            <Feather
+              name="user"
+              size={20}
+              color={Colors.secondaryText}
+              style={styles.icon}
+            />
+            <TextInput
+              placeholder="Enter your name"
+              placeholderTextColor={Colors.secondaryText}
+              value={name}
+              onChangeText={setName}
+              style={styles.inputText}
+            />
+          </View>
 
-        {/* Birth Date Picker */}
-        <TouchableOpacity
-          style={styles.inputField}
-          onPress={() => {
-            setIsDatePickerVisible(true);
-          }}
-        >
-          <Feather
-            name="calendar"
-            size={20}
-            color={Colors.secondaryText}
-            style={styles.icon}
-          />
-          {birthDate ? (
-            <Text style={styles.inputText}>
-              {(birthDate.getMonth() + 1).toString().padStart(2, "0") +
-                "/" +
-                birthDate.getDate().toString().padStart(2, "0") +
-                "/" +
-                birthDate.getFullYear()}
-            </Text>
-          ) : (
-            <Text style={{ color: Colors.secondaryText }}>
-              Select Birth Date
-            </Text>
-          )}
-        </TouchableOpacity>
-
-        {Platform.OS === "ios" && isDatePickerVisible && (
-          <Modal
-            transparent={true}
-            animationType="slide"
-            visible={isDatePickerVisible}
-            onRequestClose={() => {
-              setIsDatePickerVisible(false);
+          {/* Birth Date Picker */}
+          <TouchableOpacity
+            style={styles.inputField}
+            onPress={() => {
+              setIsDatePickerVisible(true);
             }}
           >
-            <View style={styles.modalOverlay}>
-              <View style={styles.pickerContainer}>
-                <DateTimePicker
-                  testID="dateTimePicker"
-                  value={birthDate ? birthDate : new Date()}
-                  mode="date"
-                  display={Platform.OS === "ios" ? "inline" : "calendar"}
-                  onChange={onDateChange}
-                  style={styles.dateTimePicker}
-                />
-                <View style={styles.dateTimePickerFooter}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      setIsDatePickerVisible(false);
-                    }}
-                    style={{ padding: 10 }}
-                  >
-                    <Text style={styles.dateTimePickerFooterText}>Cancel</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => {
-                      setIsDatePickerVisible(false);
-                    }}
-                    style={{ padding: 10 }}
-                  >
-                    <Text style={styles.dateTimePickerFooterText}>Ok</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </View>
-          </Modal>
-        )}
-
-        {Platform.OS === "android" && isDatePickerVisible && (
-          <DateTimePicker
-            testID="dateTimePicker"
-            value={birthDate ? birthDate : new Date()}
-            mode="date"
-            display="calendar"
-            onChange={onDateChange}
-          />
-        )}
-
-        {/* Gender Picker */}
-        {Platform.OS === "android" && (
-          <TouchableOpacity
-            style={styles.dateInputField}
-            onPress={() => setPickerVisible(!isPickerVisible)}
-          >
-            <Feather name="users" size={20} color={Colors.secondaryText} />
-
-            <Picker
-              selectedValue={gender}
-              mode="dropdown"
-              onValueChange={(itemValue, itemIndex) => {
-                setGender(itemValue);
-                setPickerVisible(!isPickerVisible);
-              }}
-              style={styles.picker}
-            >
-              <Picker.Item
-                label="Select Gender"
-                style={{ color: Colors.secondaryText }}
-                value=""
-              />
-              <Picker.Item label="Male" value="Male" />
-              <Picker.Item label="Female" value="Female" />
-              <Picker.Item label="Other" value="Other" />
-            </Picker>
+            <Feather
+              name="calendar"
+              size={20}
+              color={Colors.secondaryText}
+              style={styles.icon}
+            />
+            {birthDate ? (
+              <Text style={styles.inputText}>
+                {(birthDate.getMonth() + 1).toString().padStart(2, "0") +
+                  "/" +
+                  birthDate.getDate().toString().padStart(2, "0") +
+                  "/" +
+                  birthDate.getFullYear()}
+              </Text>
+            ) : (
+              <Text style={{ color: Colors.secondaryText }}>
+                Select Birth Date
+              </Text>
+            )}
           </TouchableOpacity>
-        )}
 
-        {Platform.OS === "ios" && (
-          <>
-            <TouchableOpacity
-              style={styles.inputField}
-              onPress={() => setPickerVisible(!isPickerVisible)}
-            >
-              <Feather
-                name="users"
-                size={20}
-                color={Colors.secondaryText}
-                style={styles.icon}
-              />
-              {gender ? (
-                <Text style={styles.inputText}>{gender}</Text>
-              ) : (
-                <Text style={{ color: Colors.secondaryText }}>
-                  Select Gender
-                </Text>
-              )}
-            </TouchableOpacity>
+          {Platform.OS === "ios" && isDatePickerVisible && (
             <Modal
-              visible={isPickerVisible}
               transparent={true}
               animationType="slide"
-              onRequestClose={() => setPickerVisible(!isPickerVisible)}
+              visible={isDatePickerVisible}
+              onRequestClose={() => {
+                setIsDatePickerVisible(false);
+              }}
             >
               <View style={styles.modalOverlay}>
                 <View style={styles.pickerContainer}>
-                  <Picker
-                    selectedValue={gender}
-                    onValueChange={(itemValue, itemIndex) => {
-                      setGender(itemValue);
-                      setPickerVisible(!isPickerVisible);
-                    }}
-                    style={styles.picker}
-                  >
-                    <Picker.Item label="Select Gender" value="" />
-                    <Picker.Item label="Male" value="Male" />
-                    <Picker.Item label="Female" value="Female" />
-                    <Picker.Item label="Other" value="Other" />
-                  </Picker>
+                  <DateTimePicker
+                    testID="dateTimePicker"
+                    value={birthDate ? birthDate : new Date()}
+                    mode="date"
+                    display={Platform.OS === "ios" ? "inline" : "calendar"}
+                    onChange={onDateChange}
+                    style={styles.dateTimePicker}
+                  />
+                  <View style={styles.dateTimePickerFooter}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        setIsDatePickerVisible(false);
+                      }}
+                      style={{ padding: 10 }}
+                    >
+                      <Text style={styles.dateTimePickerFooterText}>
+                        Cancel
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => {
+                        setIsDatePickerVisible(false);
+                      }}
+                      style={{ padding: 10 }}
+                    >
+                      <Text style={styles.dateTimePickerFooterText}>Ok</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </View>
             </Modal>
-          </>
-        )}
+          )}
 
-        {/* Address Input */}
-        <View style={styles.inputField}>
-          <Feather name="home" size={20} color="#8E8E93" style={styles.icon} />
-          <TextInput
-            placeholder="Enter your Address"
-            placeholderTextColor={Colors.secondaryText}
-            value={address}
-            onChangeText={setAddress}
-            style={styles.inputText}
-          />
-        </View>
+          {Platform.OS === "android" && isDatePickerVisible && (
+            <DateTimePicker
+              testID="dateTimePicker"
+              value={birthDate ? birthDate : new Date()}
+              mode="date"
+              display="calendar"
+              onChange={onDateChange}
+            />
+          )}
 
-        {/* Contact Number Input */}
-        <View style={styles.inputField}>
-          <Feather
-            name="phone"
-            size={20}
-            color={Colors.secondaryText}
-            style={styles.icon}
-          />
-          <TextInput
-            placeholder="Contact number"
-            placeholderTextColor={Colors.secondaryText}
-            value={contactNumber}
-            onChangeText={setContactNumber}
-            style={styles.inputText}
-            keyboardType="phone-pad"
-          />
-        </View>
+          {/* Gender Picker */}
+          {Platform.OS === "android" && (
+            <TouchableOpacity
+              style={styles.androidInputField}
+              onPress={() => setIsGenderPickerVisible(!isGenderPickerVisible)}
+            >
+              <Feather name="users" size={20} color={Colors.secondaryText} />
 
-        {/* Attachment Input */}
-        <TouchableOpacity
-          style={styles.inputField}
-          onPress={() => {
-            Alert.alert(
-              "Upload Photo",
-              "Choose an option",
-              [
-                { text: "Take Photo", onPress: handleTakePhoto },
-                { text: "Choose from Gallery", onPress: handlePickImage },
-                { text: "Cancel", style: "cancel" },
-              ],
-              { cancelable: true }
-            );
-          }}
-        >
-          <Feather
-            name="camera"
-            size={22}
-            color={Colors.secondaryText}
-            style={styles.icon}
-          />
-          <Text style={{ color: Colors.secondaryText }}>Take/Choose Photo</Text>
-        </TouchableOpacity>
-      </View>
+              <Picker
+                selectedValue={gender}
+                mode="dropdown"
+                onValueChange={(itemValue, itemIndex) => {
+                  setGender(itemValue);
+                  setIsGenderPickerVisible(!isGenderPickerVisible);
+                }}
+                style={styles.picker}
+              >
+                <Picker.Item
+                  label="Select Gender"
+                  style={{ color: Colors.secondaryText }}
+                  value=""
+                />
+                <Picker.Item label="Male" value="Male" />
+                <Picker.Item label="Female" value="Female" />
+                <Picker.Item label="Other" value="Other" />
+              </Picker>
+            </TouchableOpacity>
+          )}
+
+          {Platform.OS === "ios" && (
+            <>
+              <TouchableOpacity
+                style={styles.inputField}
+                onPress={() => setIsGenderPickerVisible(!isGenderPickerVisible)}
+              >
+                <Feather
+                  name="users"
+                  size={20}
+                  color={Colors.secondaryText}
+                  style={styles.icon}
+                />
+                {gender ? (
+                  <Text style={styles.inputText}>{gender}</Text>
+                ) : (
+                  <Text style={{ color: Colors.secondaryText }}>
+                    Select Gender
+                  </Text>
+                )}
+              </TouchableOpacity>
+              <Modal
+                visible={isGenderPickerVisible}
+                transparent={true}
+                animationType="slide"
+                onRequestClose={() =>
+                  setIsGenderPickerVisible(!isGenderPickerVisible)
+                }
+              >
+                <View style={styles.modalOverlay}>
+                  <View style={styles.pickerContainer}>
+                    <Picker
+                      selectedValue={gender}
+                      onValueChange={(itemValue, itemIndex) => {
+                        setGender(itemValue);
+                        setIsGenderPickerVisible(!isGenderPickerVisible);
+                      }}
+                      style={styles.picker}
+                    >
+                      <Picker.Item label="Select Gender" value="" />
+                      <Picker.Item label="Male" value="Male" />
+                      <Picker.Item label="Female" value="Female" />
+                      <Picker.Item label="Other" value="Other" />
+                    </Picker>
+                  </View>
+                </View>
+              </Modal>
+            </>
+          )}
+
+          {/* Hearing Status Picker */}
+          {Platform.OS === "android" && (
+            <TouchableOpacity
+              style={styles.androidInputField}
+              onPress={() => setIsHearingPickerVisible(!isHearingPickerVisible)}
+            >
+              <Feather name="users" size={20} color={Colors.secondaryText} />
+
+              <Picker
+                selectedValue={hearingStatus}
+                mode="dropdown"
+                onValueChange={(itemValue, itemIndex) => {
+                  setHearingStatus(itemValue);
+                  setIsHearingPickerVisible(!isHearingPickerVisible);
+                }}
+                style={styles.picker}
+              >
+                <Picker.Item
+                  label="Hearing Status"
+                  style={{ color: Colors.secondaryText }}
+                  value=""
+                />
+                <Picker.Item label="Yes, I have hearing loss" value="Yes" />
+                <Picker.Item label="No, I have no hearing loss" value="No" />
+              </Picker>
+            </TouchableOpacity>
+          )}
+
+          {Platform.OS === "ios" && (
+            <>
+              <TouchableOpacity
+                style={styles.inputField}
+                onPress={() =>
+                  setIsHearingPickerVisible(!isHearingPickerVisible)
+                }
+              >
+                <Feather
+                  name="smile"
+                  size={20}
+                  color={Colors.secondaryText}
+                  style={styles.icon}
+                />
+                {hearingStatus ? (
+                  <Text style={styles.inputText}>{hearingStatus}</Text>
+                ) : (
+                  <Text style={{ color: Colors.secondaryText }}>
+                    Hearing Status
+                  </Text>
+                )}
+              </TouchableOpacity>
+              <Modal
+                visible={isHearingPickerVisible}
+                transparent={true}
+                animationType="slide"
+                onRequestClose={() =>
+                  setIsHearingPickerVisible(!isHearingPickerVisible)
+                }
+              >
+                <View style={styles.modalOverlay}>
+                  <View style={styles.pickerContainer}>
+                    <Picker
+                      selectedValue={hearingStatus}
+                      onValueChange={(itemValue, itemIndex) => {
+                        setHearingStatus(itemValue);
+                        setIsHearingPickerVisible(!isHearingPickerVisible);
+                      }}
+                      style={styles.picker}
+                    >
+                      <Picker.Item
+                        label="Hearing Status"
+                        style={{ color: Colors.secondaryText }}
+                        value=""
+                      />
+                      <Picker.Item
+                        label="Yes, I have hearing loss"
+                        value="Yes, I have hearing loss"
+                      />
+                      <Picker.Item
+                        label="No, I have no hearing loss"
+                        value="No, I have no hearing loss"
+                      />
+                    </Picker>
+                  </View>
+                </View>
+              </Modal>
+            </>
+          )}
+
+          {/* Address Input */}
+          <View style={styles.inputField}>
+            <Feather
+              name="home"
+              size={20}
+              color="#8E8E93"
+              style={styles.icon}
+            />
+            <TextInput
+              placeholder="Enter your Address"
+              placeholderTextColor={Colors.secondaryText}
+              value={address}
+              onChangeText={setAddress}
+              style={styles.inputText}
+            />
+          </View>
+
+          {/* Contact Number Input */}
+          <View style={styles.inputField}>
+            <Feather
+              name="phone"
+              size={20}
+              color={Colors.secondaryText}
+              style={styles.icon}
+            />
+            <TextInput
+              placeholder="Contact number"
+              placeholderTextColor={Colors.secondaryText}
+              value={contactNumber}
+              onChangeText={setContactNumber}
+              style={styles.inputText}
+              keyboardType="phone-pad"
+            />
+          </View>
+
+          {/* Attachment Input */}
+          <TouchableOpacity
+            style={styles.inputField}
+            onPress={() => {
+              Alert.alert(
+                "Upload Photo",
+                "Choose an option",
+                [
+                  { text: "Take Photo", onPress: handleTakePhoto },
+                  { text: "Choose from Gallery", onPress: handlePickImage },
+                  { text: "Cancel", style: "cancel" },
+                ],
+                { cancelable: true }
+              );
+            }}
+          >
+            <Feather
+              name="camera"
+              size={22}
+              color={Colors.secondaryText}
+              style={styles.icon}
+            />
+            <Text style={{ color: Colors.secondaryText }}>
+              Take/Choose Photo
+            </Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </Page>
   );
 }
@@ -343,7 +458,7 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     paddingHorizontal: 15,
   },
-  dateInputField: {
+  androidInputField: {
     flexDirection: "row",
     alignItems: "center",
     marginTop: 10,
