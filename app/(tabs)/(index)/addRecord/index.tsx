@@ -19,8 +19,12 @@ import DateTimePicker, {
 import * as ImagePicker from "expo-image-picker";
 import Page from "@/components/Page";
 import Colors from "@/constants/Colors";
+import PrimaryButton from "@/components/PrimaryButton";
+import { useRouter } from "expo-router";
 
 export default function Screen() {
+  const router = useRouter();
+
   const [name, setName] = useState("");
   const [birthDate, setBirthDate] = useState<Date | null>(null);
   const [isDatePickerVisible, setIsDatePickerVisible] =
@@ -461,6 +465,17 @@ export default function Screen() {
               Take/Choose Photo
             </Text>
           </TouchableOpacity>
+
+          {/* Submit Button */}
+          <PrimaryButton
+            style={{ marginTop: 20 }}
+            type="large"
+            onPress={() =>
+              router.push("/(tabs)/(index)/addRecord/parentConsent")
+            }
+          >
+            Submit
+          </PrimaryButton>
         </ScrollView>
       </KeyboardAvoidingView>
     </Page>
