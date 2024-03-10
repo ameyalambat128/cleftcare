@@ -11,6 +11,7 @@ import {
   BottomSheetModal,
   BottomSheetModalProvider,
 } from "@gorhom/bottom-sheet";
+import Animated, { FadeInLeft, FadeOutLeft } from "react-native-reanimated";
 
 import Page from "@/components/Page";
 import Colors from "@/constants/Colors";
@@ -27,7 +28,7 @@ export default function Screen() {
   };
 
   const handleAddRecordPress = () => {
-    router.push("/addRecord");
+    router.push("/addRecord/");
   };
 
   const handlePresentModalPress = useCallback(() => {
@@ -38,12 +39,23 @@ export default function Screen() {
     bottomSheetModalRef.current?.close();
   }, []);
 
+  const getRecordCount = () => {
+    // TODO: Fetch the actual record count
+    return 0; // Replace with actual count
+  };
+
   return (
     <BottomSheetModalProvider>
       <Page style={{ flex: 1 }} headerShown={false}>
         <View style={styles.container}>
           <View style={styles.headerContainer}>
-            <Text style={styles.title}>Cleft Care</Text>
+            <Animated.Text
+              entering={FadeInLeft.springify()}
+              exiting={FadeOutLeft}
+              style={styles.title}
+            >
+              Cleft Care
+            </Animated.Text>
             <View style={styles.iconsContainer}>
               <TouchableOpacity style={styles.icon} onPress={handleSearchPress}>
                 <Feather name="search" size={25} color={Colors.text} />
@@ -61,6 +73,28 @@ export default function Screen() {
                 <Feather name="mail" size={25} color={Colors.text} />
               </TouchableOpacity>
             </View>
+          </View>
+          {/* View Records Section */}
+          <View style={styles.recordsSection}>
+            <View style={styles.headerContainer}>
+              <Text style={styles.recordsTitle}>View Children record</Text>
+              <Text
+                style={styles.recordsCount}
+              >{`${getRecordCount()} records`}</Text>
+            </View>
+            {/* Placeholder for no records */}
+            {getRecordCount() === 0 && (
+              <View style={styles.noRecordsContainer}>
+                <Feather name="edit" size={23} color={Colors.secondaryText} />
+                <Text style={styles.noRecordsText}>
+                  Children's records are empty.
+                </Text>
+                <Text style={styles.noRecordsSubtext}>
+                  Please add a new one.
+                </Text>
+              </View>
+            )}
+            {/* You may want to use a FlatList or ScrollView here to display the records */}
           </View>
         </View>
 
@@ -155,5 +189,37 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 22,
     width: "80%",
+  },
+  recordsSection: {
+    paddingTop: 30,
+    alignItems: "center",
+    height: "94%",
+  },
+  recordsTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: Colors.text,
+  },
+  recordsCount: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: Colors.tint,
+  },
+  noRecordsContainer: {
+    display: "flex",
+    flexDirection: "column",
+    height: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  noRecordsText: {
+    fontSize: 16,
+    color: Colors.secondaryText,
+    marginTop: 20,
+  },
+  noRecordsSubtext: {
+    fontSize: 16,
+    color: Colors.secondaryText,
+    marginTop: 10,
   },
 });

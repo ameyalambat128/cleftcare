@@ -474,7 +474,7 @@ export default function Screen() {
               router.push("/(tabs)/(index)/addRecord/parentConsent")
             }
           >
-            Submit
+            Next
           </PrimaryButton>
         </ScrollView>
       </KeyboardAvoidingView>

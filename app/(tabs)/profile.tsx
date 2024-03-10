@@ -15,6 +15,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import Animated, { FadeInLeft, FadeOutLeft } from "react-native-reanimated";
 
 export default function Screen() {
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
@@ -36,7 +37,13 @@ export default function Screen() {
       >
         <View style={styles.container}>
           <View style={styles.headerContainer}>
-            <Text style={styles.title}>Profile</Text>
+            <Animated.Text
+              entering={FadeInLeft.springify()}
+              exiting={FadeOutLeft}
+              style={styles.title}
+            >
+              Profile
+            </Animated.Text>
           </View>
           <View style={styles.profileContainer}>
             <Image

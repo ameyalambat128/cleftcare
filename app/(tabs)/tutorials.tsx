@@ -1,6 +1,7 @@
 import Page from "@/components/Page";
 import Colors from "@/constants/Colors";
 import { StyleSheet, Text, View } from "react-native";
+import Animated, { FadeInLeft, FadeOutLeft } from "react-native-reanimated";
 
 export default function Screen() {
   return (
@@ -10,7 +11,13 @@ export default function Screen() {
     >
       <View style={styles.container}>
         <View style={styles.headerContainer}>
-          <Text style={styles.title}>Tutorials</Text>
+          <Animated.Text
+            entering={FadeInLeft.springify()}
+            exiting={FadeOutLeft}
+            style={styles.title}
+          >
+            Tutorials
+          </Animated.Text>
         </View>
       </View>
     </Page>

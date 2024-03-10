@@ -29,12 +29,13 @@ export default function Layout() {
       <Stack.Screen
         name="addRecord"
         options={{
-          title: "Add Children Record",
-          headerLeft: () => (
-            <TouchableOpacity onPress={() => router.back()}>
-              <Ionicons name="chevron-back-outline" size={30} color="black" />
-            </TouchableOpacity>
-          ),
+          headerShown: false,
+          // title: "Add Children Record",
+          // headerLeft: () => (
+          //   <TouchableOpacity onPress={() => router.back()}>
+          //     <Ionicons name="chevron-back-outline" size={30} color="black" />
+          //   </TouchableOpacity>
+          // ),
         }}
       />
     </Stack>
