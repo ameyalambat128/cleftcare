@@ -470,9 +470,7 @@ export default function Screen() {
           <PrimaryButton
             style={{ marginTop: 20 }}
             type="large"
-            onPress={() =>
-              router.push("/(tabs)/(index)/addRecord/parentConsent")
-            }
+            onPress={() => router.push("/addRecord/parentConsent")}
           >
             Next
           </PrimaryButton>

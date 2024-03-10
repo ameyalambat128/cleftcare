@@ -28,6 +28,17 @@ export default function Layout() {
           ),
         }}
       />
+      <Stack.Screen
+        name="addSignature"
+        options={{
+          title: "Add Signature",
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => router.back()}>
+              <Ionicons name="chevron-back-outline" size={30} color="black" />
+            </TouchableOpacity>
+          ),
+        }}
+      />
     </Stack>
   );
 }
