@@ -10,6 +10,8 @@ export default function Layout() {
         name="index"
         options={{
           title: "Add Children Record",
+          headerShadowVisible: false,
+          headerStyle: { backgroundColor: "white" },
           headerLeft: () => (
             <TouchableOpacity onPress={() => router.back()}>
               <Ionicons name="chevron-back-outline" size={30} color="black" />
@@ -18,9 +20,11 @@ export default function Layout() {
         }}
       />
       <Stack.Screen
-        name="parentConsent"
+        name="parent-consent"
         options={{
           title: "Consent Form",
+          headerShadowVisible: false,
+          headerStyle: { backgroundColor: "white" },
           headerLeft: () => (
             <TouchableOpacity onPress={() => router.back()}>
               <Ionicons name="chevron-back-outline" size={30} color="black" />
@@ -29,9 +33,11 @@ export default function Layout() {
         }}
       />
       <Stack.Screen
-        name="addSignature"
+        name="add-signature"
         options={{
           title: "Add Signature",
+          headerShadowVisible: false,
+          headerStyle: { backgroundColor: "white" },
           headerLeft: () => (
             <TouchableOpacity onPress={() => router.back()}>
               <Ionicons name="chevron-back-outline" size={30} color="black" />

@@ -56,7 +56,7 @@ export default function Screen() {
           <PrimaryButton
             style={{ marginTop: 20 }}
             type="large"
-            onPress={() => router.push("/addRecord/addSignature")}
+            onPress={() => router.push("/add-record/add-signature")}
           >
             Add Signature
           </PrimaryButton>

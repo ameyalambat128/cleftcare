@@ -5,7 +5,10 @@ import Colors from "@/constants/Colors";
 
 export default function Screen() {
   return (
-    <Page style={{ flex: 1 }} headerShown={true}>
+    <Page
+      style={{ flex: 1, backgroundColor: Colors.background }}
+      headerShown={true}
+    >
       <View style={styles.container}>
         <View style={styles.inputContainer}>
           <Feather

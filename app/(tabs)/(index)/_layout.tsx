@@ -14,11 +14,12 @@ export default function Layout() {
         }}
       />
       <Stack.Screen
-        name="searchRecord"
+        name="search-record"
         options={{
           title: "Search",
+          animation: "slide_from_bottom",
           headerShadowVisible: false,
-          headerStyle: { backgroundColor: "transparent" },
+          headerStyle: { backgroundColor: "white" },
           headerLeft: () => (
             <TouchableOpacity onPress={() => router.back()}>
               <Ionicons name="chevron-back-outline" size={30} color="black" />
@@ -27,15 +28,10 @@ export default function Layout() {
         }}
       />
       <Stack.Screen
-        name="addRecord"
+        name="add-record"
         options={{
           headerShown: false,
-          // title: "Add Children Record",
-          // headerLeft: () => (
-          //   <TouchableOpacity onPress={() => router.back()}>
-          //     <Ionicons name="chevron-back-outline" size={30} color="black" />
-          //   </TouchableOpacity>
-          // ),
+          animation: "slide_from_bottom",
         }}
       />
     </Stack>

@@ -24,11 +24,11 @@ export default function Screen() {
   const snapPoints = useMemo(() => ["45%"], []);
 
   const handleSearchPress = () => {
-    router.push("/searchRecord");
+    router.push("/search-record");
   };
 
   const handleAddRecordPress = () => {
-    router.push("/addRecord/");
+    router.push("/add-record/");
   };
 
   const handlePresentModalPress = useCallback(() => {
