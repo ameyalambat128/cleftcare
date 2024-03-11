@@ -6,6 +6,7 @@ import {
   BottomSheetModal,
   BottomSheetModalProvider,
 } from "@gorhom/bottom-sheet";
+import { useRouter } from "expo-router";
 import { useCallback, useMemo, useRef } from "react";
 import {
   Image,
@@ -18,8 +19,13 @@ import {
 import Animated, { FadeInLeft, FadeOutLeft } from "react-native-reanimated";
 
 export default function Screen() {
+  const router = useRouter();
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const snapPoints = useMemo(() => ["45%"], []);
+
+  const handleHelpPress = () => {
+    router.push("/(modals)/help-center");
+  };
 
   const handlePresentModalPress = useCallback(() => {
     bottomSheetModalRef.current?.present();
@@ -69,10 +75,7 @@ export default function Screen() {
             </View>
             <View style={styles.separator} />
           </View>
-          <TouchableOpacity
-            style={styles.helpButton}
-            onPress={handlePresentModalPress}
-          >
+          <TouchableOpacity style={styles.helpButton} onPress={handleHelpPress}>
             <Text style={styles.helpText}>Need help?</Text>
           </TouchableOpacity>
         </View>

@@ -57,6 +57,20 @@ function RootLayoutNav() {
           }}
         >
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="(modals)/help-center"
+            options={{
+              title: "Help Center",
+              headerShadowVisible: false,
+              headerStyle: { backgroundColor: "white" },
+              headerRight: () => (
+                <TouchableOpacity onPress={() => router.back()}>
+                  <Ionicons name="close-outline" size={30} color="black" />
+                </TouchableOpacity>
+              ),
+              presentation: "fullScreenModal",
+            }}
+          />
         </Stack>
       </SafeAreaProvider>
     </GestureHandlerRootView>

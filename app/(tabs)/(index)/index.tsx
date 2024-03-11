@@ -27,6 +27,10 @@ export default function Screen() {
     router.push("/search-record");
   };
 
+  const handleHelpPress = () => {
+    router.push("/(modals)/help-center");
+  };
+
   const handleAddRecordPress = () => {
     router.push("/add-record/");
   };
@@ -66,10 +70,7 @@ export default function Screen() {
               >
                 <Feather name="edit" size={23} color={Colors.text} />
               </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.icon}
-                onPress={handlePresentModalPress}
-              >
+              <TouchableOpacity style={styles.icon} onPress={handleHelpPress}>
                 <Feather name="mail" size={25} color={Colors.text} />
               </TouchableOpacity>
             </View>
@@ -99,7 +100,7 @@ export default function Screen() {
         </View>
 
         {/* Email Us Bottom Sheet */}
-        <BottomSheetModal
+        {/* <BottomSheetModal
           ref={bottomSheetModalRef}
           index={0}
           snapPoints={snapPoints}
@@ -122,7 +123,7 @@ export default function Screen() {
               Email Us
             </PrimaryButton>
           </View>
-        </BottomSheetModal>
+        </BottomSheetModal> */}
       </Page>
     </BottomSheetModalProvider>
   );
