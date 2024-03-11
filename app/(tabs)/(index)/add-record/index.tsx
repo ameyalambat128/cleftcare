@@ -151,9 +151,9 @@ export default function Screen() {
             />
             {birthDate ? (
               <Text style={styles.inputText}>
-                {(birthDate.getMonth() + 1).toString().padStart(2, "0") +
+                {birthDate.getDate().toString().padStart(2, "0") +
                   "/" +
-                  birthDate.getDate().toString().padStart(2, "0") +
+                  (birthDate.getMonth() + 1).toString().padStart(2, "0") +
                   "/" +
                   birthDate.getFullYear()}
               </Text>
