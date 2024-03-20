@@ -87,7 +87,7 @@ export default function Screen() {
               <Text style={styles.noRecordsSubtext}>Please add a new one.</Text>
             </View>
           ) : (
-            <View style={styles.scrollContainer}>
+            <View style={styles.recordListContainer}>
               <FlatList
                 data={records}
                 renderItem={({ item }: any) => (
@@ -95,7 +95,7 @@ export default function Screen() {
                     id={item.id}
                     name={item.name}
                     recordId={item.recordId}
-                    onPress={() => console.log("Item pressed")} // Replace with actual navigation or action
+                    onPress={() => console.log("Item pressed")} // TODO: Replace with actual navigation or action
                   />
                 )}
                 keyExtractor={(item) => item.id}
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
     color: Colors.secondaryText,
     marginTop: 10,
   },
-  scrollContainer: {
+  recordListContainer: {
     marginTop: 30,
   },
 });
