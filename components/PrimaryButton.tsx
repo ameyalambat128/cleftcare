@@ -5,8 +5,12 @@ type ButtonProps = TouchableOpacity["props"] & {
   type: "large" | "small";
 };
 
-export default function PrimaryButton(props: ButtonProps) {
-  const { children, style, type, ...otherProps } = props;
+export default function PrimaryButton({
+  children,
+  style,
+  type,
+  ...otherProps
+}: ButtonProps) {
   return (
     <TouchableOpacity
       style={[

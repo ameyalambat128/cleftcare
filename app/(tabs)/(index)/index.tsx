@@ -1,27 +1,20 @@
-import { useCallback, useMemo, useRef } from "react";
+import { useRouter } from "expo-router";
 import {
-  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
+  FlatList,
 } from "react-native";
-import { Feather } from "@expo/vector-icons";
-import {
-  BottomSheetModal,
-  BottomSheetModalProvider,
-} from "@gorhom/bottom-sheet";
 import Animated, { FadeInLeft, FadeOutLeft } from "react-native-reanimated";
+import { Feather } from "@expo/vector-icons";
 
 import Page from "@/components/Page";
+import RecordItem from "@/components/RecordItem";
 import Colors from "@/constants/Colors";
-import PrimaryButton from "@/components/PrimaryButton";
-import { Stack, useRouter } from "expo-router";
 
 export default function Screen() {
   const router = useRouter();
-  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-  const snapPoints = useMemo(() => ["45%"], []);
 
   const handleSearchPress = () => {
     router.push("/search-record");
@@ -35,97 +28,84 @@ export default function Screen() {
     router.push("/add-record/");
   };
 
-  const handlePresentModalPress = useCallback(() => {
-    bottomSheetModalRef.current?.present();
-  }, []);
-
-  const handleCloseModalPress = useCallback(() => {
-    bottomSheetModalRef.current?.close();
-  }, []);
+  const records = [
+    { id: "1", name: "Priya Patel", recordId: "1246467" },
+    { id: "2", name: "Vijay Agvanti", recordId: "1242367" },
+    { id: "3", name: "Shiva Ram Sundray", recordId: "1246687" },
+    { id: "4", name: "Korilav Ranga", recordId: "1248874" },
+    { id: "5", name: "Sourabh Sudhir", recordId: "1247787" },
+    { id: "6", name: "Sourabh Sudhir", recordId: "1247787" },
+    { id: "7", name: "Sourabh Sudhir", recordId: "1247787" },
+  ];
 
   const getRecordCount = () => {
-    // TODO: Fetch the actual record count
-    return 0; // Replace with actual count
+    return records.length;
   };
 
   return (
-    <BottomSheetModalProvider>
-      <Page style={{ flex: 1 }} headerShown={false}>
-        <View style={styles.container}>
-          <View style={styles.headerContainer}>
-            <Animated.Text
-              entering={FadeInLeft.springify()}
-              exiting={FadeOutLeft}
-              style={styles.title}
+    <Page style={{ flex: 1 }} headerShown={false}>
+      <View style={styles.container}>
+        <View style={styles.headerContainer}>
+          <Animated.Text
+            entering={FadeInLeft.springify()}
+            exiting={FadeOutLeft}
+            style={styles.title}
+          >
+            Cleft Care
+          </Animated.Text>
+          <View style={styles.iconsContainer}>
+            <TouchableOpacity style={styles.icon} onPress={handleSearchPress}>
+              <Feather name="search" size={25} color={Colors.text} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.icon}
+              onPress={handleAddRecordPress}
             >
-              Cleft Care
-            </Animated.Text>
-            <View style={styles.iconsContainer}>
-              <TouchableOpacity style={styles.icon} onPress={handleSearchPress}>
-                <Feather name="search" size={25} color={Colors.text} />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.icon}
-                onPress={handleAddRecordPress}
-              >
-                <Feather name="edit" size={23} color={Colors.text} />
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.icon} onPress={handleHelpPress}>
-                <Feather name="mail" size={25} color={Colors.text} />
-              </TouchableOpacity>
-            </View>
-          </View>
-          {/* View Records Section */}
-          <View style={styles.recordsSection}>
-            <View style={styles.headerContainer}>
-              <Text style={styles.recordsTitle}>View Children record</Text>
-              <Text
-                style={styles.recordsCount}
-              >{`${getRecordCount()} records`}</Text>
-            </View>
-            {/* Placeholder for no records */}
-            {getRecordCount() === 0 && (
-              <View style={styles.noRecordsContainer}>
-                <Feather name="edit" size={23} color={Colors.secondaryText} />
-                <Text style={styles.noRecordsText}>
-                  Children's records are empty.
-                </Text>
-                <Text style={styles.noRecordsSubtext}>
-                  Please add a new one.
-                </Text>
-              </View>
-            )}
-            {/* You may want to use a FlatList or ScrollView here to display the records */}
+              <Feather name="edit" size={23} color={Colors.text} />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.icon} onPress={handleHelpPress}>
+              <Feather name="mail" size={25} color={Colors.text} />
+            </TouchableOpacity>
           </View>
         </View>
 
-        {/* Email Us Bottom Sheet */}
-        {/* <BottomSheetModal
-          ref={bottomSheetModalRef}
-          index={0}
-          snapPoints={snapPoints}
-          containerStyle={Platform.OS === "ios" && styles.bottomSheetContainer}
-          style={Platform.OS === "android" && styles.bottomSheetContainer}
-        >
-          <View style={styles.bottomSheetContentContainer}>
-            <View style={styles.iconCircle}>
-              <Feather name="mail" size={40} color={Colors.tint} />
-            </View>
-            <Text style={styles.helpTitle}>Need Help?</Text>
-            <Text style={styles.helpText}>
-              Please send email us if you need any assistance
-            </Text>
-            <PrimaryButton
-              style={{ marginBottom: 20 }}
-              type="small"
-              onPress={handleCloseModalPress}
-            >
-              Email Us
-            </PrimaryButton>
+        {/* View Records Section */}
+        <View style={styles.recordsContainer}>
+          <View style={styles.headerContainer}>
+            <Text style={styles.recordsTitle}>View Children record</Text>
+            <Text
+              style={styles.recordsCount}
+            >{`${getRecordCount()} records`}</Text>
           </View>
-        </BottomSheetModal> */}
-      </Page>
-    </BottomSheetModalProvider>
+          {/* Placeholder for no records */}
+          {getRecordCount() === 0 ? (
+            <View style={styles.noRecordsContainer}>
+              <Feather name="edit" size={23} color={Colors.secondaryText} />
+              <Text style={styles.noRecordsText}>
+                Children's records are empty.
+              </Text>
+              <Text style={styles.noRecordsSubtext}>Please add a new one.</Text>
+            </View>
+          ) : (
+            <View style={styles.scrollContainer}>
+              <FlatList
+                data={records}
+                renderItem={({ item }: any) => (
+                  <RecordItem
+                    id={item.id}
+                    name={item.name}
+                    recordId={item.recordId}
+                    onPress={() => console.log("Item pressed")} // Replace with actual navigation or action
+                  />
+                )}
+                keyExtractor={(item) => item.id}
+                style={{ width: "100%" }}
+              />
+            </View>
+          )}
+        </View>
+      </View>
+    </Page>
   );
 }
 
@@ -152,46 +132,7 @@ const styles = StyleSheet.create({
   icon: {
     marginLeft: 25,
   },
-  bottomSheetContainer: {
-    borderTopStartRadius: 20, // Round the top left corner
-    borderTopEndRadius: 20, // Round the top right corner
-    elevation: 7, // Only works on Android for shadow
-    shadowColor: "#000", // Shadow color for iOS
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.6, // Shadow opacity for iOS
-    shadowRadius: 4, // Shadow blur radius for iOS
-    overflow: "hidden", // Ensures the children don't overlap the rounded corners
-  },
-  bottomSheetContentContainer: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  iconCircle: {
-    backgroundColor: "#F5F8FF",
-    borderRadius: 40,
-    width: 80,
-    height: 80,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 20,
-  },
-  helpTitle: {
-    fontSize: 22,
-    fontWeight: "bold",
-    marginBottom: 14,
-  },
-  helpText: {
-    fontSize: 16,
-    color: Colors.secondaryText,
-    textAlign: "center",
-    marginBottom: 22,
-    width: "80%",
-  },
-  recordsSection: {
+  recordsContainer: {
     paddingTop: 30,
     alignItems: "center",
     height: "94%",
@@ -222,5 +163,37 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: Colors.secondaryText,
     marginTop: 10,
+  },
+  scrollContainer: {
+    marginTop: 30,
+  },
+  recordItem: {
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+    borderRadius: 10,
+    padding: 15,
+    marginBottom: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
+    paddingVertical: 30,
+  },
+  pressedRecordItem: {
+    backgroundColor: "rgba(25, 154, 142, 0.25)",
+    borderColor: "rgba(25, 154, 142, 0.25)",
+    color: Colors.tint,
+  },
+  recordItemText: {
+    display: "flex",
+    flexDirection: "column",
+  },
+  recordName: {
+    fontWeight: "bold",
+    fontSize: 16, // Adjust the font size as per your design
+  },
+  recordId: {
+    color: "gray", // This can be any color that fits your design
+    fontSize: 14, // Adjust the font size as per your design
   },
 });
