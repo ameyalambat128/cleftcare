@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Stack, useRouter } from "expo-router";
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 
 export default function Layout() {
   const router = useRouter();
@@ -20,6 +20,7 @@ export default function Layout() {
           animation: "slide_from_bottom",
           headerShadowVisible: false,
           headerStyle: { backgroundColor: "white" },
+
           headerLeft: () => (
             <TouchableOpacity onPress={() => router.back()}>
               <Ionicons name="chevron-back-outline" size={30} color="black" />
@@ -32,6 +33,7 @@ export default function Layout() {
         options={{
           headerShown: false,
           animation: "slide_from_bottom",
+          headerLeft: () => <View />,
         }}
       />
     </Stack>

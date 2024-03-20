@@ -6,7 +6,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Stack, useRouter } from "expo-router";
 import { useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import Colors from "@/constants/Colors";
 
 export {
@@ -63,6 +63,7 @@ function RootLayoutNav() {
               title: "Help Center",
               headerShadowVisible: false,
               headerStyle: { backgroundColor: "white" },
+              headerLeft: () => <View />,
               headerRight: () => (
                 <TouchableOpacity onPress={() => router.back()}>
                   <Ionicons name="close-outline" size={30} color="black" />

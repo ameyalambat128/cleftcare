@@ -69,7 +69,7 @@ export default function Screen() {
           </View>
         </View>
 
-        {/* View Records Section */}
+        {/* Records */}
         <View style={styles.recordsContainer}>
           <View style={styles.headerContainer}>
             <Text style={styles.recordsTitle}>View Children record</Text>
@@ -77,7 +77,7 @@ export default function Screen() {
               style={styles.recordsCount}
             >{`${getRecordCount()} records`}</Text>
           </View>
-          {/* Placeholder for no records */}
+
           {getRecordCount() === 0 ? (
             <View style={styles.noRecordsContainer}>
               <Feather name="edit" size={23} color={Colors.secondaryText} />

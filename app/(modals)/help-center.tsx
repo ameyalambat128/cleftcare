@@ -64,6 +64,7 @@ export default function Screen() {
               numberOfLines={8}
               value={message}
               onChangeText={setMessage}
+              style={{ textAlignVertical: "top" }}
             />
           </View>
 
@@ -111,6 +112,5 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
     padding: 15,
-    textAlignVertical: "top", // Align text to the top for multiline input
   },
 });
