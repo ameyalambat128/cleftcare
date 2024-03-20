@@ -167,33 +167,4 @@ const styles = StyleSheet.create({
   scrollContainer: {
     marginTop: 30,
   },
-  recordItem: {
-    borderWidth: 1,
-    borderColor: "#E5E7EB",
-    borderRadius: 10,
-    padding: 15,
-    marginBottom: 10,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    width: "100%",
-    paddingVertical: 30,
-  },
-  pressedRecordItem: {
-    backgroundColor: "rgba(25, 154, 142, 0.25)",
-    borderColor: "rgba(25, 154, 142, 0.25)",
-    color: Colors.tint,
-  },
-  recordItemText: {
-    display: "flex",
-    flexDirection: "column",
-  },
-  recordName: {
-    fontWeight: "bold",
-    fontSize: 16, // Adjust the font size as per your design
-  },
-  recordId: {
-    color: "gray", // This can be any color that fits your design
-    fontSize: 14, // Adjust the font size as per your design
-  },
 });

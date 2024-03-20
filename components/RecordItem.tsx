@@ -57,7 +57,9 @@ const styles = StyleSheet.create({
     paddingVertical: 30,
   },
   pressedRecordItem: {
-    backgroundColor: "rgba(0,255,0,0.2)", // Light green tint
+    backgroundColor: "rgba(25, 154, 142, 0.25)",
+    borderColor: "rgba(25, 154, 142, 0.25)",
+    color: Colors.tint,
   },
   recordItemText: {
     display: "flex",
@@ -68,7 +70,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   recordId: {
-    color: "gray",
+    color: Colors.secondaryText,
     fontSize: 14,
   },
 });
