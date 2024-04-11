@@ -11,6 +11,14 @@ export default function Layout() {
           headerStyle: { backgroundColor: "white" },
         }}
       />
+      <Stack.Screen
+        name="two"
+        options={{
+          title: "Record Audio",
+          headerShadowVisible: false,
+          headerStyle: { backgroundColor: "white" },
+        }}
+      />
     </Stack>
   );
 }

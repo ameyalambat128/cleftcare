@@ -1,66 +1,14 @@
 import Page from "@/components/Page";
 import Colors from "@/constants/Colors";
 import { Feather, Ionicons } from "@expo/vector-icons";
-import { Audio } from "expo-av";
 import { Stack, useRouter } from "expo-router";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function Screen() {
   const router = useRouter();
 
   const [completed, setCompleted] = useState(false);
-  const recordingRef = useRef<Audio.Recording | null>(null);
-
-  const [recording, setRecording] = useState<Audio.Recording | null>(null);
-  const [metering, setMetering] = useState(0);
-  const [status, setStatus] = useState<Audio.RecordingStatus | null>(null);
-  const [meter, setMeter] = useState(0);
-
-  const startRecording = async () => {
-    try {
-      if (recordingRef.current) recordingRef.current.stopAndUnloadAsync();
-      const permission = await Audio.requestPermissionsAsync();
-      if (permission.status === "granted") {
-        await Audio.setAudioModeAsync({
-          allowsRecordingIOS: true,
-          staysActiveInBackground: true,
-          playsInSilentModeIOS: true,
-          // Android-specific settings
-          shouldDuckAndroid: true,
-          playThroughEarpieceAndroid: false,
-        });
-
-        const { recording: newRecording } = await Audio.Recording.createAsync(
-          Audio.RecordingOptionsPresets.HIGH_QUALITY,
-          onRecordingStatusUpdate
-        );
-
-        recordingRef.current = newRecording;
-        await newRecording.startAsync();
-        console.log("Recording started");
-      }
-    } catch (error) {
-      console.error("Error starting recording:", error);
-    }
-  };
-
-  const onRecordingStatusUpdate = async (newStatus: Audio.RecordingStatus) => {
-    setStatus(newStatus);
-    console.log("Recording status:", newStatus);
-    if (newStatus.isRecording && newStatus.metering) {
-      setMetering(newStatus.metering);
-    }
-  };
-
-  const stopRecording = async () => {
-    const currentRecording = recordingRef.current;
-    if (!currentRecording) return;
-    await currentRecording.stopAndUnloadAsync();
-    console.log("Recording stopped");
-    const uri = currentRecording.getURI();
-    console.log("Recording URI:", uri);
-  };
 
   const handleRecording = () => {
     // Implement recording logic here
@@ -80,11 +28,7 @@ export default function Screen() {
           ),
           headerRight: () => (
             <View>
-              <TouchableOpacity
-                onPress={() => {
-                  router.push("/record/two");
-                }}
-              >
+              <TouchableOpacity onPress={() => {}}>
                 <Text
                   style={[
                     styles.headerRightText,
@@ -112,7 +56,7 @@ export default function Screen() {
           </Text>
         </View>
         <View style={styles.progressTextContainer}>
-          <Text style={styles.progressText}>1/</Text>
+          <Text style={styles.progressText}>2/</Text>
           <Text style={styles.finalProgressText}>25</Text>
         </View>
       </View>

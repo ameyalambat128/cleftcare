@@ -13,32 +13,62 @@ import {
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import DateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
 import * as ImagePicker from "expo-image-picker";
+
 import Page from "@/components/Page";
 import Colors from "@/constants/Colors";
 import PrimaryButton from "@/components/PrimaryButton";
-import { useRouter } from "expo-router";
+import { ChildRecord, records } from "@/constants/SampleData";
 
 export default function Screen() {
   const router = useRouter();
+  const { id } = useLocalSearchParams<{ id: string }>();
 
-  const [name, setName] = useState("");
-  const [birthDate, setBirthDate] = useState<Date | null>(null);
+  const getUserName = (recordId: string) => {
+    const record = records.find((record) => record.recordId === recordId);
+    return record ? record.name : "";
+  };
+
+  const getUserData = (recordId: string): ChildRecord => {
+    const record = records.find((record) => record.recordId === recordId);
+    return (
+      record ?? {
+        id: "",
+        name: "",
+        recordId: "",
+        birthDate: null,
+        gender: "Other",
+        hearingLoss: "No",
+        address: "",
+        contactNumber: "",
+      }
+    );
+  };
+
+  const [name, setName] = useState<string>(getUserData(id)?.name);
+  const [birthDate, setBirthDate] = useState<Date | null>(
+    getUserData(id)?.birthDate
+  );
   const [isDatePickerVisible, setIsDatePickerVisible] =
     useState<boolean>(false);
-  const [gender, setGender] = useState<"Male" | "Female" | "Other">();
+  const [gender, setGender] = useState<"Male" | "Female" | "Other">(
+    getUserData(id)?.gender
+  );
   const [isGenderPickerVisible, setIsGenderPickerVisible] =
     useState<boolean>(false);
-  const [hearingStatus, setHearingStatus] = useState<
-    "Yes, I have hearing loss" | "No, I have no hearing loss"
-  >();
+  const [hearingLoss, setHearingLoss] = useState<"Yes" | "No">(
+    getUserData(id)?.hearingLoss
+  );
   const [isHearingPickerVisible, setIsHearingPickerVisible] =
     useState<boolean>(false);
-  const [address, setAddress] = useState<string>("");
-  const [contactNumber, setContactNumber] = useState<string>("");
+  const [address, setAddress] = useState<string>(getUserData(id)?.address);
+  const [contactNumber, setContactNumber] = useState<string>(
+    getUserData(id)?.contactNumber
+  );
   const [photo, setPhoto] = useState<string>(""); // TODO: change photo to Image type if needed
 
   const getInputStyle = (inputValue: string) => ({
@@ -108,6 +138,7 @@ export default function Screen() {
       style={{ flex: 1, backgroundColor: Colors.background }}
       headerShown={true}
     >
+      <Stack.Screen options={{ title: getUserName(id) }} />
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -115,8 +146,7 @@ export default function Screen() {
       >
         <ScrollView style={styles.container}>
           <Text style={styles.headerText}>
-            Please enter child's information to continue with the audio
-            recording
+            Edit child's information based on your requirements
           </Text>
 
           {/* Name Input */}
@@ -311,21 +341,21 @@ export default function Screen() {
             <TouchableOpacity
               style={[
                 styles.androidInputField,
-                getInputStyle(hearingStatus ? "hearingStatus" : ""),
+                getInputStyle(hearingLoss ? "hearingStatus" : ""),
               ]}
               onPress={() => setIsHearingPickerVisible(!isHearingPickerVisible)}
             >
               <Feather
                 name="users"
                 size={20}
-                color={getIconColor(hearingStatus ? "hearingStatus" : "")}
+                color={getIconColor(hearingLoss ? "hearingStatus" : "")}
               />
 
               <Picker
-                selectedValue={hearingStatus}
+                selectedValue={hearingLoss}
                 mode="dropdown"
                 onValueChange={(itemValue, itemIndex) => {
-                  setHearingStatus(itemValue);
+                  setHearingLoss(itemValue);
                   setIsHearingPickerVisible(!isHearingPickerVisible);
                 }}
                 style={styles.picker}
@@ -346,7 +376,7 @@ export default function Screen() {
               <TouchableOpacity
                 style={[
                   styles.inputField,
-                  getInputStyle(hearingStatus ? "hearingStatus" : ""),
+                  getInputStyle(hearingLoss ? "hearingStatus" : ""),
                 ]}
                 onPress={() =>
                   setIsHearingPickerVisible(!isHearingPickerVisible)
@@ -355,11 +385,11 @@ export default function Screen() {
                 <Feather
                   name="smile"
                   size={20}
-                  color={getIconColor(hearingStatus ? "hearingStatus" : "")}
+                  color={getIconColor(hearingLoss ? "hearingStatus" : "")}
                   style={styles.icon}
                 />
-                {hearingStatus ? (
-                  <Text style={styles.inputText}>{hearingStatus}</Text>
+                {hearingLoss ? (
+                  <Text style={styles.inputText}>{hearingLoss}</Text>
                 ) : (
                   <Text style={{ color: Colors.secondaryText }}>
                     Hearing Status
@@ -377,9 +407,9 @@ export default function Screen() {
                 <View style={styles.modalOverlay}>
                   <View style={styles.pickerContainer}>
                     <Picker
-                      selectedValue={hearingStatus}
+                      selectedValue={hearingLoss}
                       onValueChange={(itemValue, itemIndex) => {
-                        setHearingStatus(itemValue);
+                        setHearingLoss(itemValue);
                         setIsHearingPickerVisible(!isHearingPickerVisible);
                       }}
                       style={styles.picker}

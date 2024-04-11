@@ -23,8 +23,16 @@ export default function Screen() {
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const snapPoints = useMemo(() => ["45%"], []);
 
+  const handleSearchPress = () => {
+    router.push("/search-record");
+  };
+
   const handleHelpPress = () => {
     router.push("/(modals)/help-center");
+  };
+
+  const handleAddRecordPress = () => {
+    router.push("/add-record/");
   };
 
   const handlePresentModalPress = useCallback(() => {
@@ -48,8 +56,22 @@ export default function Screen() {
               exiting={FadeOutLeft}
               style={styles.title}
             >
-              Profile
+              Cleft Care
             </Animated.Text>
+            <View style={styles.iconsContainer}>
+              <TouchableOpacity style={styles.icon} onPress={handleSearchPress}>
+                <Feather name="search" size={25} color={Colors.text} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.icon}
+                onPress={handleAddRecordPress}
+              >
+                <Feather name="edit" size={23} color={Colors.text} />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.icon} onPress={handleHelpPress}>
+                <Feather name="mail" size={25} color={Colors.text} />
+              </TouchableOpacity>
+            </View>
           </View>
           <View style={styles.profileContainer}>
             <Image
@@ -114,13 +136,22 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     display: "flex",
-    flexDirection: "column",
-    alignItems: "flex-start",
-    justifyContent: "flex-start",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
   },
   title: {
     fontSize: 28,
     fontWeight: "bold",
+  },
+  iconsContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "flex-start",
+  },
+  icon: {
+    marginLeft: 25,
   },
   profileContainer: {
     display: "flex",

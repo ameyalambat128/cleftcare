@@ -14,6 +14,13 @@ export default function Layout() {
         }}
       />
       <Stack.Screen
+        name="add-record"
+        options={{
+          headerShown: false,
+          animation: "slide_from_bottom",
+        }}
+      />
+      <Stack.Screen
         name="search-record"
         options={{
           title: "Search",
@@ -28,10 +35,15 @@ export default function Layout() {
         }}
       />
       <Stack.Screen
-        name="add-record"
+        name="edit-record/[id]"
         options={{
-          headerShown: false,
-          animation: "slide_from_bottom",
+          headerShadowVisible: false,
+          headerStyle: { backgroundColor: "white" },
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => router.back()}>
+              <Ionicons name="chevron-back-outline" size={30} color="black" />
+            </TouchableOpacity>
+          ),
         }}
       />
     </Stack>

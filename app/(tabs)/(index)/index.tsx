@@ -12,6 +12,7 @@ import { Feather } from "@expo/vector-icons";
 import Page from "@/components/Page";
 import RecordItem from "@/components/RecordItem";
 import Colors from "@/constants/Colors";
+import { ChildRecord, records } from "@/constants/SampleData";
 
 export default function Screen() {
   const router = useRouter();
@@ -28,15 +29,9 @@ export default function Screen() {
     router.push("/add-record/");
   };
 
-  const records = [
-    { id: "1", name: "Priya Patel", recordId: "1246467" },
-    { id: "2", name: "Vijay Agvanti", recordId: "1242367" },
-    { id: "3", name: "Shiva Ram Sundray", recordId: "1246687" },
-    { id: "4", name: "Korilav Ranga", recordId: "1248874" },
-    { id: "5", name: "Sourabh Sudhir", recordId: "1247787" },
-    { id: "6", name: "Sourabh Sudhir", recordId: "1247787" },
-    { id: "7", name: "Sourabh Sudhir", recordId: "1247787" },
-  ];
+  const handleEditRecordPress = (id: string) => {
+    router.push(`/edit-record/${id}`);
+  };
 
   const getRecordCount = () => {
     return records.length;
@@ -90,12 +85,12 @@ export default function Screen() {
             <View style={styles.recordListContainer}>
               <FlatList
                 data={records}
-                renderItem={({ item }: any) => (
+                renderItem={({ item }: { item: ChildRecord }) => (
                   <RecordItem
                     id={item.id}
                     name={item.name}
                     recordId={item.recordId}
-                    onPress={() => console.log("Item pressed")} // TODO: Replace with actual navigation or action
+                    onPress={() => handleEditRecordPress(item.recordId)}
                   />
                 )}
                 keyExtractor={(item) => item.id}
