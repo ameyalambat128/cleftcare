@@ -1,13 +1,98 @@
 import Page from "@/components/Page";
 import Colors from "@/constants/Colors";
-import { Feather, Ionicons } from "@expo/vector-icons";
+import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
 import { Audio } from "expo-av";
 import { Stack, useRouter } from "expo-router";
 import { useRef, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
+const InitialScreenState: React.FC<{
+  onStartRecording: () => void;
+}> = ({ onStartRecording }) => (
+  <View style={styles.bodyContainer}>
+    <Text style={styles.bodyText}>Hello! How are you?</Text>
+    <TouchableOpacity onPress={onStartRecording} style={styles.recordButton}>
+      <Feather name="mic" size={40} color="black" />
+    </TouchableOpacity>
+    <Text style={styles.instructions}>
+      Press the audio icon to start recording
+    </Text>
+  </View>
+);
+
+const RecordingState: React.FC<{
+  onStopRecording: () => void;
+  timer: number;
+}> = ({ onStopRecording, timer }) => (
+  <View style={styles.bodyContainer}>
+    <Text style={[styles.bodyText, { color: Colors.tint }]}>
+      Hello! How are you?
+    </Text>
+    <TouchableOpacity
+      onPress={onStopRecording}
+      style={[styles.recordButton, styles.recording]}
+    >
+      <Feather name="mic" size={40} color="white" />
+    </TouchableOpacity>
+    <Text style={[styles.timer, { color: Colors.tint }]}>{timer}</Text>
+    <Text style={styles.boldInstructions}>Recording started...</Text>
+  </View>
+);
+
+// TODO: Edit the 2 components below
+const UploadingState: React.FC<{ timer: number }> = ({ timer }) => (
+  <View style={styles.bodyContainer}>
+    <Text style={styles.bodyText}>Hello! How are you?</Text>
+    <TouchableOpacity
+      onPress={() => console.log("Uploading...")}
+      style={[styles.recordButton]}
+    >
+      <Feather name="mic" size={40} color="black" />
+    </TouchableOpacity>
+    <Text style={[styles.timer]}>{timer}</Text>
+    <Text style={styles.boldInstructions}>Audio is uploading...</Text>
+  </View>
+);
+
+const DoneState: React.FC<{ onDone: () => void }> = ({ onDone }) => (
+  <View style={styles.bodyContainer}>
+    <Text style={styles.bodyText}>Hello! How are you?</Text>
+    <TouchableOpacity
+      onPress={() => console.log("Uploading...")}
+      style={[styles.recordButton]}
+    >
+      <Feather name="mic" size={40} color="black" />
+    </TouchableOpacity>
+    <View
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 8,
+        marginTop: 50,
+      }}
+    >
+      <AntDesign name="checkcircle" size={20} color={Colors.tint} />
+      <Text
+        style={{
+          fontSize: 16,
+          fontWeight: "bold",
+          color: Colors.text,
+          textAlign: "center",
+        }}
+      >
+        Done
+      </Text>
+    </View>
+  </View>
+);
+
 export default function Screen() {
   const router = useRouter();
+
+  const [screenState, setScreenState] = useState<
+    "initial" | "recording" | "uploading" | "done"
+  >("initial");
+  const [timer, setTimer] = useState<number>(0);
 
   const [completed, setCompleted] = useState(false);
   const recordingRef = useRef<Audio.Recording | null>(null);
@@ -17,7 +102,7 @@ export default function Screen() {
   const [status, setStatus] = useState<Audio.RecordingStatus | null>(null);
   const [meter, setMeter] = useState(0);
 
-  const startRecording = async () => {
+  const onStartRecording = async () => {
     try {
       if (recordingRef.current) recordingRef.current.stopAndUnloadAsync();
       const permission = await Audio.requestPermissionsAsync();
@@ -37,7 +122,8 @@ export default function Screen() {
         );
 
         recordingRef.current = newRecording;
-        await newRecording.startAsync();
+        // await newRecording.startAsync();
+        setScreenState("recording");
         console.log("Recording started");
       }
     } catch (error) {
@@ -53,18 +139,38 @@ export default function Screen() {
     }
   };
 
-  const stopRecording = async () => {
+  const onStopRecording = async () => {
     const currentRecording = recordingRef.current;
     if (!currentRecording) return;
     await currentRecording.stopAndUnloadAsync();
+    setScreenState("uploading");
     console.log("Recording stopped");
-    const uri = currentRecording.getURI();
-    console.log("Recording URI:", uri);
+    // const uri = currentRecording.getURI();
+    // console.log("Recording URI:", uri);
+    setTimeout(() => setScreenState("done"), 2000);
   };
 
-  const handleRecording = () => {
-    // Implement recording logic here
+  const onDone = () => {
+    router.push("/(tabs)/record/two");
   };
+
+  let content;
+  switch (screenState) {
+    case "initial":
+      content = <InitialScreenState onStartRecording={onStartRecording} />;
+      break;
+    case "recording":
+      content = (
+        <RecordingState onStopRecording={onStopRecording} timer={timer} />
+      );
+      break;
+    case "uploading":
+      content = <UploadingState timer={timer} />;
+      break;
+    case "done":
+      content = <DoneState onDone={onDone} />;
+      break;
+  }
 
   return (
     <Page
@@ -99,18 +205,7 @@ export default function Screen() {
         }}
       />
       <View style={styles.container}>
-        <View style={styles.bodyContainer}>
-          <Text style={styles.bodyText}>Hello! How are you?</Text>
-          <TouchableOpacity
-            onPress={handleRecording}
-            style={styles.recordButton}
-          >
-            <Feather name="mic" size={24} color="black" />
-          </TouchableOpacity>
-          <Text style={styles.instructions}>
-            Press the audio icon to start recording
-          </Text>
-        </View>
+        {content}
         <View style={styles.progressTextContainer}>
           <Text style={styles.progressText}>1/</Text>
           <Text style={styles.finalProgressText}>25</Text>
@@ -137,7 +232,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    height: "90%",
+    height: "92%",
   },
   bodyText: {
     fontSize: 24,
@@ -148,16 +243,32 @@ const styles = StyleSheet.create({
   recordButton: {
     justifyContent: "center",
     alignItems: "center",
-    marginVertical: 30,
+    marginVertical: 40,
     width: 100,
     height: 100,
     borderRadius: 50,
     backgroundColor: "#F0E5E5",
   },
+  recording: {
+    backgroundColor: Colors.tint,
+  },
+  timer: {
+    fontSize: 30,
+    fontWeight: "500",
+    color: Colors.text,
+  },
   instructions: {
     fontSize: 16,
-    marginTop: 30,
+    marginTop: 50,
     color: Colors.secondaryText,
+    textAlign: "center",
+    width: "60%",
+  },
+  boldInstructions: {
+    fontSize: 16,
+    marginTop: 50,
+    fontWeight: "bold",
+    color: Colors.text,
     textAlign: "center",
   },
   progressTextContainer: {
@@ -170,10 +281,12 @@ const styles = StyleSheet.create({
   },
   progressText: {
     fontSize: 18,
+    fontWeight: "500",
     color: Colors.tint,
   },
   finalProgressText: {
     fontSize: 18,
+    fontWeight: "500",
     color: Colors.secondaryText,
   },
 });
