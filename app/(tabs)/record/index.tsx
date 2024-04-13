@@ -1,9 +1,10 @@
 import Page from "@/components/Page";
 import Colors from "@/constants/Colors";
+import { formatDuration } from "@/lib/utils";
 import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
 import { Audio } from "expo-av";
 import { Stack, useRouter } from "expo-router";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 const InitialScreenState: React.FC<{
@@ -22,25 +23,27 @@ const InitialScreenState: React.FC<{
 
 const RecordingState: React.FC<{
   onStopRecording: () => void;
-  timer: number;
-}> = ({ onStopRecording, timer }) => (
-  <View style={styles.bodyContainer}>
-    <Text style={[styles.bodyText, { color: Colors.tint }]}>
-      Hello! How are you?
-    </Text>
-    <TouchableOpacity
-      onPress={onStopRecording}
-      style={[styles.recordButton, styles.recording]}
-    >
-      <Feather name="mic" size={40} color="white" />
-    </TouchableOpacity>
-    <Text style={[styles.timer, { color: Colors.tint }]}>{timer}</Text>
-    <Text style={styles.boldInstructions}>Recording started...</Text>
-  </View>
-);
+  timer: string;
+}> = ({ onStopRecording, timer }) => {
+  return (
+    <View style={styles.bodyContainer}>
+      <Text style={[styles.bodyText, { color: Colors.tint }]}>
+        Hello! How are you?
+      </Text>
+      <TouchableOpacity
+        onPress={onStopRecording}
+        style={[styles.recordButton, styles.recording]}
+      >
+        <Feather name="mic" size={40} color="white" />
+      </TouchableOpacity>
+      <Text style={[styles.timer, { color: Colors.tint }]}>{timer}</Text>
+      <Text style={styles.boldInstructions}>Recording started...</Text>
+    </View>
+  );
+};
 
 // TODO: Edit the 2 components below
-const UploadingState: React.FC<{ timer: number }> = ({ timer }) => (
+const UploadingState: React.FC<{ timer: string }> = ({ timer }) => (
   <View style={styles.bodyContainer}>
     <Text style={styles.bodyText}>Hello! How are you?</Text>
     <TouchableOpacity
@@ -92,13 +95,12 @@ export default function Screen() {
   const [screenState, setScreenState] = useState<
     "initial" | "recording" | "uploading" | "done"
   >("initial");
-  const [timer, setTimer] = useState<number>(0);
+  const [timer, setTimer] = useState<string>("00:00");
 
   const [completed, setCompleted] = useState(false);
   const recordingRef = useRef<Audio.Recording | null>(null);
 
   const [recording, setRecording] = useState<Audio.Recording | null>(null);
-  const [metering, setMetering] = useState(0);
   const [status, setStatus] = useState<Audio.RecordingStatus | null>(null);
   const [meter, setMeter] = useState(0);
 
@@ -134,8 +136,9 @@ export default function Screen() {
   const onRecordingStatusUpdate = async (newStatus: Audio.RecordingStatus) => {
     setStatus(newStatus);
     console.log("Recording status:", newStatus);
-    if (newStatus.isRecording && newStatus.metering) {
-      setMetering(newStatus.metering);
+    if (newStatus.canRecord && newStatus.durationMillis != null) {
+      const newFormattedTime = formatDuration(newStatus.durationMillis);
+      setTimer(newFormattedTime); // Update the formatted time
     }
   };
 
