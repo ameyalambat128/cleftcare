@@ -4,7 +4,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { useFonts } from "expo-font";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Stack, useRouter } from "expo-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { TouchableOpacity, View } from "react-native";
 import Colors from "@/constants/Colors";
@@ -15,13 +15,14 @@ export {
 } from "expo-router";
 
 export const unstable_settings = {
-  initialRouteName: "(tabs)",
+  initialRouteName: "sign-in",
 };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const [isFirstLaunch, setIsFirstLaunch] = useState(true);
   const [loaded, error] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
     ...FontAwesome.font,
@@ -42,10 +43,12 @@ export default function RootLayout() {
     return null;
   }
 
-  return <RootLayoutNav />;
+  return (
+    <RootLayoutNav initialRouteName={isFirstLaunch ? "login" : "(tabs)"} />
+  );
 }
 
-function RootLayoutNav() {
+function RootLayoutNav({ initialRouteName }: { initialRouteName: string }) {
   const router = useRouter();
 
   return (
@@ -55,7 +58,9 @@ function RootLayoutNav() {
           screenOptions={{
             contentStyle: { backgroundColor: Colors.background },
           }}
+          initialRouteName={initialRouteName}
         >
+          <Stack.Screen name="login" options={{ headerShown: false }} />
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen
             name="(modals)/help-center"
