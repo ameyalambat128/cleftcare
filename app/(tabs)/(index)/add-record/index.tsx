@@ -316,7 +316,7 @@ export default function Screen() {
               onPress={() => setIsHearingPickerVisible(!isHearingPickerVisible)}
             >
               <Feather
-                name="users"
+                name="smile"
                 size={20}
                 color={getIconColor(hearingStatus ? "hearingStatus" : "")}
               />
