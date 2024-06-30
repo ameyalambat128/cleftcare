@@ -7,7 +7,7 @@ import { Stack, useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-const prompt = "This is the second recording prompt";
+const prompt = "This is the third recording prompt";
 
 export const InitialScreenState: React.FC<{
   onStartRecording: () => void;
@@ -198,9 +198,8 @@ export default function Screen() {
             <View>
               <TouchableOpacity
                 onPress={() => {
-                  router.push("/record/three");
+                  router.push("/record/two");
                 }}
-                disabled={!completed}
               >
                 <Text
                   style={[

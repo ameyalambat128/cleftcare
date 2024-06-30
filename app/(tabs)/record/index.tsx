@@ -7,11 +7,13 @@ import { Stack, useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-const InitialScreenState: React.FC<{
+const prompt = "This is the first recording prompt";
+
+export const InitialScreenState: React.FC<{
   onStartRecording: () => void;
 }> = ({ onStartRecording }) => (
   <View style={styles.bodyContainer}>
-    <Text style={styles.bodyText}>Hello! How are you?</Text>
+    <Text style={styles.bodyText}>{prompt}</Text>
     <TouchableOpacity onPress={onStartRecording} style={styles.recordButton}>
       <Feather name="mic" size={40} color="black" />
     </TouchableOpacity>
@@ -21,15 +23,13 @@ const InitialScreenState: React.FC<{
   </View>
 );
 
-const RecordingState: React.FC<{
+export const RecordingState: React.FC<{
   onStopRecording: () => void;
   timer: string;
 }> = ({ onStopRecording, timer }) => {
   return (
     <View style={styles.bodyContainer}>
-      <Text style={[styles.bodyText, { color: Colors.tint }]}>
-        Hello! How are you?
-      </Text>
+      <Text style={[styles.bodyText, { color: Colors.tint }]}>{prompt}</Text>
       <TouchableOpacity
         onPress={onStopRecording}
         style={[styles.recordButton, styles.recording]}
@@ -43,9 +43,9 @@ const RecordingState: React.FC<{
 };
 
 // TODO: Edit the 2 components below
-const UploadingState: React.FC<{ timer: string }> = ({ timer }) => (
+export const UploadingState: React.FC<{ timer: string }> = ({ timer }) => (
   <View style={styles.bodyContainer}>
-    <Text style={styles.bodyText}>Hello! How are you?</Text>
+    <Text style={styles.bodyText}>{prompt}</Text>
     <TouchableOpacity
       onPress={() => console.log("Uploading...")}
       style={[styles.recordButton]}
@@ -57,37 +57,46 @@ const UploadingState: React.FC<{ timer: string }> = ({ timer }) => (
   </View>
 );
 
-const DoneState: React.FC<{ onDone: () => void }> = ({ onDone }) => (
-  <View style={styles.bodyContainer}>
-    <Text style={styles.bodyText}>Hello! How are you?</Text>
-    <TouchableOpacity
-      onPress={() => console.log("Uploading...")}
-      style={[styles.recordButton]}
-    >
-      <Feather name="mic" size={40} color="black" />
-    </TouchableOpacity>
-    <View
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 8,
-        marginTop: 50,
-      }}
-    >
-      <AntDesign name="checkcircle" size={20} color={Colors.tint} />
-      <Text
+export const DoneState: React.FC<{
+  onDone: () => void;
+  onStartRecording: () => void;
+}> = ({ onDone, onStartRecording }) => {
+  useEffect(() => {
+    onDone();
+  }, []);
+  return (
+    <View style={styles.bodyContainer}>
+      <Text style={styles.bodyText}>{prompt}</Text>
+      <TouchableOpacity
+        onPress={onStartRecording}
+        style={[styles.recordButton]}
+      >
+        <Feather name="mic" size={40} color="black" />
+      </TouchableOpacity>
+      <View
         style={{
-          fontSize: 16,
-          fontWeight: "bold",
-          color: Colors.text,
-          textAlign: "center",
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 8,
+          marginTop: 50,
         }}
       >
-        Done
-      </Text>
+        <AntDesign name="checkcircle" size={20} color={Colors.tint} />
+        <Text
+          style={{
+            fontSize: 16,
+            fontWeight: "bold",
+            color: Colors.text,
+            textAlign: "center",
+          }}
+        >
+          Done
+        </Text>
+      </View>
+      <Text>To Re-Record press the mic button.</Text>
     </View>
-  </View>
-);
+  );
+};
 
 export default function Screen() {
   const router = useRouter();
@@ -96,10 +105,10 @@ export default function Screen() {
     "initial" | "recording" | "uploading" | "done"
   >("initial");
   const [timer, setTimer] = useState<string>("00:00");
-
   const [completed, setCompleted] = useState(false);
-  const recordingRef = useRef<Audio.Recording | null>(null);
+  const [recordingCount, setRecordingCount] = useState<number>(0);
 
+  const recordingRef = useRef<Audio.Recording | null>(null);
   const [recording, setRecording] = useState<Audio.Recording | null>(null);
   const [status, setStatus] = useState<Audio.RecordingStatus | null>(null);
   const [meter, setMeter] = useState(0);
@@ -154,7 +163,7 @@ export default function Screen() {
   };
 
   const onDone = () => {
-    router.push("/(tabs)/record/two");
+    setRecordingCount((prevCount) => prevCount + 1);
   };
 
   let content;
@@ -171,7 +180,10 @@ export default function Screen() {
       content = <UploadingState timer={timer} />;
       break;
     case "done":
-      content = <DoneState onDone={onDone} />;
+      // Choose the best file running each at once and compare the scores
+      content = (
+        <DoneState onDone={onDone} onStartRecording={onStartRecording} />
+      );
       break;
   }
 
@@ -213,6 +225,11 @@ export default function Screen() {
           <Text style={styles.progressText}>1/</Text>
           <Text style={styles.finalProgressText}>25</Text>
         </View>
+        <View style={styles.recordingCountContainer}>
+          <Text style={styles.recordingCountText}>
+            Recordings: {recordingCount}
+          </Text>
+        </View>
       </View>
     </Page>
   );
@@ -235,7 +252,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    height: "92%",
+    height: "90%",
   },
   bodyText: {
     fontSize: 24,
@@ -291,5 +308,19 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "500",
     color: Colors.secondaryText,
+  },
+  recordingCountContainer: {
+    position: "absolute",
+    bottom: 0,
+    right: 20,
+    backgroundColor: Colors.tint,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 5,
+  },
+  recordingCountText: {
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "white",
   },
 });
