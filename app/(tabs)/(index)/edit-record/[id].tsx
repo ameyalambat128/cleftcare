@@ -496,15 +496,6 @@ export default function Screen() {
               Take/Choose Photo
             </Text>
           </TouchableOpacity>
-
-          {/* Submit Button */}
-          <PrimaryButton
-            style={{ marginTop: 20 }}
-            type="large"
-            onPress={() => router.push("/add-record/parent-consent")}
-          >
-            Next
-          </PrimaryButton>
         </ScrollView>
       </KeyboardAvoidingView>
     </Page>
