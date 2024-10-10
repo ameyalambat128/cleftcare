@@ -1,13 +1,5 @@
 import { useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  Platform,
-  ScrollView,
-  KeyboardAvoidingView,
-  View,
-  TextInput,
-} from "react-native";
+import { StyleSheet, Text, View, TextInput } from "react-native";
 import { Feather } from "@expo/vector-icons";
 
 import Page from "@/components/Page";
@@ -18,6 +10,8 @@ import { useRouter } from "expo-router";
 export default function Screen() {
   const router = useRouter();
   const [name, setName] = useState("");
+
+  const handleNext = () => router.push("/record/");
 
   const getInputStyle = (inputValue: string) => ({
     borderColor: inputValue ? Colors.tint : "#E5E7EB",
@@ -58,7 +52,7 @@ export default function Screen() {
         <PrimaryButton
           style={{ marginTop: 20 }}
           type="large"
-          onPress={() => router.push("/add-record/add-signature")}
+          onPress={handleNext}
         >
           Add Signature
         </PrimaryButton>

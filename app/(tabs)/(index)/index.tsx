@@ -12,7 +12,8 @@ import { Feather } from "@expo/vector-icons";
 import Page from "@/components/Page";
 import RecordItem from "@/components/RecordItem";
 import Colors from "@/constants/Colors";
-import { ChildRecord, records } from "@/constants/SampleData";
+import { SampleData } from "@/constants/SampleData";
+import { UserInfo } from "@/lib/store";
 
 export default function Screen() {
   const router = useRouter();
@@ -34,7 +35,7 @@ export default function Screen() {
   };
 
   const getRecordCount = () => {
-    return records.length;
+    return SampleData.length;
   };
 
   return (
@@ -84,16 +85,16 @@ export default function Screen() {
           ) : (
             <View style={styles.recordListContainer}>
               <FlatList
-                data={records}
-                renderItem={({ item }: { item: ChildRecord }) => (
+                data={SampleData}
+                renderItem={({ item }: { item: UserInfo }) => (
                   <RecordItem
-                    id={item.id}
+                    userId={item.userId}
                     name={item.name}
-                    recordId={item.recordId}
-                    onPress={() => handleEditRecordPress(item.recordId)}
+                    birthDate={item.birthDate}
+                    onPress={() => handleEditRecordPress(item.userId)}
                   />
                 )}
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item) => item.userId}
                 style={{ width: "100%" }}
               />
             </View>

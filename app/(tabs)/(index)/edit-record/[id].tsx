@@ -21,20 +21,19 @@ import * as ImagePicker from "expo-image-picker";
 
 import Page from "@/components/Page";
 import Colors from "@/constants/Colors";
-import PrimaryButton from "@/components/PrimaryButton";
-import { ChildRecord, records } from "@/constants/SampleData";
+import { ChildRecord, SampleData } from "@/constants/SampleData";
 
 export default function Screen() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
 
   const getUserName = (recordId: string) => {
-    const record = records.find((record) => record.recordId === recordId);
+    const record = SampleData.find((record) => record.recordId === recordId);
     return record ? record.name : "";
   };
 
   const getUserData = (recordId: string): ChildRecord => {
-    const record = records.find((record) => record.recordId === recordId);
+    const record = SampleData.find((record) => record.recordId === recordId);
     return (
       record ?? {
         id: "",

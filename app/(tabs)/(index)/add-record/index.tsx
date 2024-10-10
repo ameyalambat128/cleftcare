@@ -17,13 +17,18 @@ import DateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
 import * as ImagePicker from "expo-image-picker";
+import { randomUUID } from "expo-crypto";
+
 import Page from "@/components/Page";
 import Colors from "@/constants/Colors";
 import PrimaryButton from "@/components/PrimaryButton";
+import { useUserStore } from "@/lib/store";
 import { useRouter } from "expo-router";
 
 export default function Screen() {
   const router = useRouter();
+  const { setUser } = useUserStore();
+  const userId = randomUUID();
 
   const [name, setName] = useState("");
   const [birthDate, setBirthDate] = useState<Date | null>(null);
@@ -40,6 +45,21 @@ export default function Screen() {
   const [address, setAddress] = useState<string>("");
   const [contactNumber, setContactNumber] = useState<string>("");
   const [photo, setPhoto] = useState<string>(""); // TODO: change photo to Image type if needed
+
+  const handleNext = () => {
+    setUser({
+      userId,
+      name,
+      birthDate,
+      gender,
+      hearingStatus,
+      address,
+      contactNumber,
+      photo,
+    });
+
+    router.push("/add-record/parent-consent");
+  };
 
   const getInputStyle = (inputValue: string) => ({
     borderColor: inputValue ? Colors.tint : "#E5E7EB",
@@ -471,7 +491,7 @@ export default function Screen() {
           <PrimaryButton
             style={{ marginTop: 20 }}
             type="large"
-            onPress={() => router.push("/add-record/parent-consent")}
+            onPress={handleNext}
           >
             Next
           </PrimaryButton>

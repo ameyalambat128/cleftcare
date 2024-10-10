@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { TouchableOpacity, View } from "react-native";
 import Colors from "@/constants/Colors";
+import "react-native-get-random-values";
 
 export {
   // Catch any errors thrown by the Layout component.

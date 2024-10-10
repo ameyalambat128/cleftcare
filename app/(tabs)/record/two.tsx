@@ -1,11 +1,15 @@
-import Page from "@/components/Page";
-import Colors from "@/constants/Colors";
-import { formatDuration } from "@/lib/utils";
 import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
 import { Audio } from "expo-av";
 import { Stack, useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
+
+import Page from "@/components/Page";
+import Colors from "@/constants/Colors";
+import { useUserStore } from "@/lib/store";
+import { formatDuration } from "@/lib/utils";
+import { s3Client } from "@/lib/aws";
 
 const prompt = "This is the second recording prompt";
 
@@ -57,7 +61,10 @@ export const UploadingState: React.FC<{ timer: string }> = ({ timer }) => (
   </View>
 );
 
-export const DoneState: React.FC<{ onDone: () => void }> = ({ onDone }) => {
+export const DoneState: React.FC<{
+  onDone: () => void;
+  onStartRecording: () => void;
+}> = ({ onDone, onStartRecording }) => {
   useEffect(() => {
     onDone();
   }, []);
@@ -65,8 +72,7 @@ export const DoneState: React.FC<{ onDone: () => void }> = ({ onDone }) => {
     <View style={styles.bodyContainer}>
       <Text style={styles.bodyText}>{prompt}</Text>
       <TouchableOpacity
-        onPress={() => console.log("Uploading...")}
-        disabled
+        onPress={onStartRecording}
         style={[styles.recordButton]}
       >
         <Feather name="mic" size={40} color="black" />
@@ -91,6 +97,13 @@ export const DoneState: React.FC<{ onDone: () => void }> = ({ onDone }) => {
           Done
         </Text>
       </View>
+      <Text
+        style={{
+          marginTop: 10,
+        }}
+      >
+        To Re-Record press the mic button.
+      </Text>
     </View>
   );
 };
@@ -98,21 +111,18 @@ export const DoneState: React.FC<{ onDone: () => void }> = ({ onDone }) => {
 export default function Screen() {
   const router = useRouter();
 
+  const recordingRef = useRef<Audio.Recording | null>(null);
   const [screenState, setScreenState] = useState<
     "initial" | "recording" | "uploading" | "done"
   >("initial");
   const [timer, setTimer] = useState<string>("00:00");
-
   const [completed, setCompleted] = useState(false);
-  const recordingRef = useRef<Audio.Recording | null>(null);
-
-  const [recording, setRecording] = useState<Audio.Recording | null>(null);
+  const [recordingCount, setRecordingCount] = useState<number>(0);
   const [status, setStatus] = useState<Audio.RecordingStatus | null>(null);
   const [meter, setMeter] = useState(0);
 
   const onStartRecording = async () => {
     try {
-      if (recordingRef.current) recordingRef.current.stopAndUnloadAsync();
       const permission = await Audio.requestPermissionsAsync();
       if (permission.status === "granted") {
         await Audio.setAudioModeAsync({
@@ -132,7 +142,7 @@ export default function Screen() {
         recordingRef.current = newRecording;
         // await newRecording.startAsync();
         setScreenState("recording");
-        console.log("Recording started");
+        console.log("Recording started", newRecording);
       }
     } catch (error) {
       console.error("Error starting recording:", error);
@@ -159,9 +169,37 @@ export default function Screen() {
     setTimeout(() => setScreenState("done"), 2000);
   };
 
-  const onDone = () => {
+  const onDone = async () => {
     setCompleted(true);
-    // router.push("/(tabs)/record/two");
+    setRecordingCount((prevCount) => prevCount + 1);
+    // record and store the audio locally and upload also but if internet connection is lost we upload in this in the end.
+    const currentRecording = recordingRef.current;
+    if (!currentRecording) return;
+
+    try {
+      const uri = currentRecording.getURI(); // Get the URI of the recording
+      const fileName = `audio-${new Date().toISOString()}.m4a`;
+
+      // Convert the recording to a Blob or a Buffer before uploading
+      const response = await fetch(uri!);
+      const blob = await response.blob();
+
+      // Create the parameters for the S3 upload
+      const uploadParams = {
+        Bucket: "cleftcare-test", // The name of the bucket
+        Key: fileName, // The name of the file to be uploaded
+        Body: blob, // The audio blob to upload
+        ContentType: "audio/mp4", // Specify the file type
+      };
+
+      // Upload to S3
+      const command = new PutObjectCommand(uploadParams);
+      const data = await s3Client.send(command);
+
+      console.log("Successfully uploaded audio to S3", data);
+    } catch (error) {
+      console.error("Error uploading audio to S3:", error);
+    }
   };
 
   let content;
@@ -178,7 +216,10 @@ export default function Screen() {
       content = <UploadingState timer={timer} />;
       break;
     case "done":
-      content = <DoneState onDone={onDone} />;
+      // Choose the best file running each at once and compare the scores
+      content = (
+        <DoneState onDone={onDone} onStartRecording={onStartRecording} />
+      );
       break;
   }
 
@@ -218,8 +259,13 @@ export default function Screen() {
       <View style={styles.container}>
         {content}
         <View style={styles.progressTextContainer}>
-          <Text style={styles.progressText}>2/</Text>
+          <Text style={styles.progressText}>1/</Text>
           <Text style={styles.finalProgressText}>25</Text>
+        </View>
+        <View style={styles.recordingCountContainer}>
+          <Text style={styles.recordingCountText}>
+            Recordings: {recordingCount}
+          </Text>
         </View>
       </View>
     </Page>
@@ -243,7 +289,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    height: "92%",
+    height: "90%",
   },
   bodyText: {
     fontSize: 24,
@@ -299,5 +345,19 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "500",
     color: Colors.secondaryText,
+  },
+  recordingCountContainer: {
+    position: "absolute",
+    bottom: 0,
+    right: 20,
+    backgroundColor: Colors.tint,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 5,
+  },
+  recordingCountText: {
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "white",
   },
 });

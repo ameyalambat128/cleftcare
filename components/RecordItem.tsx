@@ -3,17 +3,31 @@ import { Feather } from "@expo/vector-icons";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 type RecordItemProps = {
-  id: string;
+  userId: string;
   name: string;
-  recordId: string;
+  birthDate: Date | null;
   onPress: () => void;
 };
 
 export default function RecordItem({
+  userId,
   name,
-  recordId,
+  birthDate,
   onPress,
 }: RecordItemProps) {
+  const formatBirthDate = (date: Date | null): string => {
+    if (!date) return "Not available";
+
+    const options: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    };
+
+    return date.toLocaleDateString(undefined, options);
+  };
+
+  const formattedBirthDate = formatBirthDate(birthDate);
   return (
     <Pressable
       onPress={onPress}
@@ -30,7 +44,9 @@ export default function RecordItem({
             >
               {name}
             </Text>
-            <Text style={styles.recordId}>Record id: {recordId}</Text>
+            <Text style={styles.recordId}>
+              Birth Date: {formattedBirthDate}
+            </Text>
           </View>
           <Feather
             name="chevron-right"

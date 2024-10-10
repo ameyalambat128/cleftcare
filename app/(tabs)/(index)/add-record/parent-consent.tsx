@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -6,15 +5,25 @@ import {
   ScrollView,
   KeyboardAvoidingView,
 } from "react-native";
-import { Feather } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 
 import Page from "@/components/Page";
 import Colors from "@/constants/Colors";
 import PrimaryButton from "@/components/PrimaryButton";
-import { useRouter } from "expo-router";
+import { useUserStore } from "@/lib/store";
 
 export default function Screen() {
   const router = useRouter();
+  const { getUser } = useUserStore();
+  const user = getUser();
+  console.log("User data:", user);
+  if (user) {
+    Object.entries(user).forEach(([key, value]) => {
+      console.log(`${key}:`, value);
+    });
+  } else {
+    console.log("No user data available");
+  }
 
   return (
     <Page
