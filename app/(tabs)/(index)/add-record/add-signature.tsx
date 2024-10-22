@@ -28,7 +28,8 @@ export default function Screen() {
     >
       <View style={styles.container}>
         <Text style={styles.headerText}>
-          Please provide additional details and then add your signature.
+          Please provide additional details and then add your full name as
+          signature.
         </Text>
 
         <View style={[styles.inputField, getInputStyle(name)]}>
@@ -39,14 +40,14 @@ export default function Screen() {
             style={styles.icon}
           />
           <TextInput
-            placeholder="Enter your name"
+            placeholder="Enter your full name"
             placeholderTextColor={Colors.secondaryText}
             value={name}
             onChangeText={setName}
           />
         </View>
 
-        <Text style={styles.formText}>Signature Box here</Text>
+        {/* <Text style={styles.formText}>Signature Box here</Text> */}
 
         {/* Submit Button */}
         <PrimaryButton

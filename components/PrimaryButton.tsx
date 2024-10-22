@@ -2,7 +2,7 @@ import Colors from "@/constants/Colors";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 
 type ButtonProps = TouchableOpacity["props"] & {
-  type: "large" | "small";
+  type: "large" | "medium" | "small";
 };
 
 export default function PrimaryButton({
@@ -14,7 +14,11 @@ export default function PrimaryButton({
   return (
     <TouchableOpacity
       style={[
-        type === "large" ? styles.buttonLarge : styles.buttonSmall,
+        type === "large"
+          ? styles.buttonLarge
+          : type === "medium"
+          ? styles.buttonMedium
+          : styles.buttonSmall,
         style,
       ]}
       {...otherProps}
@@ -28,6 +32,15 @@ const styles = StyleSheet.create({
   buttonLarge: {
     backgroundColor: Colors.tint,
     width: "100%",
+    borderRadius: 32,
+    paddingVertical: 20,
+    paddingHorizontal: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  buttonMedium: {
+    backgroundColor: Colors.tint,
+    width: "70%",
     borderRadius: 32,
     paddingVertical: 20,
     paddingHorizontal: 10,

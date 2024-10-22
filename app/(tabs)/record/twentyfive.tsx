@@ -2,7 +2,7 @@ import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
 import { Audio } from "expo-av";
 import { Stack, useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import * as FileSystem from "expo-file-system";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { Buffer } from "buffer";
@@ -12,9 +12,10 @@ import Colors from "@/constants/Colors";
 import { useUserStore } from "@/lib/store";
 import { formatDuration } from "@/lib/utils";
 import { s3Client } from "@/lib/aws";
+import PrimaryButton from "@/components/PrimaryButton";
 
 const prompt: string = "ರೆಕಾರ್ಡಿಂಗ್ ಪ್ರಾರಂಭಿಸಲು ಆಡಿಯೊ ಐಕಾನ್ ಅನ್ನು ಒತ್ತಿರಿ";
-const promptNumber: number = 2;
+const promptNumber: number = 25;
 
 export const InitialScreenState: React.FC<{
   onStartRecording: () => void;
@@ -133,6 +134,16 @@ export default function Screen() {
   const [recordingCount, setRecordingCount] = useState<number>(0);
   const [status, setStatus] = useState<Audio.RecordingStatus | null>(null);
   const [meter, setMeter] = useState(0);
+  const [showModal, setShowModal] = useState<boolean>(false);
+
+  const handleNext = () => {
+    setShowModal(true);
+  };
+
+  const handleModalClose = () => {
+    setShowModal(false); // Close the modal
+    router.push("/"); // Navigate to home after closing
+  };
 
   const onStartRecording = async () => {
     try {
@@ -283,12 +294,7 @@ export default function Screen() {
           ),
           headerRight: () => (
             <View>
-              <TouchableOpacity
-                onPress={() => {
-                  router.push("/record/twentyfive");
-                }}
-                disabled={!completed}
-              >
+              <TouchableOpacity onPress={handleNext} disabled={!completed}>
                 <Text
                   style={[
                     styles.headerRightText,
@@ -313,6 +319,34 @@ export default function Screen() {
             Recordings: {recordingCount}
           </Text>
         </View>
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={showModal}
+          onRequestClose={() => setShowModal(false)}
+        >
+          <TouchableOpacity
+            style={styles.modalContainer}
+            activeOpacity={1}
+            onPress={() => setShowModal(false)}
+          >
+            <View style={styles.modalContent}>
+              <AntDesign name="checkcircle" size={50} color={Colors.tint} />
+              <Text style={styles.modalTitle}>All audio is saved!</Text>
+              <Text style={styles.modalSubtitle}>
+                Go to home to see the details of children records
+              </Text>
+              <PrimaryButton
+                style={{ marginTop: 20 }}
+                type="medium"
+                onPress={handleModalClose}
+              >
+                Back to Home
+              </PrimaryButton>
+            </View>
+          </TouchableOpacity>
+        </Modal>
       </View>
     </Page>
   );
@@ -405,5 +439,32 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "bold",
     color: "white",
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "space-around",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.5)", // Semi-transparent background
+  },
+  modalContent: {
+    width: "90%",
+    height: "45%", // Increase height to make it longer
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 40, // Add more padding for spacing
+    alignItems: "center",
+    justifyContent: "center", // Center content vertically
+  },
+  modalTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginVertical: 10,
+    textAlign: "center",
+  },
+  modalSubtitle: {
+    fontSize: 16,
+    color: Colors.secondaryText,
+    textAlign: "center",
+    marginBottom: 20,
   },
 });

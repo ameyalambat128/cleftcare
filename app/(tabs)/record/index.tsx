@@ -3,7 +3,9 @@ import { Audio } from "expo-av";
 import { Stack, useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import * as FileSystem from "expo-file-system";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { Buffer } from "buffer";
 
 import Page from "@/components/Page";
 import Colors from "@/constants/Colors";
@@ -11,7 +13,8 @@ import { useUserStore } from "@/lib/store";
 import { formatDuration } from "@/lib/utils";
 import { s3Client } from "@/lib/aws";
 
-const prompt = "This is the first recording prompt";
+const prompt: string = "ರೆಕಾರ್ಡಿಂಗ್ ಪ್ರಾರಂಭಿಸಲು ಆಡಿಯೊ ಐಕಾನ್ ಅನ್ನು ಒತ್ತಿರಿ";
+const promptNumber: number = 1;
 
 export const InitialScreenState: React.FC<{
   onStartRecording: () => void;
@@ -182,33 +185,66 @@ export default function Screen() {
   const onDone = async () => {
     setCompleted(true);
     setRecordingCount((prevCount) => prevCount + 1);
-    // record and store the audio locally and upload also but if internet connection is lost we upload in this in the end.
+
     const currentRecording = recordingRef.current;
     if (!currentRecording) return;
 
     try {
-      const uri = currentRecording.getURI(); // Get the URI of the recording
-      const fileName = `audio-${new Date().toISOString()}.m4a`;
+      const uri = currentRecording.getURI();
+      const fileName = `${
+        user?.userId
+      }-${new Date().toISOString()}-${promptNumber}.m4a`;
+      const localFileUri = `${FileSystem.documentDirectory}${fileName}`; // Path to store the recording locally
 
-      // Convert the recording to a Blob or a Buffer before uploading
-      const response = await fetch(uri!);
-      const blob = await response.blob();
+      // Copy the recording to local storage
+      await FileSystem.copyAsync({
+        from: uri!,
+        to: localFileUri,
+      });
+      console.log("File saved locally at:", localFileUri);
+
+      await uploadToS3(localFileUri, fileName);
+    } catch (error) {
+      console.error("Error during recording processing:", error);
+    }
+  };
+
+  // Helper function to upload file to S3
+  const uploadToS3 = async (localFileUri: string, fileName: string) => {
+    try {
+      // Read the file from the local storage
+      const fileInfo = await FileSystem.getInfoAsync(localFileUri);
+      if (!fileInfo.exists) {
+        throw new Error("File does not exist");
+      }
+
+      const fileBlob = await FileSystem.readAsStringAsync(localFileUri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+
+      // Convert the Base64 string to a Blob or ArrayBuffer before uploading to S3
+      const buffer = Buffer.from(fileBlob, "base64");
 
       // Create the parameters for the S3 upload
       const uploadParams = {
         Bucket: "cleftcare-test", // The name of the bucket
         Key: fileName, // The name of the file to be uploaded
-        Body: blob, // The audio blob to upload
-        ContentType: "audio/mp4", // Specify the file type
+        Body: buffer, // Upload the file content
+        ContentType: "audio/mp4", // M4A files use this MIME type
       };
 
       // Upload to S3
       const command = new PutObjectCommand(uploadParams);
       const data = await s3Client.send(command);
 
-      console.log("Successfully uploaded audio to S3", data);
+      console.log("Successfully uploaded audio to S3:", data);
+
+      // You can now delete the file locally if you no longer need it
+      await FileSystem.deleteAsync(localFileUri);
+      console.log("File deleted from local storage after successful upload");
     } catch (error) {
-      console.error("Error uploading audio to S3:", error);
+      console.error("Error uploading to S3:", error);
+      // Handle the case where the file should remain locally for future upload retries
     }
   };
 
@@ -269,7 +305,7 @@ export default function Screen() {
       <View style={styles.container}>
         {content}
         <View style={styles.progressTextContainer}>
-          <Text style={styles.progressText}>1/</Text>
+          <Text style={styles.progressText}>{promptNumber}/</Text>
           <Text style={styles.finalProgressText}>25</Text>
         </View>
         <View style={styles.recordingCountContainer}>
