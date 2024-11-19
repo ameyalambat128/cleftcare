@@ -116,6 +116,7 @@ export default function Screen() {
                   handleInputChange(text, setEmail, setEmailError)
                 }
                 style={styles.inputText}
+                autoCapitalize="none"
               />
             </View>
             {emailError ? (

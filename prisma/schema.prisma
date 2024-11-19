@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://cleftcare_user:cleftcare_password@localhost:5432/cleftcare_db"
+}
+
+model User {
+  id                String           @id @default(uuid())
+  name              String
+  birthDate         DateTime?
+  gender            Gender?
+  hearingStatus     HearingStatus?
+  address           String
+  contactNumber     String
+  photo             String
+  communityWorkerId String?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  communityWorker   CommunityWorker? @relation(fields: [communityWorkerId], references: [id])
+  audioFiles        UserAudioFile[]
+}
+
+model CommunityWorker {
+  id        String   @id @default(uuid())
+  name      String
+  phone     String
+  region    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  users     User[]
+}
+
+model UserAudioFile {
+  id        String   @id @default(uuid())
+  userId    String
+  prompt    String
+  fileUrl   String
+  duration  Int?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+enum Gender {
+  Male
+  Female
+  Other
+}
+
+enum HearingStatus {
+  Yes
+  No
+}

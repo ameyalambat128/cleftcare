@@ -44,14 +44,11 @@ export default function RootLayout() {
     return null;
   }
 
-  return (
-    <RootLayoutNav initialRouteName={isFirstLaunch ? "login" : "(tabs)"} />
-  );
+  return <RootLayoutNav initialRouteName={isFirstLaunch ? "login" : "login"} />;
 }
 
 function RootLayoutNav({ initialRouteName }: { initialRouteName: string }) {
   const router = useRouter();
-
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
