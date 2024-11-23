@@ -16,7 +16,7 @@ export {
 } from "expo-router";
 
 export const unstable_settings = {
-  initialRouteName: "sign-in",
+  initialRouteName: "login",
 };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -44,14 +44,14 @@ export default function RootLayout() {
     return null;
   }
 
-  return (
-    <RootLayoutNav initialRouteName={isFirstLaunch ? "login" : "(tabs)"} />
-  );
+  return <RootLayoutNav isFirstLaunch={isFirstLaunch} />;
 }
 
-function RootLayoutNav({ initialRouteName }: { initialRouteName: string }) {
+function RootLayoutNav({ isFirstLaunch }: { isFirstLaunch: boolean }) {
   const router = useRouter();
-
+  // useEffect(() => {
+  //   router.replace("/login");
+  // }, []);
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
@@ -59,7 +59,6 @@ function RootLayoutNav({ initialRouteName }: { initialRouteName: string }) {
           screenOptions={{
             contentStyle: { backgroundColor: Colors.background },
           }}
-          initialRouteName={initialRouteName}
         >
           <Stack.Screen name="login" options={{ headerShown: false }} />
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
