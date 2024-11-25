@@ -141,7 +141,8 @@ export default function Screen() {
   };
 
   const handleModalClose = () => {
-    setShowModal(false); // Close the modal
+    // OHM Score prediction here
+    setShowModal(false);
     router.push("/"); // Navigate to home after closing
   };
 
