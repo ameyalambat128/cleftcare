@@ -138,7 +138,12 @@ export default function Screen() {
 
   const handleNext = () => {
     console.log("CHECKTHIS:", latestUploadFileName);
-    const ohmScore = predictOhmRating(user?.userId!, latestUploadFileName);
+    const ohmScore = predictOhmRating(
+      user?.userId!,
+      user?.name!,
+      promptNumber,
+      latestUploadFileName
+    );
     router.push("/record/twentyfive");
   };
 
