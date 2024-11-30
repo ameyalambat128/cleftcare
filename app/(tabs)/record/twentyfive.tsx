@@ -141,7 +141,8 @@ export default function Screen() {
   };
 
   const handleModalClose = () => {
-    setShowModal(false); // Close the modal
+    // OHM Score prediction here
+    setShowModal(false);
     router.push("/"); // Navigate to home after closing
   };
 
@@ -204,7 +205,7 @@ export default function Screen() {
       const uri = currentRecording.getURI();
       const fileName = `${
         user?.userId
-      }-${new Date().toISOString()}-${promptNumber}.m4a`;
+      }-${new Date().toISOString()}-${promptNumber}-${recordingCount + 1}.m4a`;
       const localFileUri = `${FileSystem.documentDirectory}${fileName}`; // Path to store the recording locally
 
       // Copy the recording to local storage
@@ -236,7 +237,6 @@ export default function Screen() {
       // Convert the Base64 string to a Blob or ArrayBuffer before uploading to S3
       const buffer = Buffer.from(fileBlob, "base64");
 
-      // Create the parameters for the S3 upload
       const uploadParams = {
         Bucket: "cleftcare-test", // The name of the bucket
         Key: fileName, // The name of the file to be uploaded
@@ -250,7 +250,7 @@ export default function Screen() {
 
       console.log("Successfully uploaded audio to S3:", data);
 
-      // You can now delete the file locally if you no longer need it
+      // Delete from local storage after successful upload
       await FileSystem.deleteAsync(localFileUri);
       console.log("File deleted from local storage after successful upload");
     } catch (error) {

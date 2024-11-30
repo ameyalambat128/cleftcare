@@ -31,6 +31,15 @@
           <string>com.amprow.cleftCare</string>
         </array>
       </dict>
+<<<<<<< HEAD
+=======
+      <dict>
+        <key>CFBundleURLSchemes</key>
+        <array>
+          <string>exp+cleftcare</string>
+        </array>
+      </dict>
+>>>>>>> test-without-prisma
     </array>
     <key>CFBundleVersion</key>
     <string>1</string>
@@ -52,6 +61,11 @@
     <key>NSUserActivityTypes</key>
     <array>
       <string>$(PRODUCT_BUNDLE_IDENTIFIER).expo.index_route</string>
+<<<<<<< HEAD
+=======
+      <string>$(PRODUCT_BUNDLE_IDENTIFIER).expo.index_route</string>
+      <string>$(PRODUCT_BUNDLE_IDENTIFIER).expo.index_route</string>
+>>>>>>> test-without-prisma
     </array>
     <key>UILaunchStoryboardName</key>
     <string>SplashScreen</string>
