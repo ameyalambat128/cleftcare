@@ -204,10 +204,11 @@ export default function Screen() {
 
     try {
       const uri = currentRecording.getURI();
+      console.log("Recording URI:", uri);
       const fileName = `${
         user?.userId
-      }-${new Date().toISOString()}-${promptNumber}-${recordingCount + 1}.m4a`;
-      const localFileUri = `${FileSystem.documentDirectory}${fileName}`; // Path to store the recording locally
+      }-${new Date().getTime()}-${promptNumber}-${recordingCount + 1}.m4a`;
+      const localFileUri = `${FileSystem.cacheDirectory}Audios/${fileName}`; // Path to store the recording locally
 
       // Copy the recording to local storage
       await FileSystem.copyAsync({
