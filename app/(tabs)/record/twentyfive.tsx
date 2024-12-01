@@ -351,16 +351,16 @@ export default function Screen() {
           >
             <View style={styles.modalContent}>
               <AntDesign name="checkcircle" size={50} color={Colors.tint} />
-              <Text style={styles.modalTitle}>All audio is saved!</Text>
+              <Text style={styles.modalTitle}>{t("audioSaveModal.title")}</Text>
               <Text style={styles.modalSubtitle}>
-                Go to home to see the details of children records
+                {t("audioSaveModal.subtitle")}
               </Text>
               <PrimaryButton
                 style={{ marginTop: 20 }}
                 type="medium"
                 onPress={handleModalClose}
               >
-                Back to Home
+                {t("audioSaveModal.buttonText")}
               </PrimaryButton>
             </View>
           </TouchableOpacity>

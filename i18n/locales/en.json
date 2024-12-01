@@ -46,5 +46,10 @@
     "reRecord": "To Re-Record press the mic button.",
     "nextButton": "Next",
     "recordings": "Recordings"
+  },
+  "audioSaveModal": {
+    "title": "All audio is saved!",
+    "subtitle": "Go to home to see the details of children records",
+    "buttonText": "Back to Home"
   }
 }
