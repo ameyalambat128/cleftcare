@@ -41,7 +41,8 @@
         {
           "photosPermission": "The app accesses your photos."
         }
-      ]
+      ],
+      "expo-localization"
     ],
     "experiments": {
       "typedRoutes": true
