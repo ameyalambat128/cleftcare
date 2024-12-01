@@ -6,6 +6,7 @@ import {
   KeyboardAvoidingView,
 } from "react-native";
 import { useRouter } from "expo-router";
+import { useTranslation } from "react-i18next";
 
 import Page from "@/components/Page";
 import Colors from "@/constants/Colors";
@@ -14,6 +15,8 @@ import { useUserStore } from "@/lib/store";
 
 export default function Screen() {
   const router = useRouter();
+  const { t } = useTranslation();
+
   const { getUser } = useUserStore();
   const user = getUser();
   console.log("User data:", user);
@@ -37,28 +40,11 @@ export default function Screen() {
       >
         <ScrollView style={styles.container}>
           <Text style={styles.headerText}>
-            Please carefully read and review the consent form to ensure the best
-            care for your child.
+            {t("parentConsentScreen.headerText")}
           </Text>
 
           <Text style={styles.formText}>
-            Here we will show the parent consent form details.Here we will show
-            the parent consent form details.Here we will show the parent consent
-            form details.Here we will show the parent consent form details.Here
-            we will show the parent consent form details.Here we will show the
-            parent consent form details.{`\n\n`}
-            Here we will show the parent consent form details.Here we will show
-            the parent consent form details.Here we will show the parent consent
-            form details.Here we will show the parent consent form details.Here
-            we will show the parent consent form details.
-            {`\n\n`}
-            Here we will show the parent consent form details.Here we will show
-            the parent consent form details.Here we will show the parent consent
-            form details.
-            {`\n\n`}
-            Here we will show the parent consent form details.Here we will show
-            the parent consent form details.Here we will show the parent consent
-            form details.
+            {t("parentConsentScreen.formText")}
           </Text>
 
           {/* Submit Button */}
@@ -67,7 +53,7 @@ export default function Screen() {
             type="large"
             onPress={() => router.push("/add-record/add-signature")}
           >
-            Add Signature
+            {t("parentConsentScreen.addSignatureButton")}
           </PrimaryButton>
         </ScrollView>
       </KeyboardAvoidingView>

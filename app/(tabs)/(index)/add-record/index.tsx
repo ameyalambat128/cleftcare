@@ -18,15 +18,17 @@ import DateTimePicker, {
 } from "@react-native-community/datetimepicker";
 import * as ImagePicker from "expo-image-picker";
 import { randomUUID } from "expo-crypto";
+import { useTranslation } from "react-i18next";
+import { useRouter } from "expo-router";
 
 import Page from "@/components/Page";
 import Colors from "@/constants/Colors";
 import PrimaryButton from "@/components/PrimaryButton";
 import { useUserStore } from "@/lib/store";
-import { useRouter } from "expo-router";
 
 export default function Screen() {
   const router = useRouter();
+  const { t } = useTranslation();
   const { setUser } = useUserStore();
   const userId = randomUUID();
 
@@ -135,8 +137,7 @@ export default function Screen() {
       >
         <ScrollView style={styles.container}>
           <Text style={styles.headerText}>
-            Please enter child's information to continue with the audio
-            recording
+            {t("addRecordScreen.headerText")}
           </Text>
 
           {/* Name Input */}
@@ -148,7 +149,7 @@ export default function Screen() {
               style={styles.icon}
             />
             <TextInput
-              placeholder="Enter your name"
+              placeholder={t("addRecordScreen.namePlaceholder")}
               placeholderTextColor={Colors.secondaryText}
               value={name}
               onChangeText={setName}
@@ -179,7 +180,7 @@ export default function Screen() {
               </Text>
             ) : (
               <Text style={{ color: Colors.secondaryText }}>
-                Select Birth Date
+                {t("addRecordScreen.birthDatePlaceholder")}
               </Text>
             )}
           </TouchableOpacity>
@@ -433,7 +434,7 @@ export default function Screen() {
               style={styles.icon}
             />
             <TextInput
-              placeholder="Enter your Address"
+              placeholder={t("addRecordScreen.addressPlaceholder")}
               placeholderTextColor={Colors.secondaryText}
               value={address}
               onChangeText={setAddress}
@@ -450,7 +451,7 @@ export default function Screen() {
               style={styles.icon}
             />
             <TextInput
-              placeholder="Contact number"
+              placeholder={t("addRecordScreen.contactNumberPlaceholder")}
               placeholderTextColor={Colors.secondaryText}
               value={contactNumber}
               onChangeText={setContactNumber}
@@ -493,7 +494,7 @@ export default function Screen() {
             type="large"
             onPress={handleNext}
           >
-            Next
+            {t("addRecordScreen.nextButton")}
           </PrimaryButton>
         </ScrollView>
       </KeyboardAvoidingView>

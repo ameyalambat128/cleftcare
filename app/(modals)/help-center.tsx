@@ -9,6 +9,7 @@ import {
   TextInput,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
+import { useTranslation } from "react-i18next";
 
 import Page from "@/components/Page";
 import Colors from "@/constants/Colors";
@@ -17,6 +18,8 @@ import { useRouter } from "expo-router";
 
 export default function Screen() {
   const router = useRouter();
+  const { t } = useTranslation();
+
   const [mail, setMail] = useState("");
   const [message, setMessage] = useState("");
 
@@ -39,7 +42,9 @@ export default function Screen() {
         keyboardVerticalOffset={Platform.select({ ios: 60, android: 100 })}
       >
         <ScrollView style={styles.container}>
-          <Text style={styles.headerText}>Need help? Please let us know</Text>
+          <Text style={styles.headerText}>
+            {t("helpCenterScreen.headerText")}
+          </Text>
 
           <View style={[styles.inputField, getInputStyle(mail)]}>
             <Feather
@@ -49,7 +54,7 @@ export default function Screen() {
               style={styles.icon}
             />
             <TextInput
-              placeholder="Enter your email"
+              placeholder={t("helpCenterScreen.emailPlaceholder")}
               placeholderTextColor={Colors.secondaryText}
               value={mail}
               onChangeText={setMail}
@@ -58,7 +63,7 @@ export default function Screen() {
 
           <View style={[styles.messageField, getInputStyle(message)]}>
             <TextInput
-              placeholder="Enter your message here"
+              placeholder={t("helpCenterScreen.messagePlaceholder")}
               placeholderTextColor={Colors.secondaryText}
               multiline
               numberOfLines={8}
@@ -74,7 +79,7 @@ export default function Screen() {
             type="large"
             onPress={() => console.log("Message Sent")}
           >
-            Submit
+            {t("helpCenterScreen.submitButton")}
           </PrimaryButton>
         </ScrollView>
       </KeyboardAvoidingView>

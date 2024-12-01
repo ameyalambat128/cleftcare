@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import Animated, { FadeInLeft, FadeOutLeft } from "react-native-reanimated";
 import { Feather } from "@expo/vector-icons";
+import { useTranslation } from "react-i18next";
 
 import Page from "@/components/Page";
 import RecordItem from "@/components/RecordItem";
@@ -17,6 +18,7 @@ import { UserInfo } from "@/lib/store";
 
 export default function Screen() {
   const router = useRouter();
+  const { i18n, t } = useTranslation();
 
   const handleSearchPress = () => {
     router.push("/search-record");
@@ -38,6 +40,8 @@ export default function Screen() {
     return SampleData.length;
   };
 
+  const currentLanguage = i18n.language;
+  console.log("Current language:", currentLanguage);
   return (
     <Page style={{ flex: 1 }} headerShown={false}>
       <View style={styles.container}>
@@ -47,7 +51,7 @@ export default function Screen() {
             exiting={FadeOutLeft}
             style={styles.title}
           >
-            Cleft Care
+            {t("homeScreen.title")}
           </Animated.Text>
           <View style={styles.iconsContainer}>
             <TouchableOpacity style={styles.icon} onPress={handleSearchPress}>
@@ -68,7 +72,9 @@ export default function Screen() {
         {/* Records */}
         <View style={styles.recordsContainer}>
           <View style={styles.headerContainer}>
-            <Text style={styles.recordsTitle}>View Children record</Text>
+            <Text style={styles.recordsTitle}>
+              {t("homeScreen.viewRecords")}
+            </Text>
             <Text
               style={styles.recordsCount}
             >{`${getRecordCount()} records`}</Text>
@@ -78,9 +84,11 @@ export default function Screen() {
             <View style={styles.noRecordsContainer}>
               <Feather name="edit" size={23} color={Colors.secondaryText} />
               <Text style={styles.noRecordsText}>
-                Children's records are empty.
+                {t("homeScreen.noRecordsMessage")}
               </Text>
-              <Text style={styles.noRecordsSubtext}>Please add a new one.</Text>
+              <Text style={styles.noRecordsSubtext}>
+                {t("homeScreen.addRecordPrompt")}
+              </Text>
             </View>
           ) : (
             <View style={styles.recordListContainer}>

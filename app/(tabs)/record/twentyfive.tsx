@@ -6,6 +6,7 @@ import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import * as FileSystem from "expo-file-system";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { Buffer } from "buffer";
+import { useTranslation } from "react-i18next";
 
 import Page from "@/components/Page";
 import Colors from "@/constants/Colors";
@@ -19,25 +20,31 @@ const promptNumber: number = 25;
 
 export const InitialScreenState: React.FC<{
   onStartRecording: () => void;
-}> = ({ onStartRecording }) => (
-  <View style={styles.bodyContainer}>
-    <Text style={styles.bodyText}>{prompt}</Text>
-    <TouchableOpacity onPress={onStartRecording} style={styles.recordButton}>
-      <Feather name="mic" size={40} color="black" />
-    </TouchableOpacity>
-    <Text style={styles.instructions}>
-      Press the audio icon to start recording
-    </Text>
-  </View>
-);
+}> = ({ onStartRecording }) => {
+  const { t } = useTranslation();
+  return (
+    <View style={styles.bodyContainer}>
+      <Text style={styles.bodyText}>{t("recordingScreen.prompt1")}</Text>
+      <TouchableOpacity onPress={onStartRecording} style={styles.recordButton}>
+        <Feather name="mic" size={40} color="black" />
+      </TouchableOpacity>
+      <Text style={styles.instructions}>
+        {t("recordingScreen.startRecording")}
+      </Text>
+    </View>
+  );
+};
 
 export const RecordingState: React.FC<{
   onStopRecording: () => void;
   timer: string;
 }> = ({ onStopRecording, timer }) => {
+  const { t } = useTranslation();
   return (
     <View style={styles.bodyContainer}>
-      <Text style={[styles.bodyText, { color: Colors.tint }]}>{prompt}</Text>
+      <Text style={[styles.bodyText, { color: Colors.tint }]}>
+        {t("recordingScreen.prompt1")}
+      </Text>
       <TouchableOpacity
         onPress={onStopRecording}
         style={[styles.recordButton, styles.recording]}
@@ -45,36 +52,45 @@ export const RecordingState: React.FC<{
         <Feather name="mic" size={40} color="white" />
       </TouchableOpacity>
       <Text style={[styles.timer, { color: Colors.tint }]}>{timer}</Text>
-      <Text style={styles.boldInstructions}>Recording started...</Text>
+      <Text style={styles.boldInstructions}>
+        {t("recordingScreen.recordingStarted")}
+      </Text>
     </View>
   );
 };
 
 // TODO: Edit the 2 components below
-export const UploadingState: React.FC<{ timer: string }> = ({ timer }) => (
-  <View style={styles.bodyContainer}>
-    <Text style={styles.bodyText}>{prompt}</Text>
-    <TouchableOpacity
-      onPress={() => console.log("Uploading...")}
-      style={[styles.recordButton]}
-    >
-      <Feather name="mic" size={40} color="black" />
-    </TouchableOpacity>
-    <Text style={[styles.timer]}>{timer}</Text>
-    <Text style={styles.boldInstructions}>Audio is uploading...</Text>
-  </View>
-);
+export const UploadingState: React.FC<{ timer: string }> = ({ timer }) => {
+  const { t } = useTranslation();
+  return (
+    <View style={styles.bodyContainer}>
+      <Text style={styles.bodyText}>{t("recordingScreen.prompt1")}</Text>
+      <TouchableOpacity
+        onPress={() => console.log("Uploading...")}
+        style={[styles.recordButton]}
+      >
+        <Feather name="mic" size={40} color="black" />
+      </TouchableOpacity>
+      <Text style={[styles.timer]}>{timer}</Text>
+      <Text style={styles.boldInstructions}>
+        {t("recordingScreen.uploading")}
+      </Text>
+    </View>
+  );
+};
 
 export const DoneState: React.FC<{
   onDone: () => void;
   onStartRecording: () => void;
 }> = ({ onDone, onStartRecording }) => {
+  const { t } = useTranslation();
   useEffect(() => {
     onDone();
   }, []);
+
   return (
     <View style={styles.bodyContainer}>
-      <Text style={styles.bodyText}>{prompt}</Text>
+      <Text style={styles.bodyText}>{t("recordingScreen.prompt1")}</Text>
       <TouchableOpacity
         onPress={onStartRecording}
         style={[styles.recordButton]}
@@ -98,7 +114,7 @@ export const DoneState: React.FC<{
             textAlign: "center",
           }}
         >
-          Done
+          {t("recordingScreen.done")}
         </Text>
       </View>
       <Text
@@ -106,7 +122,7 @@ export const DoneState: React.FC<{
           marginTop: 10,
         }}
       >
-        To Re-Record press the mic button.
+        {t("recordingScreen.reRecord")}
       </Text>
     </View>
   );
@@ -114,6 +130,8 @@ export const DoneState: React.FC<{
 
 export default function Screen() {
   const router = useRouter();
+  const { t } = useTranslation();
+
   const { getUser } = useUserStore();
   const user = getUser();
   console.log("User data:", user);
@@ -301,7 +319,7 @@ export default function Screen() {
                     completed ? { color: Colors.tint } : { color: "gray" },
                   ]}
                 >
-                  Next
+                  {t("recordingScreen.nextButton")}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -311,12 +329,12 @@ export default function Screen() {
       <View style={styles.container}>
         {content}
         <View style={styles.progressTextContainer}>
-          <Text style={styles.progressText}>{promptNumber}/</Text>
+          <Text style={styles.progressText}>{`${promptNumber}/`}</Text>
           <Text style={styles.finalProgressText}>25</Text>
         </View>
         <View style={styles.recordingCountContainer}>
           <Text style={styles.recordingCountText}>
-            Recordings: {recordingCount}
+            {t("recordingScreen.recordings")}: {recordingCount}
           </Text>
         </View>
 

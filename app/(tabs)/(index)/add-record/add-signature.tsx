@@ -6,9 +6,12 @@ import Page from "@/components/Page";
 import Colors from "@/constants/Colors";
 import PrimaryButton from "@/components/PrimaryButton";
 import { useRouter } from "expo-router";
+import { useTranslation } from "react-i18next";
 
 export default function Screen() {
   const router = useRouter();
+  const { t } = useTranslation();
+
   const [name, setName] = useState("");
 
   const handleNext = () => router.push("/record/");
@@ -28,8 +31,7 @@ export default function Screen() {
     >
       <View style={styles.container}>
         <Text style={styles.headerText}>
-          Please provide additional details and then add your full name as
-          signature.
+          {t("addSignatureScreen.headerText")}
         </Text>
 
         <View style={[styles.inputField, getInputStyle(name)]}>
@@ -40,7 +42,7 @@ export default function Screen() {
             style={styles.icon}
           />
           <TextInput
-            placeholder="Enter your full name"
+            placeholder={t("addSignatureScreen.namePlaceholder")}
             placeholderTextColor={Colors.secondaryText}
             value={name}
             onChangeText={setName}
@@ -55,7 +57,7 @@ export default function Screen() {
           type="large"
           onPress={handleNext}
         >
-          Add Signature
+          {t("addSignatureScreen.addSignatureButton")}
         </PrimaryButton>
       </View>
     </Page>

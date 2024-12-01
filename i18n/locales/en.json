@@ -1,0 +1,50 @@
+{
+  "homeScreen": {
+    "title": "Cleft Care",
+    "viewRecords": "View Children records",
+    "noRecordsMessage": "Children's records are empty.",
+    "addRecordPrompt": "Please add a new one."
+  },
+  "helpCenterScreen": {
+    "headerText": "Need help? Please let us know",
+    "emailPlaceholder": "Enter your email",
+    "messagePlaceholder": "Enter your message here",
+    "submitButton": "Submit"
+  },
+  "addRecordScreen": {
+    "headerText": "Please enter child's information to continue with the audio recording",
+    "namePlaceholder": "Enter your name",
+    "birthDatePlaceholder": "Select Birth Date",
+    "genderPlaceholder": "Select Gender",
+    "genderMale": "Male",
+    "genderFemale": "Female",
+    "genderOther": "Other",
+    "hearingStatusPlaceholder": "Hearing Status",
+    "hearingYes": "Yes, I have hearing loss",
+    "hearingNo": "No, I have no hearing loss",
+    "addressPlaceholder": "Enter your Address",
+    "contactNumberPlaceholder": "Contact number",
+    "nextButton": "Next"
+  },
+  "parentConsentScreen": {
+    "headerText": "Please carefully read and review the consent form to ensure the best care for your child.",
+    "formText": "I, [Parent/Guardian Name], consent to my child, [Child’s Name], using the CleftCare app, which supports care management for cleft conditions by providing personalized resources, appointment tracking, and educational materials. I understand the app will collect and store necessary personal and health-related information, which will be securely handled in compliance with privacy regulations. I acknowledge that I can revoke this consent at any time by contacting CleftCare support at [support contact information].",
+    "addSignatureButton": "Add Signature"
+  },
+  "addSignatureScreen": {
+    "headerText": "Please provide additional details and then add your full name as signature.",
+    "namePlaceholder": "Enter your full name",
+    "addSignatureButton": "Add Signature"
+  },
+  "recordingScreen": {
+    "prompt1": "Crow's leg is black",
+    "prompt2": "Father Patata",
+    "startRecording": "Press the audio icon to start recording",
+    "recordingStarted": "Recording started...",
+    "uploading": "Audio is uploading...",
+    "done": "Done",
+    "reRecord": "To Re-Record press the mic button.",
+    "nextButton": "Next",
+    "recordings": "Recordings"
+  }
+}

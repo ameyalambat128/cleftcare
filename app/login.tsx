@@ -11,13 +11,19 @@ import { useState } from "react";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { TextInput } from "react-native-gesture-handler";
 import { Picker } from "@react-native-picker/picker";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useTranslation } from "react-i18next";
 
 import Colors from "@/constants/Colors";
 import Page from "@/components/Page";
 import PrimaryButton from "@/components/PrimaryButton";
 
+const LANGUAGE_STORAGE_KEY = "user-language";
+
 export default function Screen() {
   const router = useRouter();
+  const { t, i18n } = useTranslation();
+
   const [email, setEmail] = useState("");
   const [language, setLanguage] = useState<"Kannada" | "English">();
   const [emailError, setEmailError] = useState("");
@@ -54,12 +60,17 @@ export default function Screen() {
     setFunction(newValue);
   };
 
-  const handlePickerChange = (itemValue: any, itemIndex: any) => {
-    if (itemValue !== "") {
-      setLanguageError("");
-    }
+  const handlePickerChange = async (itemValue: "Kannada" | "English") => {
+    setLanguageError("");
     setLanguage(itemValue);
-    setIsLanguagePickerVisible(!isLanguagePickerVisible);
+
+    // Map the selected language to the corresponding language code
+    const languageCode = itemValue === "Kannada" ? "kn" : "en";
+
+    // Save selected language to AsyncStorage and update i18n
+    await AsyncStorage.setItem(LANGUAGE_STORAGE_KEY, languageCode);
+    i18n.changeLanguage(languageCode);
+    setIsLanguagePickerVisible(false);
   };
 
   const handleLoginPress = () => {
@@ -152,8 +163,8 @@ export default function Screen() {
                     style={{ color: Colors.secondaryText }}
                     value=""
                   />
-                  <Picker.Item label="Kannada" value="Yes" />
-                  <Picker.Item label="English" value="No" />
+                  <Picker.Item label="Kannada" value="Kannada" />
+                  <Picker.Item label="English" value="English" />
                 </Picker>
               </TouchableOpacity>
             )}
