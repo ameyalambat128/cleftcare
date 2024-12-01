@@ -14,7 +14,7 @@ import { formatDuration } from "@/lib/utils";
 import { s3Client } from "@/lib/aws";
 import PrimaryButton from "@/components/PrimaryButton";
 
-const prompt: string = "ರೆಕಾರ್ಡಿಂಗ್ ಪ್ರಾರಂಭಿಸಲು ಆಡಿಯೊ ಐಕಾನ್ ಅನ್ನು ಒತ್ತಿರಿ";
+const prompt: string = "ಅಪ್ಪಾ ಪಟಾತಾ.";
 const promptNumber: number = 25;
 
 export const InitialScreenState: React.FC<{

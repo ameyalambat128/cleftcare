@@ -14,7 +14,7 @@ import { formatDuration } from "@/lib/utils";
 import { s3Client } from "@/lib/aws";
 import { predictOhmRating } from "@/lib/api";
 
-const prompt: string = "ರೆಕಾರ್ಡಿಂಗ್ ಪ್ರಾರಂಭಿಸಲು ಆಡಿಯೊ ಐಕಾನ್ ಅನ್ನು ಒತ್ತಿರಿ";
+const prompt: string = "ಕಾಗೆ ಕಾಲು ಕಪ್ಪು";
 const promptNumber: number = 1;
 
 export const InitialScreenState: React.FC<{
