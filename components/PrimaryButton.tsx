@@ -8,6 +8,7 @@ type ButtonProps = TouchableOpacity["props"] & {
 export default function PrimaryButton({
   children,
   style,
+  disabled,
   type,
   ...otherProps
 }: ButtonProps) {
@@ -19,8 +20,10 @@ export default function PrimaryButton({
           : type === "medium"
           ? styles.buttonMedium
           : styles.buttonSmall,
+        disabled ? styles.buttonDisabled : {},
         style,
       ]}
+      disabled={disabled}
       {...otherProps}
     >
       <Text style={styles.text}>{children}</Text>
@@ -55,6 +58,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     alignItems: "center",
     justifyContent: "center",
+  },
+  buttonDisabled: {
+    backgroundColor: "#d3d3d3", // Light gray color for disabled state
   },
   text: {
     color: "white",

@@ -75,14 +75,6 @@ export default function Screen() {
 
   const validEmails = ["krupa@asu.edu", "alambat@asu.edu", "test@asu.edu"];
 
-  const handleEmailValidation = (email: string) => {
-    if (!validEmails.includes(email)) {
-      setEmailError("* The Email ID you entered is not registered");
-      return false;
-    }
-    return true;
-  };
-
   const handleLoginPress = () => {
     let isValid = true;
     if (!email) {
