@@ -73,6 +73,16 @@ export default function Screen() {
     setIsLanguagePickerVisible(false);
   };
 
+  const validEmails = ["krupa@asu.edu", "alambat@asu.edu", "test@asu.edu"];
+
+  const handleEmailValidation = (email: string) => {
+    if (!validEmails.includes(email)) {
+      setEmailError("* The Email ID you entered is not registered");
+      return false;
+    }
+    return true;
+  };
+
   const handleLoginPress = () => {
     let isValid = true;
     if (!email) {
@@ -80,6 +90,9 @@ export default function Screen() {
       isValid = false;
     } else if (!email.includes("@")) {
       setEmailError("* The Email ID you entered is wrong");
+      isValid = false;
+    } else if (!validEmails.includes(email)) {
+      setEmailError("* The Email ID you entered is not registered");
       isValid = false;
     } else {
       setEmailError("");

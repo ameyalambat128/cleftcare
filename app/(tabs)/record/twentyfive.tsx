@@ -24,7 +24,7 @@ export const InitialScreenState: React.FC<{
   const { t } = useTranslation();
   return (
     <View style={styles.bodyContainer}>
-      <Text style={styles.bodyText}>{t("recordingScreen.prompt1")}</Text>
+      <Text style={styles.bodyText}>{t("recordingScreen.prompt2")}</Text>
       <TouchableOpacity onPress={onStartRecording} style={styles.recordButton}>
         <Feather name="mic" size={40} color="black" />
       </TouchableOpacity>
@@ -43,7 +43,7 @@ export const RecordingState: React.FC<{
   return (
     <View style={styles.bodyContainer}>
       <Text style={[styles.bodyText, { color: Colors.tint }]}>
-        {t("recordingScreen.prompt1")}
+        {t("recordingScreen.prompt2")}
       </Text>
       <TouchableOpacity
         onPress={onStopRecording}
@@ -64,7 +64,7 @@ export const UploadingState: React.FC<{ timer: string }> = ({ timer }) => {
   const { t } = useTranslation();
   return (
     <View style={styles.bodyContainer}>
-      <Text style={styles.bodyText}>{t("recordingScreen.prompt1")}</Text>
+      <Text style={styles.bodyText}>{t("recordingScreen.prompt2")}</Text>
       <TouchableOpacity
         onPress={() => console.log("Uploading...")}
         style={[styles.recordButton]}
@@ -90,7 +90,7 @@ export const DoneState: React.FC<{
 
   return (
     <View style={styles.bodyContainer}>
-      <Text style={styles.bodyText}>{t("recordingScreen.prompt1")}</Text>
+      <Text style={styles.bodyText}>{t("recordingScreen.prompt2")}</Text>
       <TouchableOpacity
         onPress={onStartRecording}
         style={[styles.recordButton]}

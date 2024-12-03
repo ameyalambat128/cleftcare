@@ -63,6 +63,18 @@ export default function Screen() {
     router.push("/add-record/parent-consent");
   };
 
+  // Write a function that disables the submit button if any of the fields are empty except the photo field
+  const isSubmitDisabled = () => {
+    return (
+      !name ||
+      !birthDate ||
+      !gender ||
+      !hearingStatus ||
+      !address ||
+      !contactNumber
+    );
+  };
+
   const getInputStyle = (inputValue: string) => ({
     borderColor: inputValue ? Colors.tint : "#E5E7EB",
   });
@@ -492,6 +504,7 @@ export default function Screen() {
           <PrimaryButton
             style={{ marginTop: 20 }}
             type="large"
+            disabled={isSubmitDisabled()}
             onPress={handleNext}
           >
             {t("addRecordScreen.nextButton")}
