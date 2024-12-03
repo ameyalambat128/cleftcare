@@ -29,6 +29,7 @@
   "parentConsentScreen": {
     "headerText": "Please carefully read and review the consent form to ensure the best care for your child.",
     "formText": "I, [Parent/Guardian Name], consent to my child, [Child’s Name], using the CleftCare app, which supports care management for cleft conditions by providing personalized resources, appointment tracking, and educational materials. I understand the app will collect and store necessary personal and health-related information, which will be securely handled in compliance with privacy regulations. I acknowledge that I can revoke this consent at any time by contacting CleftCare support at [support contact information].",
+    "signatureLabel": "Add Signature",
     "addSignatureButton": "Add Signature"
   },
   "addSignatureScreen": {

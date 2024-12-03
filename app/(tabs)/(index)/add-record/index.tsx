@@ -166,6 +166,7 @@ export default function Screen() {
               value={name}
               onChangeText={setName}
               style={styles.inputText}
+              autoComplete="name"
             />
           </View>
 
@@ -451,6 +452,8 @@ export default function Screen() {
               value={address}
               onChangeText={setAddress}
               style={styles.inputText}
+              autoComplete="off"
+              autoCorrect={false}
             />
           </View>
 
