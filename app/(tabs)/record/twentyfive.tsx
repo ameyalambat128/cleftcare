@@ -14,8 +14,8 @@ import { useUserStore } from "@/lib/store";
 import { formatDuration } from "@/lib/utils";
 import { s3Client } from "@/lib/aws";
 import PrimaryButton from "@/components/PrimaryButton";
+import { predictOhmRating } from "@/lib/api";
 
-const prompt: string = "ಅಪ್ಪಾ ಪಟಾತಾ.";
 const promptNumber: number = 25;
 
 export const InitialScreenState: React.FC<{
@@ -150,6 +150,7 @@ export default function Screen() {
   const [timer, setTimer] = useState<string>("00:00");
   const [completed, setCompleted] = useState(false);
   const [recordingCount, setRecordingCount] = useState<number>(0);
+  const [latestUploadFileName, setLatestUploadFileName] = useState<string>("");
   const [status, setStatus] = useState<Audio.RecordingStatus | null>(null);
   const [meter, setMeter] = useState(0);
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -160,6 +161,13 @@ export default function Screen() {
 
   const handleModalClose = () => {
     // OHM Score prediction here
+    console.log("CHECKTHIS:", latestUploadFileName);
+    const ohmScore = predictOhmRating(
+      user?.userId!,
+      user?.name!,
+      promptNumber,
+      latestUploadFileName
+    );
     setShowModal(false);
     router.push("/"); // Navigate to home after closing
   };
@@ -221,10 +229,11 @@ export default function Screen() {
 
     try {
       const uri = currentRecording.getURI();
+      console.log("Recording URI:", uri);
       const fileName = `${
         user?.userId
-      }-${new Date().toISOString()}-${promptNumber}-${recordingCount + 1}.m4a`;
-      const localFileUri = `${FileSystem.documentDirectory}${fileName}`; // Path to store the recording locally
+      }-${new Date().getTime()}-${promptNumber}-${recordingCount + 1}.m4a`;
+      const localFileUri = `${FileSystem.cacheDirectory}/${fileName}`; // Path to store the recording locally
 
       // Copy the recording to local storage
       await FileSystem.copyAsync({
@@ -266,6 +275,7 @@ export default function Screen() {
       const command = new PutObjectCommand(uploadParams);
       const data = await s3Client.send(command);
 
+      setLatestUploadFileName(fileName);
       console.log("Successfully uploaded audio to S3:", data);
 
       // Delete from local storage after successful upload
