@@ -17,6 +17,7 @@ import { useTranslation } from "react-i18next";
 import Colors from "@/constants/Colors";
 import Page from "@/components/Page";
 import PrimaryButton from "@/components/PrimaryButton";
+import { validateLogin } from "@/lib/api";
 
 const LANGUAGE_STORAGE_KEY = "user-language";
 
@@ -31,6 +32,7 @@ export default function Screen() {
   const [isLanguagePickerVisible, setIsLanguagePickerVisible] =
     useState<boolean>(false);
   const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const getInputStyle = (inputValue: string) => ({
     borderColor:
@@ -75,7 +77,36 @@ export default function Screen() {
 
   const validEmails = ["krupa@asu.edu", "alambat@asu.edu", "test@asu.edu"];
 
-  const handleLoginPress = () => {
+  const validateWithBackend = async (email: string) => {
+    setIsLoading(true);
+    setEmailError(""); // Clear any previous errors
+
+    try {
+      const response = await validateLogin(email);
+
+      if (response?.role) {
+        await AsyncStorage.setItem("user-role", response.role);
+        await AsyncStorage.setItem("user-email", email);
+
+        router.replace("/");
+        return true;
+      } else {
+        setEmailError("* The Email ID you entered is not registered");
+        return false;
+      }
+    } catch (error: any) {
+      if (error?.error) {
+        setEmailError("* The Email ID you entered is not registered");
+      } else {
+        setEmailError("Something went wrong, please try again.");
+      }
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleLoginPress = async () => {
     let isValid = true;
     if (!email) {
       setEmailError("* You must enter your email ID");
@@ -95,6 +126,13 @@ export default function Screen() {
       isValid = false;
     } else {
       setLanguageError("");
+    }
+
+    if (isValid) {
+      const isEmailValid = await validateWithBackend(email);
+      if (!isEmailValid) {
+        isValid = false;
+      }
     }
 
     if (isValid) {
