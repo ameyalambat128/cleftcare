@@ -25,12 +25,12 @@ import Page from "@/components/Page";
 import Colors from "@/constants/Colors";
 import PrimaryButton from "@/components/PrimaryButton";
 import { useUserStore } from "@/lib/store";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Screen() {
   const router = useRouter();
   const { t } = useTranslation();
   const { setUser } = useUserStore();
-  const userId = randomUUID();
 
   const [name, setName] = useState("");
   const [birthDate, setBirthDate] = useState<Date | null>(null);
@@ -49,18 +49,31 @@ export default function Screen() {
   const [photo, setPhoto] = useState<string>(""); // TODO: change photo to Image type if needed
 
   const handleNext = () => {
-    setUser({
-      userId,
-      name,
-      birthDate,
-      gender,
-      hearingStatus,
-      address,
-      contactNumber,
-      photo,
-    });
-
+    updateUserStore();
     router.push("/add-record/parent-consent");
+  };
+
+  const updateUserStore = async () => {
+    try {
+      const workerId = await AsyncStorage.getItem("user-id");
+      if (workerId !== null) {
+        setUser({
+          userId: randomUUID(),
+          name,
+          birthDate,
+          gender,
+          hearingStatus,
+          address,
+          contactNumber,
+          photo,
+          communityWorkerId: workerId,
+          parentConsent: false,
+          signedConsent: false,
+        });
+      }
+    } catch (error) {
+      console.error("Error retrieving user ID:", error);
+    }
   };
 
   // Write a function that disables the submit button if any of the fields are empty except the photo field

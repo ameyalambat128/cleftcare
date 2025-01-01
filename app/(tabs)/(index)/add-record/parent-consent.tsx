@@ -17,7 +17,7 @@ export default function Screen() {
   const router = useRouter();
   const { t } = useTranslation();
 
-  const { getUser } = useUserStore();
+  const { getUser, updateUser } = useUserStore();
   const user = getUser();
   console.log("User data:", user);
   if (user) {
@@ -27,6 +27,17 @@ export default function Screen() {
   } else {
     console.log("No user data available");
   }
+
+  const handleNext = () => {
+    updateUserStore();
+    router.push("/add-record/add-signature");
+  };
+
+  const updateUserStore = () => {
+    updateUser({
+      parentConsent: true,
+    });
+  };
 
   return (
     <Page
@@ -51,7 +62,7 @@ export default function Screen() {
           <PrimaryButton
             style={{ marginTop: 20 }}
             type="large"
-            onPress={() => router.push("/add-record/add-signature")}
+            onPress={handleNext}
           >
             {t("parentConsentScreen.addSignatureButton")}
           </PrimaryButton>

@@ -7,14 +7,73 @@ import Colors from "@/constants/Colors";
 import PrimaryButton from "@/components/PrimaryButton";
 import { useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
+import { UserInfo, useUserStore } from "@/lib/store";
+import { addRecord } from "@/lib/api";
 
 export default function Screen() {
   const router = useRouter();
   const { t } = useTranslation();
+  const { getUser, updateUser } = useUserStore();
 
   const [name, setName] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleNext = () => router.push("/record/");
+  const user = getUser();
+  console.log("User data:", user);
+  if (user) {
+    Object.entries(user).forEach(([key, value]) => {
+      console.log(`${key}:`, value);
+    });
+  } else {
+    console.log("No user data available");
+  }
+
+  const handleNext = async () => {
+    if (!user) {
+      console.error("No user data available");
+      return;
+    }
+
+    // Prepare user data for API
+    const userData = {
+      name: user.name,
+      birthDate: user.birthDate ? user.birthDate : null,
+      gender: user.gender,
+      hearingStatus: user.hearingStatus,
+      address: user.address,
+      contactNumber: user.contactNumber,
+      photo: user.photo,
+      parentConsent: user.parentConsent,
+      signedConsent: true, // Explicitly set as signed
+      communityWorkerId: user.communityWorkerId,
+    };
+
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const apiResponse = await addRecord(userData);
+
+      console.log("API Response:", apiResponse);
+
+      if (apiResponse && apiResponse.id) {
+        updateUser({
+          userId: apiResponse.id,
+          signedConsent: true,
+        });
+        console.log("Success", "User added successfully!");
+        router.push("/record/");
+      } else {
+        throw new Error("Invalid API response. Missing `id`.");
+      }
+    } catch (error: any) {
+      console.error("Error adding user:", error);
+      setError(error.error || "Failed to add user. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const getInputStyle = (inputValue: string) => ({
     borderColor: inputValue ? Colors.tint : "#E5E7EB",

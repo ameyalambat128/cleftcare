@@ -12,6 +12,9 @@ export type UserInfo = {
   address: string;
   contactNumber: string;
   photo: string;
+  parentConsent: boolean;
+  signedConsent: boolean;
+  communityWorkerId: string;
 };
 
 type UserStore = {

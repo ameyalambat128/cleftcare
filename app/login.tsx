@@ -86,6 +86,7 @@ export default function Screen() {
 
       if (response?.role) {
         await AsyncStorage.setItem("user-role", response.role);
+        await AsyncStorage.setItem("user-id", response.communityWorkerId);
         await AsyncStorage.setItem("user-email", email);
 
         router.replace("/");

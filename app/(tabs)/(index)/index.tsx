@@ -9,6 +9,7 @@ import {
 import Animated, { FadeInLeft, FadeOutLeft } from "react-native-reanimated";
 import { Feather } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import Page from "@/components/Page";
 import RecordItem from "@/components/RecordItem";
@@ -18,6 +19,23 @@ import { UserInfo } from "@/lib/store";
 
 export default function Screen() {
   const router = useRouter();
+
+  const logUserId = async () => {
+    try {
+      const userId = await AsyncStorage.getItem("user-id");
+      const userRole = await AsyncStorage.getItem("user-role");
+      if (userId !== null) {
+        console.log("User ID:", userId);
+        console.log("User Role:", userRole);
+      } else {
+        console.log("No user ID found");
+      }
+    } catch (error) {
+      console.error("Error retrieving user ID:", error);
+    }
+  };
+
+  logUserId();
   const { i18n, t } = useTranslation();
 
   const handleSearchPress = () => {
