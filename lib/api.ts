@@ -6,7 +6,10 @@ const OHM_API_BASE_URL = "https://cleftcare-ohm-1067608021780.us-east1.run.app";
 //   process.env.DEV_ENV === "local"
 //     ? "http://localhost:3000"
 //     : "https://production-url.com";
-const API_BASE_URL = "http://localhost:3000";
+const PROD = true;
+const API_BASE_URL = PROD
+  ? "https://jkneev16h9.execute-api.us-east-1.amazonaws.com/"
+  : "http://localhost:3000";
 const API_KEY =
   "1ddf243a713c55eedad668badabdbc4deb940ba454ef0fd770e4da1baedc0d90";
 
@@ -27,6 +30,16 @@ export const predictOhmRating = async (
   } catch (error) {
     console.error("Error sending POST request:", error);
     throw error;
+  }
+};
+
+export const testProdApi = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/`);
+    return response.data;
+  } catch (error: any) {
+    console.error("Error testing API:", error.response?.data || error.message);
+    throw error.response?.data || { error: "Network or server error" };
   }
 };
 
