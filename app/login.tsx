@@ -99,6 +99,10 @@ export default function Screen() {
       if (error?.error) {
         setEmailError("* The Email ID you entered is not registered");
       } else {
+        console.log(
+          "Error validating login:",
+          error.response?.data || error.message
+        );
         setEmailError("Something went wrong, please try again.");
       }
       return false;
