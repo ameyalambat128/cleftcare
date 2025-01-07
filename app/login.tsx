@@ -20,7 +20,6 @@ import PrimaryButton from "@/components/PrimaryButton";
 import { validateLogin } from "@/lib/api";
 
 const LANGUAGE_STORAGE_KEY = "user-language";
-
 export default function Screen() {
   const router = useRouter();
   const { t, i18n } = useTranslation();
