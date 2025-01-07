@@ -1,10 +1,10 @@
 import { S3Client } from "@aws-sdk/client-s3";
 
 const s3Client = new S3Client({
-  region: "us-east-1",
+  region: process.env.EXPO_PUBLIC_AWS_REGION,
   credentials: {
-    accessKeyId: "AKIAWPTHXQRF4ANZ4GUA", // TODO: Store in a .env file
-    secretAccessKey: "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", // TODO: Store in a .env file
+    accessKeyId: process.env.EXPO_PUBLIC_AWS_ACCESS_KEY,
+    secretAccessKey: process.env.EXPO_PUBLIC_AWS_SECRET_KEY,
   },
 });
 
