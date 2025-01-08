@@ -1,3 +1,4 @@
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 import {
   StyleSheet,
@@ -5,6 +6,7 @@ import {
   TouchableOpacity,
   View,
   FlatList,
+  RefreshControl,
 } from "react-native";
 import Animated, { FadeInLeft, FadeOutLeft } from "react-native-reanimated";
 import { Feather } from "@expo/vector-icons";
@@ -16,9 +18,40 @@ import RecordItem from "@/components/RecordItem";
 import Colors from "@/constants/Colors";
 import { SampleData } from "@/constants/SampleData";
 import { UserInfo } from "@/lib/store";
+import { getRecordByCommunityWorkerId } from "@/lib/api";
 
 export default function Screen() {
   const router = useRouter();
+  const { i18n, t } = useTranslation();
+
+  const [records, setRecords] = useState<UserInfo[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isRefreshing, setIsRefreshing] = useState<boolean>(false); // For pull-to-refresh
+  const [error, setError] = useState<string>("");
+
+  // Fetch records based on communityWorkerId
+  const fetchRecords = async (isRefresh = false) => {
+    if (!isRefresh) setIsLoading(true); // Show loader only for initial fetch
+    setError("");
+    try {
+      const communityWorkerId = await AsyncStorage.getItem("user-id");
+      if (!communityWorkerId) {
+        throw new Error("Community Worker ID is missing from storage.");
+      }
+
+      const response = await getRecordByCommunityWorkerId(communityWorkerId);
+      setRecords(response);
+    } catch (err: any) {
+      console.error("Failed to fetch records:", err);
+      setError(err.error || "Failed to load records.");
+    } finally {
+      if (isRefresh) {
+        setIsRefreshing(false); // End pull-to-refresh loader
+      } else {
+        setIsLoading(false); // End initial loader
+      }
+    }
+  };
 
   const logUserId = async () => {
     try {
@@ -34,9 +67,16 @@ export default function Screen() {
       console.error("Error retrieving user ID:", error);
     }
   };
-
   logUserId();
-  const { i18n, t } = useTranslation();
+
+  const handleRefresh = useCallback(() => {
+    setIsRefreshing(true); // Start pull-to-refresh loader
+    fetchRecords(true); // Pass `true` to indicate refresh
+  }, []);
+
+  useEffect(() => {
+    fetchRecords();
+  }, []);
 
   const handleSearchPress = () => {
     router.push("/search-record");
@@ -55,7 +95,7 @@ export default function Screen() {
   };
 
   const getRecordCount = () => {
-    return SampleData.length;
+    return records.length;
   };
 
   const currentLanguage = i18n.language;
@@ -98,7 +138,11 @@ export default function Screen() {
             >{`${getRecordCount()} records`}</Text>
           </View>
 
-          {getRecordCount() === 0 ? (
+          {isLoading ? (
+            <Text>Loading...</Text>
+          ) : error ? (
+            <Text style={styles.errorText}>{error}</Text>
+          ) : getRecordCount() === 0 ? (
             <View style={styles.noRecordsContainer}>
               <Feather name="edit" size={23} color={Colors.secondaryText} />
               <Text style={styles.noRecordsText}>
@@ -111,16 +155,25 @@ export default function Screen() {
           ) : (
             <View style={styles.recordListContainer}>
               <FlatList
-                data={SampleData}
+                data={records}
                 renderItem={({ item }: { item: UserInfo }) => (
                   <RecordItem
                     userId={item.userId}
                     name={item.name}
-                    birthDate={item.birthDate}
+                    birthDate={
+                      item.birthDate ? item.birthDate.toString() : null
+                    }
                     onPress={() => handleEditRecordPress(item.userId)}
                   />
                 )}
                 keyExtractor={(item) => item.userId}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={isRefreshing}
+                    onRefresh={handleRefresh}
+                    tintColor={Colors.tint}
+                  />
+                }
                 style={{ width: "100%" }}
               />
             </View>
@@ -179,6 +232,12 @@ const styles = StyleSheet.create({
   noRecordsText: {
     fontSize: 16,
     color: Colors.secondaryText,
+    marginTop: 20,
+  },
+  errorText: {
+    color: "red",
+    fontSize: 14,
+    textAlign: "center",
     marginTop: 20,
   },
   noRecordsSubtext: {
