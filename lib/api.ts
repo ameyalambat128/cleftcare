@@ -6,7 +6,7 @@ const OHM_API_BASE_URL = "https://cleftcare-ohm-1067608021780.us-east1.run.app";
 //   process.env.DEV_ENV === "local"
 //     ? "http://localhost:3000"
 //     : "https://production-url.com";
-const PROD = true;
+const PROD = false;
 const API_BASE_URL = PROD
   ? "https://jkneev16h9.execute-api.us-east-1.amazonaws.com/"
   : "http://localhost:3000";
@@ -58,6 +58,23 @@ export const validateLogin = async (email: string) => {
       error.response?.data || error.message
     );
     throw error.response?.data || { error: "Network or server error" };
+  }
+};
+
+export const getRecordByCommunityWorkerId = async (
+  communityWorkerId: string
+) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/api/users/${communityWorkerId}?apiKey=${API_KEY}`
+    );
+    return response.data;
+  } catch (error: any) {
+    console.error(
+      "Error fetching record by community worker ID:",
+      error.response?.data || error.message
+    );
+    throw error.response?.data || { error: "Failed to fetch record" };
   }
 };
 

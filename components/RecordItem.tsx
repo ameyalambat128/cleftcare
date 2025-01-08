@@ -5,7 +5,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 type RecordItemProps = {
   userId: string;
   name: string;
-  birthDate: Date | null;
+  birthDate: string | null;
   onPress: () => void;
 };
 
@@ -15,8 +15,11 @@ export default function RecordItem({
   birthDate,
   onPress,
 }: RecordItemProps) {
-  const formatBirthDate = (date: Date | null): string => {
-    if (!date) return "Not available";
+  const formatBirthDate = (dateString: string | null): string => {
+    if (!dateString) return "Not available";
+
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return "Not available";
 
     const options: Intl.DateTimeFormatOptions = {
       year: "numeric",
