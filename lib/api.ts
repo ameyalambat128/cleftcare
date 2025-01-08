@@ -6,7 +6,7 @@ const OHM_API_BASE_URL = "https://cleftcare-ohm-1067608021780.us-east1.run.app";
 //   process.env.DEV_ENV === "local"
 //     ? "http://localhost:3000"
 //     : "https://production-url.com";
-const PROD = false;
+const PROD = process.env.EXPO_PUBLIC_DEV_ENV === "production" ? true : false;
 const API_BASE_URL = PROD
   ? "https://jkneev16h9.execute-api.us-east-1.amazonaws.com/"
   : "http://localhost:3000";
