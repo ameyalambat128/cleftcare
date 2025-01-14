@@ -61,17 +61,32 @@ export const validateLogin = async (email: string) => {
   }
 };
 
-export const getRecordByCommunityWorkerId = async (
+export const getRecordsByCommunityWorkerId = async (
   communityWorkerId: string
 ) => {
   try {
     const response = await axios.get(
-      `${API_BASE_URL}/api/users/${communityWorkerId}?apiKey=${API_KEY}`
+      `${API_BASE_URL}/api/community-workers/${communityWorkerId}/users?apiKey=${API_KEY}`
     );
     return response.data;
   } catch (error: any) {
     console.error(
-      "Error fetching record by community worker ID:",
+      "Error fetching records by community worker ID:",
+      error.response?.data || error.message
+    );
+    throw error.response?.data || { error: "Failed to fetch records" };
+  }
+};
+
+export const getRecordByUserId = async (userId: string) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/api/users/${userId}?apiKey=${API_KEY}`
+    );
+    return response.data;
+  } catch (error: any) {
+    console.error(
+      "Error fetching record by User ID:",
       error.response?.data || error.message
     );
     throw error.response?.data || { error: "Failed to fetch record" };

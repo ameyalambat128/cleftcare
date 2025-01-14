@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -21,54 +21,52 @@ import * as ImagePicker from "expo-image-picker";
 
 import Page from "@/components/Page";
 import Colors from "@/constants/Colors";
-import { ChildRecord, SampleData } from "@/constants/SampleData";
+import { getRecordByUserId } from "@/lib/api";
 
 export default function Screen() {
   const router = useRouter();
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { userId } = useLocalSearchParams<{ userId: string }>();
 
-  const getUserName = (recordId: string) => {
-    const record = SampleData.find((record) => record.recordId === recordId);
-    return record ? record.name : "";
-  };
-
-  const getUserData = (recordId: string): ChildRecord => {
-    const record = SampleData.find((record) => record.recordId === recordId);
-    return (
-      record ?? {
-        id: "",
-        name: "",
-        recordId: "",
-        birthDate: null,
-        gender: "Other",
-        hearingLoss: "No",
-        address: "",
-        contactNumber: "",
-      }
-    );
-  };
-
-  const [name, setName] = useState<string>(getUserData(id)?.name);
-  const [birthDate, setBirthDate] = useState<Date | null>(
-    getUserData(id)?.birthDate
-  );
+  const [name, setName] = useState<string>("");
+  const [birthDate, setBirthDate] = useState<Date | null>(null);
   const [isDatePickerVisible, setIsDatePickerVisible] =
     useState<boolean>(false);
-  const [gender, setGender] = useState<"Male" | "Female" | "Other">(
-    getUserData(id)?.gender
-  );
+  const [gender, setGender] = useState<"Male" | "Female" | "Other">();
   const [isGenderPickerVisible, setIsGenderPickerVisible] =
     useState<boolean>(false);
-  const [hearingLoss, setHearingLoss] = useState<"Yes" | "No">(
-    getUserData(id)?.hearingLoss
-  );
+  const [hearingLoss, setHearingLoss] = useState<"Yes" | "No">();
   const [isHearingPickerVisible, setIsHearingPickerVisible] =
     useState<boolean>(false);
-  const [address, setAddress] = useState<string>(getUserData(id)?.address);
-  const [contactNumber, setContactNumber] = useState<string>(
-    getUserData(id)?.contactNumber
-  );
-  const [photo, setPhoto] = useState<string>(""); // TODO: change photo to Image type if needed
+  const [address, setAddress] = useState<string>("");
+  const [contactNumber, setContactNumber] = useState<string>("");
+  const [photo, setPhoto] = useState<string>(""); // Placeholder for photo
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      setIsLoading(true);
+      try {
+        const data = await getRecordByUserId(userId);
+        setName(data.name);
+        setBirthDate(data.birthDate ? new Date(data.birthDate) : null);
+        setGender(data.gender);
+        setHearingLoss(data.hearingLossStatus);
+        setAddress(data.address);
+        setContactNumber(data.contactNumber);
+        setPhoto(data.photo || "");
+      } catch (error) {
+        console.error("Failed to fetch user data:", error);
+        Alert.alert("Error", "Unable to load user data.");
+        router.back();
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (userId) {
+      fetchUserData();
+    }
+  }, [userId]);
 
   const getInputStyle = (inputValue: string) => ({
     borderColor: inputValue ? Colors.tint : "#E5E7EB",
@@ -137,7 +135,7 @@ export default function Screen() {
       style={{ flex: 1, backgroundColor: Colors.background }}
       headerShown={true}
     >
-      <Stack.Screen options={{ title: getUserName(id) }} />
+      <Stack.Screen options={{ title: name || "Edit Record" }} />
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
