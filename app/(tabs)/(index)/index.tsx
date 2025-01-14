@@ -18,7 +18,7 @@ import RecordItem from "@/components/RecordItem";
 import Colors from "@/constants/Colors";
 import { SampleData } from "@/constants/SampleData";
 import { UserInfo } from "@/lib/store";
-import { getRecordByCommunityWorkerId } from "@/lib/api";
+import { getRecordsByCommunityWorkerId } from "@/lib/api";
 
 export default function Screen() {
   const router = useRouter();
@@ -39,8 +39,25 @@ export default function Screen() {
         throw new Error("Community Worker ID is missing from storage.");
       }
 
-      const response = await getRecordByCommunityWorkerId(communityWorkerId);
-      setRecords(response);
+      const response = await getRecordsByCommunityWorkerId(communityWorkerId);
+
+      const mappedRecords: UserInfo[] = response.map((record: any) => ({
+        userId: record.id,
+        name: record.name,
+        birthDate: record.birthDate,
+        gender: record.gender,
+        hearingLossStatus: record.hearingLossStatus,
+        address: record.address,
+        contactNumber: record.contactNumber,
+        photo: record.photo,
+        parentConsent: record.parentConsent,
+        signedConsent: record.signedConsent,
+        communityWorkerId: record.communityWorkerId,
+        createdAt: record.createdAt,
+        updatedAt: record.updatedAt,
+      }));
+
+      setRecords(mappedRecords);
     } catch (err: any) {
       console.error("Failed to fetch records:", err);
       setError(err.error || "Failed to load records.");
@@ -158,6 +175,7 @@ export default function Screen() {
                 data={records}
                 renderItem={({ item }: { item: UserInfo }) => (
                   <RecordItem
+                    key={item.userId}
                     userId={item.userId}
                     name={item.name}
                     birthDate={

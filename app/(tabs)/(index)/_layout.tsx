@@ -35,7 +35,7 @@ export default function Layout() {
         }}
       />
       <Stack.Screen
-        name="edit-record/[id]"
+        name="edit-record/[userId]"
         options={{
           headerShadowVisible: false,
           headerStyle: { backgroundColor: "white" },

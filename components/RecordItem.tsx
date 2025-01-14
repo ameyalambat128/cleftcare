@@ -6,7 +6,7 @@ type RecordItemProps = {
   userId: string;
   name: string;
   birthDate: string | null;
-  onPress: () => void;
+  onPress?: () => void;
 };
 
 export default function RecordItem({
