@@ -52,5 +52,20 @@
     "title": "All audio is saved!",
     "subtitle": "Go to home to see the details of children records",
     "buttonText": "Back to Home"
+  },
+  "editRecordScreen": {
+    "headerText": "Edit child's information based on your requirements",
+    "namePlaceholder": "Enter your name",
+    "birthDatePlaceholder": "Select Birth Date",
+    "genderPlaceholder": "Select Gender",
+    "genderMale": "Male",
+    "genderFemale": "Female",
+    "genderOther": "Other",
+    "hearingStatusPlaceholder": "Hearing Status",
+    "hearingYes": "Yes, I have hearing loss",
+    "hearingNo": "No, I have no hearing loss",
+    "addressPlaceholder": "Enter your Address",
+    "contactNumberPlaceholder": "Contact number",
+    "updateButton": "Update"
   }
 }

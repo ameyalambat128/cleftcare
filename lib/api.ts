@@ -105,3 +105,22 @@ export const addRecord = async (record: Partial<UserInfo>) => {
     throw error.response?.data || { error: "Failed to add user" };
   }
 };
+
+export const updateRecord = async (
+  userId: string,
+  record: Partial<UserInfo>
+) => {
+  try {
+    const response = await axios.put(
+      `${API_BASE_URL}/api/users/${userId}?apiKey=${API_KEY}`,
+      record
+    );
+    return response.data;
+  } catch (error: any) {
+    console.error(
+      "Error updating user:",
+      error.response?.data || error.message
+    );
+    throw error.response?.data || { error: "Failed to update user" };
+  }
+};
