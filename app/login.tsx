@@ -119,9 +119,6 @@ export default function Screen() {
     } else if (!email.includes("@")) {
       setEmailError("* The Email ID you entered is wrong");
       isValid = false;
-    } else if (!validEmails.includes(email)) {
-      setEmailError("* The Email ID you entered is not registered");
-      isValid = false;
     } else {
       setEmailError("");
     }
