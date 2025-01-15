@@ -18,14 +18,17 @@ import DateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
 import * as ImagePicker from "expo-image-picker";
+import { useTranslation } from "react-i18next";
 
 import Page from "@/components/Page";
 import Colors from "@/constants/Colors";
-import { getRecordByUserId } from "@/lib/api";
+import { getRecordByUserId, updateRecord } from "@/lib/api";
+import PrimaryButton from "@/components/PrimaryButton";
 
 export default function Screen() {
   const router = useRouter();
   const { userId } = useLocalSearchParams<{ userId: string }>();
+  const { t } = useTranslation();
 
   const [name, setName] = useState<string>("");
   const [birthDate, setBirthDate] = useState<Date | null>(null);
@@ -41,6 +44,7 @@ export default function Screen() {
   const [contactNumber, setContactNumber] = useState<string>("");
   const [photo, setPhoto] = useState<string>(""); // Placeholder for photo
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -67,6 +71,36 @@ export default function Screen() {
       fetchUserData();
     }
   }, [userId]);
+
+  const handleSave = async () => {
+    if (!userId) {
+      Alert.alert("Error", "User ID is missing.");
+      return;
+    }
+
+    const updatedUser = {
+      name,
+      birthDate: birthDate ? birthDate : null,
+      gender,
+      hearingLossStatus: hearingLoss,
+      address,
+      contactNumber,
+      photo,
+    };
+
+    setIsSubmitting(true);
+
+    try {
+      await updateRecord(userId, updatedUser);
+      Alert.alert("Success", "User record updated successfully!");
+      router.back();
+    } catch (error: any) {
+      console.error("Failed to update user record:", error);
+      Alert.alert("Error", error.error || "Failed to update user record.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const getInputStyle = (inputValue: string) => ({
     borderColor: inputValue ? Colors.tint : "#E5E7EB",
@@ -130,6 +164,22 @@ export default function Screen() {
     }
   };
 
+  if (isLoading) {
+    return (
+      <Page
+        style={{ flex: 1, backgroundColor: Colors.background }}
+        headerShown={true}
+      >
+        <Stack.Screen options={{ title: "Edit Record" }} />
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <Text>Loading...</Text>
+        </View>
+      </Page>
+    );
+  }
+
   return (
     <Page
       style={{ flex: 1, backgroundColor: Colors.background }}
@@ -143,7 +193,7 @@ export default function Screen() {
       >
         <ScrollView style={styles.container}>
           <Text style={styles.headerText}>
-            Edit child's information based on your requirements
+            {t("editRecordScreen.headerText")}
           </Text>
 
           {/* Name Input */}
@@ -155,7 +205,7 @@ export default function Screen() {
               style={styles.icon}
             />
             <TextInput
-              placeholder="Enter your name"
+              placeholder={t("editRecordScreen.namePlaceholder")}
               placeholderTextColor={Colors.secondaryText}
               value={name}
               onChangeText={setName}
@@ -186,7 +236,7 @@ export default function Screen() {
               </Text>
             ) : (
               <Text style={{ color: Colors.secondaryText }}>
-                Select Birth Date
+                {t("editRecordScreen.birthDatePlaceholder")}
               </Text>
             )}
           </TouchableOpacity>
@@ -440,7 +490,7 @@ export default function Screen() {
               style={styles.icon}
             />
             <TextInput
-              placeholder="Enter your Address"
+              placeholder={t("editRecordScreen.addressPlaceholder")}
               placeholderTextColor={Colors.secondaryText}
               value={address}
               onChangeText={setAddress}
@@ -457,7 +507,7 @@ export default function Screen() {
               style={styles.icon}
             />
             <TextInput
-              placeholder="Contact number"
+              placeholder={t("editRecordScreen.contactNumberPlaceholder")}
               placeholderTextColor={Colors.secondaryText}
               value={contactNumber}
               onChangeText={setContactNumber}
@@ -493,6 +543,15 @@ export default function Screen() {
               Take/Choose Photo
             </Text>
           </TouchableOpacity>
+
+          {/* Submit Button */}
+          <PrimaryButton
+            style={{ marginTop: 20 }}
+            type="large"
+            onPress={handleSave}
+          >
+            {t("editRecordScreen.updateButton")}
+          </PrimaryButton>
         </ScrollView>
       </KeyboardAvoidingView>
     </Page>

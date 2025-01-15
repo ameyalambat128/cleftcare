@@ -52,5 +52,20 @@
     "title": "ಎಲ್ಲಾ ಆಡಿಯೊ ಉಳಿಸಲಾಗಿದೆ!",
     "subtitle": "ಮಕ್ಕಳ ದಾಖಲೆಗಳ ವಿವರಗಳನ್ನು ನೋಡಲು ಹೋಮ್‌ಗೆ ಹೋಗಿ",
     "buttonText": "ಮನೆಗೆ ಹಿಂತಿರುಗಿ"
+  },
+  "editRecordScreen": {
+    "headerText": "ನಿಮ್ಮ ಅವಶ್ಯಕತೆಗಳ ಆಧಾರದ ಮೇಲೆ ಮಗುವಿನ ಮಾಹಿತಿಯನ್ನು ಸಂಪಾದಿಸಿ",
+    "namePlaceholder": "ನಿಮ್ಮ ಹೆಸರನ್ನು ನಮೂದಿಸಿ",
+    "birthDatePlaceholder": "ಜನ್ಮ ದಿನಾಂಕವನ್ನು ಆಯ್ಕೆಮಾಡಿ",
+    "genderPlaceholder": "ಲಿಂಗವನ್ನು ಆಯ್ಕೆಮಾಡಿ",
+    "genderMale": "ಗಂಡು",
+    "genderFemale": "ಹೆಣ್ಣು",
+    "genderOther": "ಇತರ",
+    "hearingStatusPlaceholder": "ಶ್ರವಣ ಸ್ಥಿತಿ",
+    "hearingYes": "ಹೌದು, ನನಗೆ ಶ್ರವಣದ ಕಳೆತ ಇದೆ",
+    "hearingNo": "ಇಲ್ಲ, ನನಗೆ ಶ್ರವಣದ ಕಳೆತವಿಲ್ಲ",
+    "addressPlaceholder": "ನಿಮ್ಮ ವಿಳಾಸವನ್ನು ನಮೂದಿಸಿ",
+    "contactNumberPlaceholder": "ಸಂಪರ್ಕ ಸಂಖ್ಯೆ",
+    "updateButton": "ನವೀಕರಿಸಿ"
   }
 }
