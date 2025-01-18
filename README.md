@@ -59,3 +59,9 @@ Start the Expo development server:
 ```shell
 bun start
 ```
+
+Android Emulator TCP port re-mapping (for localhost API requests)
+
+```shell
+adb reverse tcp:3000 tcp:3000
+```

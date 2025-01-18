@@ -28,6 +28,7 @@ export default function Screen() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false); // For pull-to-refresh
   const [error, setError] = useState<string>("");
+  const [role, setRole] = useState<string | null>("");
 
   // Fetch records based on communityWorkerId
   const fetchRecords = async (isRefresh = false) => {
@@ -74,6 +75,13 @@ export default function Screen() {
     try {
       const userId = await AsyncStorage.getItem("user-id");
       const userRole = await AsyncStorage.getItem("user-role");
+
+      console.log(
+        "Onboarding status:",
+        await AsyncStorage.getItem("onboarded")
+      );
+
+      setRole(userRole);
       if (userId !== null) {
         console.log("User ID:", userId);
         console.log("User Role:", userRole);
@@ -94,6 +102,10 @@ export default function Screen() {
   useEffect(() => {
     fetchRecords();
   }, []);
+
+  const handleDevPress = () => {
+    router.push("/record/onboarding");
+  };
 
   const handleSearchPress = () => {
     router.push("/search-record");
@@ -129,6 +141,11 @@ export default function Screen() {
             {t("homeScreen.title")}
           </Animated.Text>
           <View style={styles.iconsContainer}>
+            {role == "Admin" && (
+              <TouchableOpacity style={styles.icon} onPress={handleDevPress}>
+                <Feather name="code" size={25} color={Colors.tint} />
+              </TouchableOpacity>
+            )}
             <TouchableOpacity style={styles.icon} onPress={handleSearchPress}>
               <Feather name="search" size={25} color={Colors.text} />
             </TouchableOpacity>
