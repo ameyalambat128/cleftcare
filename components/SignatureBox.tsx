@@ -1,3 +1,4 @@
+import Colors from "@/constants/Colors";
 import React, { useRef } from "react";
 import { StyleSheet, View, Button } from "react-native";
 import SignatureScreen, {
@@ -11,34 +12,45 @@ type SignatureBoxProps = {
 export default function SignatureBox({ onOK }: SignatureBoxProps) {
   const ref = useRef<SignatureViewRef>(null);
 
-  const handleOK = (signature: string) => {
+  const handleSignature = (signature) => {
     console.log(signature);
     onOK(signature);
   };
 
-  const handleClear = () => {
-    ref.current?.clearSignature();
+  const handleEmpty = () => {
+    console.log("Empty");
   };
 
-  const handleConfirm = () => {
-    console.log("end");
+  const handleClear = () => {
+    console.log("clear success!");
+  };
+
+  const handleEnd = () => {
     ref.current?.readSignature();
   };
 
-  const style = `.m-signature-pad--footer {display: none; margin: 0px; color: black;}`;
+  const style = `.m-signature-pad--footer .button {
+      background-color: ${Colors.tint};
+      color: #FFF;
+    }{display: none; margin: 0px; color: black;}`;
 
   return (
     <View style={styles.container}>
       <SignatureScreen
         ref={ref}
-        onOK={handleOK}
+        onEnd={handleEnd}
+        onOK={handleSignature}
+        onEmpty={handleEmpty}
+        onClear={handleClear}
         webStyle={style}
-        descriptionText="Sign Here"
+        descriptionText="Add Your Sign Here"
+        confirmText="Save"
+        clearText="Clear"
       />
-      <View style={styles.row}>
+      {/* <View style={styles.row}>
         <Button title="Clear" onPress={handleClear} />
         <Button title="Confirm" onPress={handleConfirm} />
-      </View>
+      </View> */}
     </View>
   );
 }
@@ -48,8 +60,8 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    height: 200,
-    padding: 10,
+    height: 100,
+    marginTop: 30,
   },
   row: {
     display: "flex",
