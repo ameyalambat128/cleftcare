@@ -12,7 +12,7 @@ type SignatureBoxProps = {
 export default function SignatureBox({ onOK }: SignatureBoxProps) {
   const ref = useRef<SignatureViewRef>(null);
 
-  const handleSignature = (signature) => {
+  const handleSignature = (signature: string) => {
     console.log(signature);
     onOK(signature);
   };
