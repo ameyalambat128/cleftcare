@@ -85,6 +85,8 @@ export default function Screen() {
     return inputValue ? Colors.tint : Colors.secondaryText;
   };
 
+  const checkIfInputsAreFilled = !name || !signatureBase64String;
+
   return (
     <Page
       style={{ flex: 1, backgroundColor: Colors.background }}
@@ -126,6 +128,7 @@ export default function Screen() {
           style={{ marginTop: 20 }}
           type="large"
           onPress={handleNext}
+          disabled={checkIfInputsAreFilled}
         >
           {t("addSignatureScreen.addSignatureButton")}
         </PrimaryButton>
