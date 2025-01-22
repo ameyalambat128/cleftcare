@@ -104,7 +104,7 @@ export default function Screen() {
   }, []);
 
   const handleDevPress = () => {
-    router.push("/record/onboarding");
+    router.push("/add-record/add-signature");
   };
 
   const handleSearchPress = () => {

@@ -9,6 +9,7 @@ import { useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { UserInfo, useUserStore } from "@/lib/store";
 import { addRecord } from "@/lib/api";
+import SignatureBox from "@/components/SignatureBox";
 
 export default function Screen() {
   const router = useRouter();
@@ -18,6 +19,7 @@ export default function Screen() {
   const [name, setName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [signatureBase64String, setSignatureBase64String] = useState("");
 
   const user = getUser();
   console.log("User data:", user);
@@ -107,8 +109,17 @@ export default function Screen() {
             onChangeText={setName}
           />
         </View>
-
-        {/* <Text style={styles.formText}>Signature Box here</Text> */}
+        <View
+          style={{
+            height: "63%",
+            width: "100%",
+          }}
+        >
+          {/* <Text style={styles.formText}>Signature Box here</Text> */}
+          <SignatureBox
+            onOK={(signature) => setSignatureBase64String(signature)}
+          />
+        </View>
 
         {/* Submit Button */}
         <PrimaryButton
