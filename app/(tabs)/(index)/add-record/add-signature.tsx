@@ -111,7 +111,7 @@ export default function Screen() {
         </View>
         <View
           style={{
-            height: "63%",
+            height: "65%",
             width: "100%",
           }}
         >
