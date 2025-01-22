@@ -14,6 +14,7 @@ export default function SignatureBox({ onOK }: SignatureBoxProps) {
 
   const handleSignature = (signature: string) => {
     console.log(signature);
+
     onOK(signature);
   };
 
@@ -38,7 +39,6 @@ export default function SignatureBox({ onOK }: SignatureBoxProps) {
     <View style={styles.container}>
       <SignatureScreen
         ref={ref}
-        onEnd={handleEnd}
         onOK={handleSignature}
         onEmpty={handleEmpty}
         onClear={handleClear}
