@@ -212,6 +212,10 @@ export default function Screen() {
     setTimeout(() => setScreenState("done"), 2000);
   };
 
+  /**
+   * onDone function is called after the recording is stopped and unloaded.
+   * It saves the recording to local storage and uploads it to S3.
+   */
   const onDone = async () => {
     setCompleted(true);
     setRecordingCount((prevCount) => prevCount + 1);
