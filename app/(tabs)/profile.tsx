@@ -68,10 +68,7 @@ export default function Screen() {
               >
                 <Feather name="edit" size={23} color={Colors.text} />
               </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.icon}
-                onPress={handlePresentModalPress}
-              >
+              <TouchableOpacity style={styles.icon} onPress={handleHelpPress}>
                 <Feather name="mail" size={25} color={Colors.text} />
               </TouchableOpacity>
             </View>
