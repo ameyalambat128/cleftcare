@@ -412,8 +412,14 @@ export default function Screen() {
                   style={{ color: Colors.secondaryText }}
                   value=""
                 />
-                <Picker.Item label="Yes, I have hearing loss" value="Yes" />
-                <Picker.Item label="No, I have no hearing loss" value="No" />
+                <Picker.Item
+                  label="Yes, I have hearing loss"
+                  value="Yes, I have hearing loss"
+                />
+                <Picker.Item
+                  label="No, I have no hearing loss"
+                  value="No, I have no hearing loss"
+                />
               </Picker>
             </TouchableOpacity>
           )}
