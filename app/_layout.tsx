@@ -87,9 +87,9 @@ export default function RootLayout() {
 function RootLayoutNav({ isFirstLaunch }: { isFirstLaunch: boolean }) {
   const router = useRouter();
 
-  // useEffect(() => {
-  //   router.replace("/login");
-  // }, []);
+  useEffect(() => {
+    router.replace("/login");
+  }, []);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
