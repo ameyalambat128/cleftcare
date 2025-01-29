@@ -17,12 +17,16 @@ import Page from "@/components/Page";
 import RecordItem from "@/components/RecordItem";
 import Colors from "@/constants/Colors";
 import { SampleData } from "@/constants/SampleData";
-import { UserInfo } from "@/lib/store";
-import { getRecordsByCommunityWorkerId } from "@/lib/api";
+import { useCommunityWorkerStore, UserInfo } from "@/lib/store";
+import {
+  getCommunityWorkerByCommunityWorkerId,
+  getRecordsByCommunityWorkerId,
+} from "@/lib/api";
 
 export default function Screen() {
   const router = useRouter();
   const { i18n, t } = useTranslation();
+  const { setCommunityWorker } = useCommunityWorkerStore();
 
   const [records, setRecords] = useState<UserInfo[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -71,6 +75,27 @@ export default function Screen() {
     }
   };
 
+  const setCommunityWorkerStore = async () => {
+    try {
+      const communityWorkerId = await AsyncStorage.getItem("user-id");
+      if (!communityWorkerId) {
+        throw new Error("Community Worker ID is missing from storage.");
+      }
+      const response = await getCommunityWorkerByCommunityWorkerId(
+        communityWorkerId
+      );
+      setCommunityWorker({
+        communityWorkerId: communityWorkerId,
+        emailId: response.emailId,
+        name: response.name,
+        phone: response.phone,
+        region: response.region,
+      });
+    } catch (error) {
+      console.error("Error retrieving user ID:", error);
+    }
+  };
+
   const logUserId = async () => {
     try {
       const userId = await AsyncStorage.getItem("user-id");
@@ -101,6 +126,7 @@ export default function Screen() {
 
   useEffect(() => {
     fetchRecords();
+    setCommunityWorkerStore();
   }, []);
 
   const handleDevPress = () => {

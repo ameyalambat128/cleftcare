@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next";
 
 import Page from "@/components/Page";
 import Colors from "@/constants/Colors";
-import { useUserStore } from "@/lib/store";
+import { useCommunityWorkerStore, useUserStore } from "@/lib/store";
 import { formatDuration } from "@/lib/utils";
 import { s3Client } from "@/lib/aws";
 import { predictOhmRating } from "@/lib/api";
@@ -132,7 +132,10 @@ export default function Screen() {
   const { t } = useTranslation();
 
   const { getUser } = useUserStore();
+  const { getCommunityWorker } = useCommunityWorkerStore();
+
   const user = getUser();
+  const communityWorker = getCommunityWorker();
   console.log("User data:", user);
   if (user) {
     Object.entries(user).forEach(([key, value]) => {
@@ -158,6 +161,7 @@ export default function Screen() {
     const ohmScore = predictOhmRating(
       user?.userId!,
       user?.name!,
+      communityWorker?.name!,
       promptNumber,
       latestUploadFileName
     );
