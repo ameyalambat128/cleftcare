@@ -2,8 +2,13 @@
   "homeScreen": {
     "title": "Cleft Care",
     "viewRecords": "ಮಕ್ಕಳ ದಾಖಲೆಗಳನ್ನು ವೀಕ್ಷಿಸಿ",
+    "numberOfRecords": "ದಾಖಲೆಗಳನ್ನು",
     "noRecordsMessage": "ಮಕ್ಕಳ ದಾಖಲೆಗಳು ಖಾಲಿಯಾಗಿದೆ.",
     "addRecordPrompt": "ದಯವಿಟ್ಟು ಹೊಸದನ್ನು ಸೇರಿಸಿ."
+  },
+  "profileScreen": {
+    "headerText": "ಸಮುದಾಯ ಕಾರ್ಯಕರ್ತ",
+    "needHelpMessage": "ಸಹಾಯ ಬೇಕೇ?"
   },
   "helpCenterScreen": {
     "headerText": "ಸಹಾಯ ಬೇಕೇ? ದಯವಿಟ್ಟು ನಮಗೆ ತಿಳಿಸಿ",
