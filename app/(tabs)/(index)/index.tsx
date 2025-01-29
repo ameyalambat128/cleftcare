@@ -193,9 +193,10 @@ export default function Screen() {
             <Text style={styles.recordsTitle}>
               {t("homeScreen.viewRecords")}
             </Text>
-            <Text
-              style={styles.recordsCount}
-            >{`${getRecordCount()} records`}</Text>
+            <Text style={styles.recordsCount}>
+              {`${getRecordCount()} `}
+              {t("homeScreen.numberOfRecords")}
+            </Text>
           </View>
 
           {isLoading ? (
