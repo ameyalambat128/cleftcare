@@ -2,8 +2,10 @@ import axios from "axios";
 import { UserInfo } from "./store";
 // import { DEV_ENV, CLEFTCARE_API_KEY } from "@/constants/Data";
 
-const OHM_API_BASE_URL = "https://cleftcare-ohm-1067608021780.us-east1.run.app";
 const PROD = process.env.EXPO_PUBLIC_DEV_ENV === "production" ? true : false;
+const OHM_API_BASE_URL = PROD
+  ? "https://cleftcare-ohm-1067608021780.us-east1.run.app"
+  : "http://localhost:8080";
 const API_BASE_URL = PROD
   ? "https://jkneev16h9.execute-api.us-east-1.amazonaws.com/"
   : "http://localhost:3000";
@@ -19,6 +21,7 @@ const CLEFTCARE_API_KEY =
 export const predictOhmRating = async (
   userId: string,
   name: string,
+  communityWorkerName: string,
   promptNumber: number,
   uploadFileName: string
 ) => {
@@ -26,6 +29,7 @@ export const predictOhmRating = async (
     const response = await axios.post(`${OHM_API_BASE_URL}/predict`, {
       userId,
       name,
+      communityWorkerName,
       promptNumber,
       uploadFileName,
     });
@@ -61,6 +65,23 @@ export const validateLogin = async (email: string) => {
       error.response?.data || error.message
     );
     throw error.response?.data || { error: "Network or server error" };
+  }
+};
+
+export const getCommunityWorkerByCommunityWorkerId = async (
+  communityWorkerId: string
+) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/api/community-workers/${communityWorkerId}?apiKey=${CLEFTCARE_API_KEY}`
+    );
+    return response.data;
+  } catch (error: any) {
+    console.error(
+      "Error fetching community worker by ID:",
+      error.response?.data || error.message
+    );
+    throw error.response?.data || { error: "Failed to fetch community worker" };
   }
 };
 

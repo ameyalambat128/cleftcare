@@ -82,3 +82,37 @@ export const useAllUsersStore = create<AllUsersStore>((set, get) => ({
       users, // Set the entire array of users, useful for loading from persistence (e.g., AsyncStorage)
     })),
 }));
+
+// Community Worker Store
+type CommunityWorkerInfo = {
+  communityWorkerId: string;
+  emailId: string;
+  name: string;
+  phone: string;
+  region: string;
+};
+
+type CommunityWorkerStore = {
+  communityWorker: CommunityWorkerInfo | null;
+  getCommunityWorker: () => CommunityWorkerInfo | null;
+  setCommunityWorker: (communityWorker: CommunityWorkerInfo) => void;
+  clearCommunityWorker: () => void;
+};
+
+export const useCommunityWorkerStore = create<CommunityWorkerStore>(
+  (set, get) => ({
+    communityWorker: null,
+
+    getCommunityWorker: () => get().communityWorker,
+
+    setCommunityWorker: (communityWorker) =>
+      set(() => ({
+        communityWorker,
+      })),
+
+    clearCommunityWorker: () =>
+      set(() => ({
+        communityWorker: null,
+      })),
+  })
+);
