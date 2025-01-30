@@ -15,6 +15,7 @@ export type UserInfo = {
   parentConsent: boolean;
   signedConsent: boolean;
   communityWorkerId: string;
+  currentPromptNumber?: number;
 };
 
 type UserStore = {
