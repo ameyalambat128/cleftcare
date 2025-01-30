@@ -1,6 +1,7 @@
 import Page from "@/components/Page";
 import PrimaryButton from "@/components/PrimaryButton";
 import Colors from "@/constants/Colors";
+import { useCommunityWorkerStore } from "@/lib/store";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import {
   BottomSheetModal,
@@ -8,6 +9,7 @@ import {
 } from "@gorhom/bottom-sheet";
 import { useRouter } from "expo-router";
 import { useCallback, useMemo, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Image,
   Platform,
@@ -20,6 +22,11 @@ import Animated, { FadeInLeft, FadeOutLeft } from "react-native-reanimated";
 
 export default function Screen() {
   const router = useRouter();
+  const { t } = useTranslation();
+
+  const { getCommunityWorker } = useCommunityWorkerStore();
+  const communityWorker = getCommunityWorker();
+
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const snapPoints = useMemo(() => ["45%"], []);
 
@@ -78,13 +85,13 @@ export default function Screen() {
               source={require("@/assets/images/sample-worker.png")}
               style={styles.profileImage}
             />
-            <Text style={styles.roleText}>Community worker</Text>
-            <Text style={styles.nameText}>Shreya Jain</Text>
+            <Text style={styles.roleText}>{t("profileScreen.headerText")}</Text>
+            <Text style={styles.nameText}>{communityWorker?.name}</Text>
 
             <View style={styles.detailsContainer}>
               <View style={styles.contactInfo}>
                 <Ionicons name="mail-outline" size={18} color={Colors.tint} />
-                <Text style={styles.emailText}>rgondal1@asu.edu</Text>
+                <Text style={styles.emailText}>{communityWorker?.emailId}</Text>
               </View>
               <View style={styles.contactInfo}>
                 <Ionicons
@@ -98,7 +105,9 @@ export default function Screen() {
             <View style={styles.separator} />
           </View>
           <TouchableOpacity style={styles.helpButton} onPress={handleHelpPress}>
-            <Text style={styles.helpText}>Need help?</Text>
+            <Text style={styles.helpText}>
+              {t("profileScreen.needHelpMessage")}
+            </Text>
           </TouchableOpacity>
         </View>
         <BottomSheetModal

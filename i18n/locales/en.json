@@ -2,8 +2,13 @@
   "homeScreen": {
     "title": "Cleft Care",
     "viewRecords": "View Children records",
+    "numberOfRecords": "records",
     "noRecordsMessage": "Children's records are empty.",
     "addRecordPrompt": "Please add a new one."
+  },
+  "profileScreen": {
+    "headerText": "Community Worker",
+    "needHelpMessage": "Need help?"
   },
   "helpCenterScreen": {
     "headerText": "Need help? Please let us know",
