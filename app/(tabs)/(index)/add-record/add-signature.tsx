@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 import { UserInfo, useUserStore } from "@/lib/store";
 import { addRecord } from "@/lib/api";
 import SignatureBox from "@/components/SignatureBox";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Screen() {
   const router = useRouter();
@@ -63,7 +64,18 @@ export default function Screen() {
         updateUser({
           userId: apiResponse.id,
           signedConsent: true,
+          currentPromptNumber: 1,
         });
+        const currentChildUser = {
+          ...user,
+          userId: apiResponse.id,
+          signedConsent: true,
+          currentPromptNumber: 1,
+        };
+        await AsyncStorage.setItem(
+          "currentChildUser",
+          JSON.stringify(currentChildUser)
+        );
         console.log("Success", "User added successfully!");
         router.push("/record/");
       } else {
