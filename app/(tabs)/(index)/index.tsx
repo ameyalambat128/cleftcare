@@ -22,6 +22,7 @@ import {
   getCommunityWorkerByCommunityWorkerId,
   getRecordsByCommunityWorkerId,
 } from "@/lib/api";
+import { useFocusEffect } from "expo-router";
 
 export default function Screen() {
   const router = useRouter();
@@ -124,8 +125,20 @@ export default function Screen() {
     fetchRecords(true); // Pass `true` to indicate refresh
   }, []);
 
+  useFocusEffect(
+    // Callback should be wrapped in `React.useCallback` to avoid running the effect too often.
+    useCallback(() => {
+      // Invoked whenever the route is focused.
+      fetchRecords();
+
+      // Return function is invoked whenever the route gets out of focus.
+      return () => {
+        console.log("This route is now unfocused.");
+      };
+    }, [])
+  );
+
   useEffect(() => {
-    fetchRecords();
     setCommunityWorkerStore();
   }, []);
 
