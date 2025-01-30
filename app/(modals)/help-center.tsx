@@ -20,7 +20,7 @@ export default function Screen() {
   const router = useRouter();
   const { t } = useTranslation();
 
-  const [mail, setMail] = useState("");
+  const [mail, setMail] = useState("cleftcareasu@gmail.com");
   const [message, setMessage] = useState("");
 
   const getInputStyle = (inputValue: string) => ({
