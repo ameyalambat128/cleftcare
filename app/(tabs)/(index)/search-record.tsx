@@ -13,9 +13,12 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import RecordItem from "@/components/RecordItem";
 import { UserInfo } from "@/lib/store";
+import { useTranslation } from "react-i18next";
 
 export default function Screen() {
   const router = useRouter();
+  const { t } = useTranslation();
+
   const { records } = useLocalSearchParams();
   const [query, setQuery] = useState<string>("");
   const [filteredRecords, setFilteredRecords] = useState([]);
@@ -60,7 +63,7 @@ export default function Screen() {
             style={styles.icon}
           />
           <TextInput
-            placeholder="Search name or record id"
+            placeholder={t("searchScreen.searchPlaceholder")}
             placeholderTextColor="#8E8E93"
             style={styles.input}
             value={query}
@@ -84,10 +87,10 @@ export default function Screen() {
           ListEmptyComponent={
             query ? (
               <Text style={styles.noResults}>
-                No results found for "{query}"
+                {t("searchScreen.noResults")} "{query}"
               </Text>
             ) : (
-              <Text style={styles.noResults}>Type to search for records</Text>
+              <Text style={styles.noResults}>{t("searchScreen.subtitle")}</Text>
             )
           }
         />

@@ -6,6 +6,11 @@
     "noRecordsMessage": "Children's records are empty.",
     "addRecordPrompt": "Please add a new one."
   },
+  "searchScreen": {
+    "searchPlaceholder": "Search name or record id",
+    "subtitle": "Type to search for records",
+    "noResults": "No results found for"
+  },
   "profileScreen": {
     "headerText": "Community Worker",
     "needHelpMessage": "Need help?"
