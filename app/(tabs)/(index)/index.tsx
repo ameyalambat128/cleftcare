@@ -147,7 +147,10 @@ export default function Screen() {
   };
 
   const handleSearchPress = () => {
-    router.push("/search-record");
+    router.push({
+      pathname: "/search-record",
+      params: { records: JSON.stringify(records) }, // Pass records as a string
+    });
   };
 
   const handleHelpPress = () => {
