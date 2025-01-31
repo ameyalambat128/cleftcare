@@ -24,7 +24,7 @@ export default function Layout() {
         name="search-record"
         options={{
           title: "Search",
-          animation: "slide_from_bottom",
+          animation: "fade",
           headerShadowVisible: false,
           headerStyle: { backgroundColor: "white" },
           headerLeft: () => (

@@ -6,6 +6,11 @@
     "noRecordsMessage": "ಮಕ್ಕಳ ದಾಖಲೆಗಳು ಖಾಲಿಯಾಗಿದೆ.",
     "addRecordPrompt": "ದಯವಿಟ್ಟು ಹೊಸದನ್ನು ಸೇರಿಸಿ."
   },
+  "searchScreen": {
+    "searchPlaceholder": "ಹೆಸರು ಅಥವಾ ದಾಖಲೆ ಐಡಿಯನ್ನು ಹುಡುಕಿ",
+    "subtitle": "ದಾಖಲೆಗಳನ್ನು ಹುಡುಕಲು ಟೈಪ್ ಮಾಡಿ",
+    "noResults": "ಯಾವುದೇ ಫಲಿತಾಂಶಗಳು ಕಂಡುಬಂದಿಲ್ಲ"
+  },
   "profileScreen": {
     "headerText": "ಸಮುದಾಯ ಕಾರ್ಯಕರ್ತ",
     "needHelpMessage": "ಸಹಾಯ ಬೇಕೇ?"
