@@ -7,8 +7,10 @@ import {
   KeyboardAvoidingView,
   View,
   TextInput,
+  Modal,
+  TouchableOpacity,
 } from "react-native";
-import { Feather } from "@expo/vector-icons";
+import { AntDesign, Feather } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
 import Page from "@/components/Page";
@@ -22,6 +24,17 @@ export default function Screen() {
 
   const [mail, setMail] = useState("cleftcareasu@gmail.com");
   const [message, setMessage] = useState("");
+  const [showModal, setShowModal] = useState<boolean>(false);
+
+  const handleNext = () => {
+    setShowModal(true);
+    console.log("Message Sent", mail, message);
+  };
+
+  const handleModalClose = () => {
+    setShowModal(false);
+    router.replace("/");
+  };
 
   const getInputStyle = (inputValue: string) => ({
     borderColor: inputValue ? Colors.tint : "#E5E7EB",
@@ -77,10 +90,40 @@ export default function Screen() {
           <PrimaryButton
             style={{ marginTop: 50 }}
             type="large"
-            onPress={() => console.log("Message Sent")}
+            onPress={handleNext}
           >
             {t("helpCenterScreen.submitButton")}
           </PrimaryButton>
+
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={showModal}
+            onRequestClose={() => setShowModal(false)}
+          >
+            <TouchableOpacity
+              style={styles.modalContainer}
+              activeOpacity={1}
+              onPress={() => setShowModal(false)}
+            >
+              <View style={styles.modalContent}>
+                <AntDesign name="checkcircle" size={50} color={Colors.tint} />
+                <Text style={styles.modalTitle}>
+                  {t("helpCenterMailSentModal.title")}
+                </Text>
+                <Text style={styles.modalSubtitle}>
+                  {t("helpCenterMailSentModal.subtitle")}
+                </Text>
+                <PrimaryButton
+                  style={{ marginTop: 20 }}
+                  type="medium"
+                  onPress={handleModalClose}
+                >
+                  {t("helpCenterMailSentModal.buttonText")}
+                </PrimaryButton>
+              </View>
+            </TouchableOpacity>
+          </Modal>
         </ScrollView>
       </KeyboardAvoidingView>
     </Page>
@@ -117,5 +160,32 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
     padding: 15,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "space-around",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.5)", // Semi-transparent background
+  },
+  modalContent: {
+    width: "90%",
+    height: "45%", // Increase height to make it longer
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 40, // Add more padding for spacing
+    alignItems: "center",
+    justifyContent: "center", // Center content vertically
+  },
+  modalTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginVertical: 10,
+    textAlign: "center",
+  },
+  modalSubtitle: {
+    fontSize: 16,
+    color: Colors.secondaryText,
+    textAlign: "center",
+    marginBottom: 20,
   },
 });

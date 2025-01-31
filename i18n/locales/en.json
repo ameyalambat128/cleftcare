@@ -16,6 +16,11 @@
     "messagePlaceholder": "Enter your message here",
     "submitButton": "Submit"
   },
+  "helpCenterMailSentModal": {
+    "title": "Email Sent!",
+    "subtitle": "We have received your message and will get back to you shortly.",
+    "buttonText": "Back to Home"
+  },
   "addRecordScreen": {
     "headerText": "Please enter child's information to continue with the audio recording",
     "namePlaceholder": "Enter your name",
