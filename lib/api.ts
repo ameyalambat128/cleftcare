@@ -23,6 +23,7 @@ export const predictOhmRating = async (
   name: string,
   communityWorkerName: string,
   promptNumber: number,
+  language: string,
   uploadFileName: string
 ) => {
   try {
@@ -31,6 +32,7 @@ export const predictOhmRating = async (
       name,
       communityWorkerName,
       promptNumber,
+      language,
       uploadFileName,
     });
     return response.data;

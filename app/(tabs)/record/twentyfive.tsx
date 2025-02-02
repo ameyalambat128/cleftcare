@@ -130,7 +130,7 @@ export const DoneState: React.FC<{
 
 export default function Screen() {
   const router = useRouter();
-  const { t } = useTranslation();
+  const { i18n, t } = useTranslation();
 
   const { getUser } = useUserStore();
   const { getCommunityWorker } = useCommunityWorkerStore();
@@ -170,6 +170,7 @@ export default function Screen() {
       user?.name!,
       communityWorker?.name!,
       promptNumber,
+      i18n.language,
       latestUploadFileName
     );
     setShowModal(false);
