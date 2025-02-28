@@ -137,7 +137,7 @@ export const updateRecord = async (
   record: Partial<UserInfo>
 ) => {
   try {
-    const response = await axios.put(
+    const response = await axios.patch(
       `${API_BASE_URL}/api/users/${userId}?apiKey=${CLEFTCARE_API_KEY}`,
       record
     );
@@ -148,5 +148,35 @@ export const updateRecord = async (
       error.response?.data || error.message
     );
     throw error.response?.data || { error: "Failed to update user" };
+  }
+};
+
+export const createAudioFile = async (
+  userId: string,
+  prompt: string,
+  promptNumber: number,
+  fileUrl: string,
+  duration?: number,
+  ohmScore?: number
+) => {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/api/audio-files?apiKey=${CLEFTCARE_API_KEY}`,
+      {
+        userId,
+        prompt,
+        promptNumber,
+        fileUrl,
+        duration,
+        ohmScore,
+      }
+    );
+    return response.data;
+  } catch (error: any) {
+    console.error(
+      "Error creating audio file:",
+      error.response?.data || error.message
+    );
+    throw error.response?.data || { error: "Failed to create audio file" };
   }
 };

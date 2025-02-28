@@ -13,7 +13,7 @@ import Colors from "@/constants/Colors";
 import { useCommunityWorkerStore, useUserStore } from "@/lib/store";
 import { formatDuration } from "@/lib/utils";
 import { s3Client } from "@/lib/aws";
-import { predictOhmRating } from "@/lib/api";
+import { createAudioFile, predictOhmRating } from "@/lib/api";
 
 const promptNumber: number = 1;
 
@@ -157,8 +157,13 @@ export default function Screen() {
   const [meter, setMeter] = useState(0);
 
   const handleNext = () => {
+    handleResults();
+    router.push("/record/twentyfive");
+  };
+
+  const handleResults = async () => {
     console.log("CHECKTHIS:", latestUploadFileName);
-    const ohmScore = predictOhmRating(
+    const ohmScore = await predictOhmRating(
       user?.userId!,
       user?.name!,
       communityWorker?.name!,
@@ -166,7 +171,21 @@ export default function Screen() {
       i18n.language,
       latestUploadFileName
     );
-    router.push("/record/twentyfive");
+    const fileUrl = `https://cleftcare-test.s3.amazonaws.com/${latestUploadFileName}`;
+    // TODO: Fix the duration
+    const durationInSeconds = status?.durationMillis
+      ? Math.round(status.durationMillis / 1000)
+      : undefined;
+    const ohmScoreNumber = ohmScore?.perceptualRating;
+
+    createAudioFile(
+      user?.userId!,
+      t("recordingScreen.prompt1"),
+      promptNumber,
+      fileUrl,
+      durationInSeconds,
+      ohmScoreNumber
+    );
   };
 
   const onStartRecording = async () => {
