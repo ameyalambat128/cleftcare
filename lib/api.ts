@@ -180,3 +180,20 @@ export const createAudioFile = async (
     throw error.response?.data || { error: "Failed to create audio file" };
   }
 };
+
+export const updateAverageOhmScore = async (userId: string) => {
+  try {
+    const response = await axios.patch(
+      `${API_BASE_URL}/api/users/${userId}/average-ohm-score?apiKey=${CLEFTCARE_API_KEY}`
+    );
+    return response.data;
+  } catch (error: any) {
+    console.error(
+      "Error fetching average OHM score:",
+      error.response?.data || error.message
+    );
+    throw (
+      error.response?.data || { error: "Failed to fetch average OHM score" }
+    );
+  }
+};

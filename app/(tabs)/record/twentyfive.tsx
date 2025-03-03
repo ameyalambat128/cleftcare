@@ -14,7 +14,11 @@ import { useCommunityWorkerStore, useUserStore } from "@/lib/store";
 import { formatDuration } from "@/lib/utils";
 import { s3Client } from "@/lib/aws";
 import PrimaryButton from "@/components/PrimaryButton";
-import { createAudioFile, predictOhmRating } from "@/lib/api";
+import {
+  createAudioFile,
+  predictOhmRating,
+  updateAverageOhmScore,
+} from "@/lib/api";
 
 const promptNumber: number = 25;
 
@@ -164,6 +168,7 @@ export default function Screen() {
 
   const handleModalClose = () => {
     handleResults();
+    handleUpdateAverageOhmScore();
     setShowModal(false);
     router.push("/"); // Navigate to home after closing
   };
@@ -194,6 +199,10 @@ export default function Screen() {
       durationInSeconds,
       ohmScoreNumber
     );
+  };
+
+  const handleUpdateAverageOhmScore = async () => {
+    const averageScore = await updateAverageOhmScore(user?.userId!);
   };
 
   const onStartRecording = async () => {
