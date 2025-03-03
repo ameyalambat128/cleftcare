@@ -2,8 +2,9 @@
 
 **Cleft Care**, a speech analysis mobile application built with **Expo**, **React Native**, **Docker**, **AWS**, **Google Cloud Run**, and **PostgreSQL**, designed to collect, process, and evaluate speech samples for clinicians globally. Includes a fine-tuned a **custom deep neural network model** for precise speech analysis, with backend APIs served via **Docker**, **AWS Lambda**, and **Google Cloud Run**. Seamless data workflows and efficient audio recording functionalities, enabling secure storage and real-time analysis through **AWS S3** and **OHM Model APIs**. Multilingual support and robust authentication mechanisms, enhancing clinicians' ability to access, analyze, and manage patient data effortlessly across borders.
 
+- **Cleft Care Dashboard:** [Cleft Care Dashboard Repository](https://github.com/ameyalambat128/cleftcare-dashboard)
 - **Cleft Care API:** [Cleft Care API Repository](https://github.com/ameyalambat128/cleftcare-api)
-- **OHM Model Inference API:** [OHM Inference API Repository](https://github.com/ameyalambat128/cleftcare-ohm-api)
+- **Cleft Care OHM Model Inference API:** [OHM Inference API Repository](https://github.com/ameyalambat128/cleftcare-ohm-api)
 
 ## Features
 
