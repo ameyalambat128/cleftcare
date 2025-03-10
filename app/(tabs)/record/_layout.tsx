@@ -3,9 +3,10 @@ import { Stack, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 
 export default function Layout() {
+  const router = useRouter();
+
   const [isLoading, setIsLoading] = useState(true);
   const [onboarded, setOnboarded] = useState(false);
-  const router = useRouter();
 
   useEffect(() => {
     async function checkOnboardingStatus() {

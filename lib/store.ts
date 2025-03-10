@@ -14,6 +14,7 @@ export type UserInfo = {
   photo: string;
   parentConsent: boolean;
   signedConsent: boolean;
+  consentSignedBy: string;
   communityWorkerId: string;
   currentPromptNumber?: number;
 };

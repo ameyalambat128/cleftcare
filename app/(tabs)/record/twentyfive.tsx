@@ -14,7 +14,11 @@ import { useCommunityWorkerStore, useUserStore } from "@/lib/store";
 import { formatDuration } from "@/lib/utils";
 import { s3Client } from "@/lib/aws";
 import PrimaryButton from "@/components/PrimaryButton";
-import { predictOhmRating } from "@/lib/api";
+import {
+  createAudioFile,
+  predictOhmRating,
+  updateAverageOhmScore,
+} from "@/lib/api";
 
 const promptNumber: number = 25;
 
@@ -163,18 +167,43 @@ export default function Screen() {
   };
 
   const handleModalClose = () => {
-    // OHM Score prediction here
+    handleResults();
+    handleUpdateAverageOhmScore();
+    setShowModal(false);
+    router.push("/"); // Navigate to home after closing
+  };
+
+  const handleResults = async () => {
     console.log("CHECKTHIS:", latestUploadFileName);
-    const ohmScore = predictOhmRating(
+    const ohmScore = await predictOhmRating(
       user?.userId!,
       user?.name!,
       communityWorker?.name!,
       promptNumber,
       i18n.language,
-      latestUploadFileName
+      latestUploadFileName,
+      true
     );
-    setShowModal(false);
-    router.push("/"); // Navigate to home after closing
+    const fileUrl = `https://cleftcare-test.s3.amazonaws.com/${latestUploadFileName}`;
+
+    // TODO: Fix the duration
+    const durationInSeconds = status?.durationMillis;
+    console.log("Duration in seconds:", durationInSeconds);
+
+    const ohmScoreNumber = ohmScore?.perceptualRating;
+
+    createAudioFile(
+      user?.userId!,
+      t("recordingScreen.prompt2"),
+      promptNumber,
+      fileUrl,
+      durationInSeconds,
+      ohmScoreNumber
+    );
+  };
+
+  const handleUpdateAverageOhmScore = async () => {
+    const averageScore = await updateAverageOhmScore(user?.userId!);
   };
 
   const onStartRecording = async () => {

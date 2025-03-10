@@ -232,7 +232,7 @@ export default function Screen() {
           ) : (
             <View style={styles.recordListContainer}>
               <FlatList
-                data={records}
+                data={records.slice().reverse()}
                 renderItem={({ item }: { item: UserInfo }) => (
                   <RecordItem
                     key={item.userId}
