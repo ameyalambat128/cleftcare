@@ -24,7 +24,8 @@ export const predictOhmRating = async (
   communityWorkerName: string,
   promptNumber: number,
   language: string,
-  uploadFileName: string
+  uploadFileName: string,
+  sendEmail: boolean
 ) => {
   try {
     const response = await axios.post(`${OHM_API_BASE_URL}/predict`, {
@@ -34,6 +35,7 @@ export const predictOhmRating = async (
       promptNumber,
       language,
       uploadFileName,
+      sendEmail,
     });
     return response.data;
   } catch (error) {

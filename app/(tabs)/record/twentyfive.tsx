@@ -181,7 +181,8 @@ export default function Screen() {
       communityWorker?.name!,
       promptNumber,
       i18n.language,
-      latestUploadFileName
+      latestUploadFileName,
+      true
     );
     const fileUrl = `https://cleftcare-test.s3.amazonaws.com/${latestUploadFileName}`;
 

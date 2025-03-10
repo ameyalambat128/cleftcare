@@ -13,7 +13,7 @@ export default function Layout() {
   useEffect(() => {
     async function checkOnboardingStatus() {
       // TODO: For Testing ONLY - Remove this line in production
-      await AsyncStorage.removeItem("home-onboarded");
+      // await AsyncStorage.removeItem("home-onboarded");
 
       const status = await AsyncStorage.getItem("home-onboarded");
       if (!status) {

@@ -169,7 +169,8 @@ export default function Screen() {
       communityWorker?.name!,
       promptNumber,
       i18n.language,
-      latestUploadFileName
+      latestUploadFileName,
+      false
     );
     const fileUrl = `https://cleftcare-test.s3.amazonaws.com/${latestUploadFileName}`;
     // TODO: Fix the duration
