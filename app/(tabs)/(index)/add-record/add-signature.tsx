@@ -17,7 +17,7 @@ export default function Screen() {
   const { t } = useTranslation();
   const { getUser, updateUser } = useUserStore();
 
-  const [name, setName] = useState("");
+  const [consentSignedBy, setConsentSignedBy] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [signatureBase64String, setSignatureBase64String] = useState("");
@@ -49,6 +49,7 @@ export default function Screen() {
       photo: user.photo,
       parentConsent: user.parentConsent,
       signedConsent: true, // Explicitly set as signed
+      consentSignedBy: consentSignedBy,
       communityWorkerId: user.communityWorkerId,
     };
 
@@ -64,12 +65,14 @@ export default function Screen() {
         updateUser({
           userId: apiResponse.id,
           signedConsent: true,
+          consentSignedBy: consentSignedBy,
           currentPromptNumber: 1,
         });
         const currentChildUser = {
           ...user,
           userId: apiResponse.id,
           signedConsent: true,
+          consentSignedBy: consentSignedBy,
           currentPromptNumber: 1,
         };
         await AsyncStorage.setItem(
@@ -97,7 +100,7 @@ export default function Screen() {
     return inputValue ? Colors.tint : Colors.secondaryText;
   };
 
-  const checkIfInputsAreFilled = !name || !signatureBase64String;
+  const checkIfInputsAreFilled = !consentSignedBy || !signatureBase64String;
 
   return (
     <Page
@@ -109,18 +112,18 @@ export default function Screen() {
           {t("addSignatureScreen.headerText")}
         </Text>
 
-        <View style={[styles.inputField, getInputStyle(name)]}>
+        <View style={[styles.inputField, getInputStyle(consentSignedBy)]}>
           <Feather
             name="user"
             size={20}
-            color={getIconColor(name)}
+            color={getIconColor(consentSignedBy)}
             style={styles.icon}
           />
           <TextInput
             placeholder={t("addSignatureScreen.namePlaceholder")}
             placeholderTextColor={Colors.secondaryText}
-            value={name}
-            onChangeText={setName}
+            value={consentSignedBy}
+            onChangeText={setConsentSignedBy}
           />
         </View>
         <View
