@@ -1,5 +1,6 @@
 import Colors from "@/constants/Colors";
 import React, { useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, View, Button } from "react-native";
 import SignatureScreen, {
   SignatureViewRef,
@@ -10,6 +11,8 @@ type SignatureBoxProps = {
 };
 
 export default function SignatureBox({ onOK }: SignatureBoxProps) {
+  const { t } = useTranslation();
+
   const ref = useRef<SignatureViewRef>(null);
 
   const handleSignature = (signature: string) => {
@@ -42,9 +45,9 @@ export default function SignatureBox({ onOK }: SignatureBoxProps) {
         onEmpty={handleEmpty}
         onClear={handleClear}
         webStyle={style}
-        descriptionText="Add Your Sign Here"
-        confirmText="Save"
-        clearText="Clear"
+        descriptionText={t("addSignatureScreen.signatureBoxDesc")}
+        confirmText={t("addSignatureScreen.signatureBoxConfirm")}
+        clearText={t("addSignatureScreen.signatureBoxClear")}
       />
       {/* <View style={styles.row}>
         <Button title="Clear" onPress={handleClear} />
