@@ -39,6 +39,7 @@
     "hearingNo": "No, I have no hearing loss",
     "addressPlaceholder": "Enter your Address",
     "contactNumberPlaceholder": "Contact number",
+    "takePhotoButton": "Take/Choose Photo (Optional)",
     "nextButton": "Next"
   },
   "parentConsentScreen": {
@@ -50,6 +51,9 @@
   "addSignatureScreen": {
     "headerText": "Please provide additional details and then add your full name as signature.",
     "namePlaceholder": "Enter your full name",
+    "signatureBoxDesc": "Add Your Sign Here",
+    "signatureBoxConfirm": "Save",
+    "signatureBoxClear": "Clear",
     "addSignatureButton": "Add Signature"
   },
   "recordingScreen": {
@@ -81,6 +85,7 @@
     "hearingNo": "No, I have no hearing loss",
     "addressPlaceholder": "Enter your Address",
     "contactNumberPlaceholder": "Contact number",
+    "takePhotoButton": "Take/Choose Photo (Optional)",
     "updateButton": "Update"
   }
 }

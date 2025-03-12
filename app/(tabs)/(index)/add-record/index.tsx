@@ -67,6 +67,7 @@ export default function Screen() {
           contactNumber,
           photo,
           communityWorkerId: workerId,
+          consentSignedBy: "",
           parentConsent: false,
           signedConsent: false,
         });
@@ -290,13 +291,22 @@ export default function Screen() {
                 style={styles.picker}
               >
                 <Picker.Item
-                  label="Select Gender"
+                  label={t("addRecordScreen.genderPlaceholder")}
                   style={{ color: Colors.secondaryText }}
                   value=""
                 />
-                <Picker.Item label="Male" value="Male" />
-                <Picker.Item label="Female" value="Female" />
-                <Picker.Item label="Other" value="Other" />
+                <Picker.Item
+                  label={t("addRecordScreen.genderMale")}
+                  value="Male"
+                />
+                <Picker.Item
+                  label={t("addRecordScreen.genderFemale")}
+                  value="Female"
+                />
+                <Picker.Item
+                  label={t("addRecordScreen.genderOther")}
+                  value="Other"
+                />
               </Picker>
             </TouchableOpacity>
           )}
@@ -320,7 +330,7 @@ export default function Screen() {
                   <Text style={styles.inputText}>{gender}</Text>
                 ) : (
                   <Text style={{ color: Colors.secondaryText }}>
-                    Select Gender
+                    {t("addRecordScreen.genderPlaceholder")}
                   </Text>
                 )}
               </TouchableOpacity>
@@ -342,10 +352,22 @@ export default function Screen() {
                       }}
                       style={styles.picker}
                     >
-                      <Picker.Item label="Select Gender" value="" />
-                      <Picker.Item label="Male" value="Male" />
-                      <Picker.Item label="Female" value="Female" />
-                      <Picker.Item label="Other" value="Other" />
+                      <Picker.Item
+                        label={t("addRecordScreen.genderPlaceholder")}
+                        value=""
+                      />
+                      <Picker.Item
+                        label={t("addRecordScreen.genderMale")}
+                        value="Male"
+                      />
+                      <Picker.Item
+                        label={t("addRecordScreen.genderFemale")}
+                        value="Female"
+                      />
+                      <Picker.Item
+                        label={t("addRecordScreen.genderOther")}
+                        value="Other"
+                      />
                     </Picker>
                   </View>
                 </View>
@@ -378,16 +400,16 @@ export default function Screen() {
                 style={styles.picker}
               >
                 <Picker.Item
-                  label="Hearing Status"
+                  label={t("addRecordScreen.hearingStatusPlaceholder")}
                   style={{ color: Colors.secondaryText }}
                   value=""
                 />
                 <Picker.Item
-                  label="Yes, I have hearing loss"
+                  label={t("addRecordScreen.hearingYes")}
                   value="Yes, I have hearing loss"
                 />
                 <Picker.Item
-                  label="No, I have no hearing loss"
+                  label={t("addRecordScreen.hearingNo")}
                   value="No, I have no hearing loss"
                 />
               </Picker>
@@ -415,7 +437,7 @@ export default function Screen() {
                   <Text style={styles.inputText}>{hearingStatus}</Text>
                 ) : (
                   <Text style={{ color: Colors.secondaryText }}>
-                    Hearing Status
+                    {t("addRecordScreen.hearingStatusPlaceholder")}
                   </Text>
                 )}
               </TouchableOpacity>
@@ -438,16 +460,16 @@ export default function Screen() {
                       style={styles.picker}
                     >
                       <Picker.Item
-                        label="Hearing Status"
+                        label={t("addRecordScreen.hearingStatusPlaceholder")}
                         style={{ color: Colors.secondaryText }}
                         value=""
                       />
                       <Picker.Item
-                        label="Yes, I have hearing loss"
+                        label={t("addRecordScreen.hearingYes")}
                         value="Yes, I have hearing loss"
                       />
                       <Picker.Item
-                        label="No, I have no hearing loss"
+                        label={t("addRecordScreen.hearingNo")}
                         value="No, I have no hearing loss"
                       />
                     </Picker>
@@ -518,7 +540,7 @@ export default function Screen() {
               style={styles.icon}
             />
             <Text style={{ color: Colors.secondaryText }}>
-              Take/Choose Photo (Optional)
+              {t("addRecordScreen.takePhotoButton")}
             </Text>
           </TouchableOpacity>
 

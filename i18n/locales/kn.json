@@ -35,10 +35,11 @@
     "genderFemale": "ಹೆಣ್ಣು",
     "genderOther": "ಇತರ",
     "hearingStatusPlaceholder": "ಶ್ರವಣ ಸ್ಥಿತಿ",
-    "hearingYes": "ಹೌದು, ನನಗೆ ಶ್ರವಣದ ಕಳೆತ ಇದೆ",
-    "hearingNo": "ಇಲ್ಲ, ನನಗೆ ಶ್ರವಣದ ಕಳೆತವಿಲ್ಲ",
+    "hearingYes": "ಹೌದು, ನನಗೆ ಕೇಳುವಿಕೆ ಕಳೆದುಕೊಂಡಿದೆ",
+    "hearingNo": "ಇಲ್ಲ, ನನಗೆ ಕೇಳುವಿಕೆಯ ಸಮಸ್ಯೆ ಇಲ್ಲ",
     "addressPlaceholder": "ನಿಮ್ಮ ವಿಳಾಸವನ್ನು ನಮೂದಿಸಿ",
     "contactNumberPlaceholder": "ಸಂಪರ್ಕ ಸಂಖ್ಯೆ",
+    "takePhotoButton": "ಫೋಟೋ ತೆರೆಯಿಕೆ/ಆಯ್ಕೆ ಮಾಡಿ (ಐಚ್ಛಿಕ)",
     "nextButton": "ಮುಂದೆ"
   },
   "parentConsentScreen": {
@@ -50,6 +51,9 @@
   "addSignatureScreen": {
     "headerText": "ದಯವಿಟ್ಟು ಹೆಚ್ಚಿನ ವಿವರಗಳನ್ನು ನೀಡಿರಿ ಮತ್ತು ನಂತರ ನಿಮ್ಮ ಸಂಪೂರ್ಣ ಹೆಸರನ್ನು ಹಸ್ತಾಕ್ಷರವಾಗಿ ಸೇರಿಸಿ.",
     "namePlaceholder": "ನಿಮ್ಮ ಪೂರ್ಣ ಹೆಸರನ್ನು ನಮೂದಿಸಿ",
+    "signatureBoxDesc": "ನಿಮ್ಮ ಸಹಿಯನ್ನು ಇಲ್ಲಿ ಸೇರಿಸಿ",
+    "signatureBoxConfirm": "ಉಳಿಸಿ",
+    "signatureBoxClear": "ಅಳಿಸು",
     "addSignatureButton": "ಹಸ್ತಾಕ್ಷರವನ್ನು ಸೇರಿಸಿ"
   },
   "recordingScreen": {
@@ -77,10 +81,11 @@
     "genderFemale": "ಹೆಣ್ಣು",
     "genderOther": "ಇತರ",
     "hearingStatusPlaceholder": "ಶ್ರವಣ ಸ್ಥಿತಿ",
-    "hearingYes": "ಹೌದು, ನನಗೆ ಶ್ರವಣದ ಕಳೆತ ಇದೆ",
-    "hearingNo": "ಇಲ್ಲ, ನನಗೆ ಶ್ರವಣದ ಕಳೆತವಿಲ್ಲ",
+    "hearingYes": "ಹೌದು, ನನಗೆ ಕೇಳುವಿಕೆ ಕಳೆದುಕೊಂಡಿದೆ",
+    "hearingNo": "ಇಲ್ಲ, ನನಗೆ ಕೇಳುವಿಕೆಯ ಸಮಸ್ಯೆ ಇಲ್ಲ",
     "addressPlaceholder": "ನಿಮ್ಮ ವಿಳಾಸವನ್ನು ನಮೂದಿಸಿ",
     "contactNumberPlaceholder": "ಸಂಪರ್ಕ ಸಂಖ್ಯೆ",
+    "takePhotoButton": "ಫೋಟೋ ತೆರೆಯಿಕೆ/ಆಯ್ಕೆ ಮಾಡಿ (ಐಚ್ಛಿಕ)",
     "updateButton": "ನವೀಕರಿಸಿ"
   }
 }
