@@ -173,7 +173,7 @@ export default function Screen() {
       );
     }
 
-    await handleResults();
+    handleResults();
     router.push(`/record/${userIdLocalParam}/twentyfive`);
   };
 
@@ -190,6 +190,7 @@ export default function Screen() {
       latestUploadFileName,
       false
     );
+    console.log("OHM Score Prompt 1", ohmScore);
     const fileUrl = `https://cleftcare-test.s3.amazonaws.com/${latestUploadFileName}`;
     // TODO: Fix the duration
     const durationInSeconds = status?.durationMillis
@@ -197,7 +198,7 @@ export default function Screen() {
       : undefined;
     const ohmScoreNumber = ohmScore?.perceptualRating;
 
-    createAudioFile(
+    const audioFileCreated = await createAudioFile(
       user?.id!,
       t("recordingScreen.prompt1"),
       promptNumber,
@@ -205,6 +206,7 @@ export default function Screen() {
       durationInSeconds,
       ohmScoreNumber
     );
+    console.log("audioFileCreated Prompt 1", audioFileCreated);
   };
 
   const onStartRecording = async () => {
