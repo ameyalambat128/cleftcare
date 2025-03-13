@@ -101,6 +101,7 @@ function RootLayoutNav({ isFirstLaunch }: { isFirstLaunch: boolean }) {
         >
           <Stack.Screen name="login" options={{ headerShown: false }} />
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="record" options={{ headerShown: false }} />
           <Stack.Screen
             name="(modals)/help-center"
             options={{
