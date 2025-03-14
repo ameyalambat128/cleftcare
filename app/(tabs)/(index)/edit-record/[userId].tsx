@@ -114,11 +114,24 @@ export default function Screen() {
 
       console.log("Recording progress:", progress);
       // Check if prompt 1 is completed
-      if (progress[1]?.completed) {
+      if (progress[1]?.completed && progress[25]?.completed) {
         // If prompt 1 is done, go to prompt 25
+        Alert.alert(
+          "Recordings Complete",
+          "All voice recordings have been completed for this patient. You can re-record if needed.",
+          [
+            { text: "Cancel", style: "cancel", onPress: () => router.back() },
+            {
+              text: "Re-Record",
+            },
+          ]
+        );
+        router.push(`/record/${userId}/`);
+      } else if (progress[1]?.completed) {
+        // Otherwise start at prompt 1
         router.push(`/record/${userId}/twentyfive`);
       } else {
-        // Otherwise start at prompt 1
+        // If prompt 1 is not done, go to prompt 1
         router.push(`/record/${userId}/`);
       }
     } catch (error) {
