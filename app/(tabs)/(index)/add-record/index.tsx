@@ -227,6 +227,7 @@ export default function Screen() {
                     testID="dateTimePicker"
                     value={birthDate ? birthDate : new Date()}
                     mode="date"
+                    maximumDate={new Date()}
                     display={Platform.OS === "ios" ? "inline" : "calendar"}
                     onChange={onDateChange}
                     style={styles.dateTimePicker}
@@ -262,6 +263,7 @@ export default function Screen() {
               value={birthDate ? birthDate : new Date()}
               mode="date"
               display="calendar"
+              maximumDate={new Date()}
               onChange={onDateChange}
             />
           )}
