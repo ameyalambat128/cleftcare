@@ -64,6 +64,18 @@ export default function Screen() {
       }));
 
       setRecords(mappedRecords);
+
+      // Check if this is a new user with no records
+      if (mappedRecords.length === 0) {
+        // Check if they've seen onboarding before
+        const hasSeenOnboarding = await AsyncStorage.getItem(
+          `home-onboarded-${communityWorkerId}`
+        );
+        if (!hasSeenOnboarding) {
+          // Navigate to onboarding if they have no records and haven't seen it
+          router.replace("/(tabs)/(index)/onboarding");
+        }
+      }
     } catch (err: any) {
       console.error("Failed to fetch records:", err);
       setError(err.error || "Failed to load records.");
@@ -142,7 +154,13 @@ export default function Screen() {
     setCommunityWorkerStore();
   }, []);
 
-  const handleDevPress = () => {
+  const handleDevPress = async () => {
+    // TODO: Delete onboarding key for specific user
+    const specificUserId = "b2bd8db9-7693-4c8d-a503-107be818ad6e";
+    await AsyncStorage.removeItem(`home-onboarded-${specificUserId}`);
+    console.log(`Removed onboarding key for user: ${specificUserId}`);
+
+    // Original dev functions
     // @ts-expect-error - Testing only
     router.push({ pathname: "/_sitemap" });
     // router.push({ pathname: "/record/d5ec1673-ac95-4087-8170-ce1ef7dcd53a/" });
