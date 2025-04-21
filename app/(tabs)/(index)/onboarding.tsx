@@ -10,6 +10,7 @@ import Colors from "@/constants/Colors";
 export default function HomeOnboardingScreen() {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
+  const [completed, setCompleted] = useState(false);
 
   const onboardingSteps = [
     {
@@ -59,29 +60,19 @@ export default function HomeOnboardingScreen() {
       position: { bottom: 40, right: "35%", left: "5%" },
       arrowPosition: {
         bottom: -10,
-        right: 180,
+        right: 185,
         transform: [{ rotate: "0deg" }],
       },
     },
-    {
-      title: "Record Audio Tab",
-      message:
-        "Record speech samples for evaluating children's progress. Only use after creating a new patient.",
-      position: { bottom: 40, right: "30%", left: "15%" },
-      arrowPosition: {
-        bottom: -10,
-        right: 115,
-        transform: [{ rotate: "0deg" }],
-      },
-    },
+
     {
       title: "Tutorials Tab",
       message:
         "Find helpful guides and training materials for using Cleft Care",
-      position: { bottom: 40, right: "10%", left: "30%" },
+      position: { bottom: 40, right: "20%", left: "20%" },
       arrowPosition: {
         bottom: -10,
-        right: 95,
+        right: 110,
         transform: [{ rotate: "0deg" }],
       },
     },
@@ -91,7 +82,7 @@ export default function HomeOnboardingScreen() {
       position: { bottom: 40, right: "5%", left: "20%" },
       arrowPosition: {
         bottom: -10,
-        right: 20,
+        right: 35,
         transform: [{ rotate: "0deg" }],
       },
     },
@@ -101,8 +92,57 @@ export default function HomeOnboardingScreen() {
       position: { top: "40%", left: "10%", right: "10%" },
     },
     {
+      title: "Recording Tutorial",
+      message: "Next, let's learn how to record speech samples",
+      position: {
+        top: "30%",
+        left: "10%",
+        right: "10%",
+        height: "35%",
+      },
+      arrowPosition: null,
+      showSpecialButton: true,
+    },
+    {
+      title: "Start-Stop Audio",
+      message:
+        "Press the Audio icon to start recording children's voice. Make sure to record audio in a quiet place",
+      position: { bottom: 110, left: "10%", right: "10%" },
+      arrowPosition: {
+        top: -10,
+        left: "50%",
+        transform: [{ translateX: 10 }, { rotate: "180deg" }],
+      },
+      showRecordUI: true,
+    },
+    {
+      title: "Predefined Statement",
+      message:
+        "First, carefully speak predefined sentence in front of children",
+      position: { top: 340, left: "10%", right: "10%" },
+      arrowPosition: {
+        top: -10,
+        left: "50%",
+        transform: [{ translateX: 10 }, { rotate: "180deg" }],
+      },
+      showRecordUI: true,
+    },
+    {
+      title: "Next Button",
+      message:
+        "Next button will be enabled once you record the audio in current screen",
+      position: { top: "10%", left: "20%", right: "2%" },
+      arrowPosition: {
+        top: -10,
+        right: 30,
+        transform: [{ translateX: 10 }, { rotate: "180deg" }],
+      },
+      showRecordUI: true,
+    },
+    {
       title: "All Set!",
-      message: "You're now ready to use Cleft Care",
+      message:
+        "You've completed the onboarding and are ready to use Cleft Care!",
       position: {
         top: "30%",
         left: "10%",
@@ -116,9 +156,14 @@ export default function HomeOnboardingScreen() {
 
   useEffect(() => {
     const checkOnboarded = async () => {
-      const onboarded = await AsyncStorage.getItem("home-onboarded");
-      if (onboarded === "true") {
-        router.replace("/(tabs)/(index)/");
+      const userId = await AsyncStorage.getItem("user-id");
+      if (userId) {
+        const onboarded = await AsyncStorage.getItem(
+          `home-onboarded-${userId}`
+        );
+        if (onboarded === "true") {
+          router.replace("/(tabs)/(index)/");
+        }
       }
     };
 
@@ -129,9 +174,16 @@ export default function HomeOnboardingScreen() {
     if (currentStep < onboardingSteps.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
-      await AsyncStorage.setItem("home-onboarded", "true");
-      router.replace("/(tabs)/(index)/");
+      await handleCompleteOnboarding();
     }
+  };
+
+  const handleCompleteOnboarding = async () => {
+    const userId = await AsyncStorage.getItem("user-id");
+    if (userId) {
+      await AsyncStorage.setItem(`home-onboarded-${userId}`, "true");
+    }
+    router.replace("/(tabs)/(index)");
   };
 
   return (
@@ -139,7 +191,27 @@ export default function HomeOnboardingScreen() {
       style={{ flex: 1, backgroundColor: Colors.background }}
       headerShown={false}
     >
-      <Stack.Screen options={{ headerShown: false }} />
+      {/* Custom header for recording UI steps */}
+      {onboardingSteps[currentStep].showRecordUI && (
+        <View style={styles.customHeader}>
+          <TouchableOpacity
+            onPress={() => currentStep > 0 && setCurrentStep(currentStep - 1)}
+            style={styles.headerButton}
+          >
+            <Ionicons name="chevron-back-outline" size={24} color="black" />
+            <Text style={styles.headerButtonText}>Back</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={handleNextOnboardingStep}
+            style={styles.headerButton}
+          >
+            <Text style={[styles.headerButtonText, { color: Colors.tint }]}>
+              Next
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
 
       <View style={styles.overlay}>
         <View
@@ -153,7 +225,9 @@ export default function HomeOnboardingScreen() {
             style={[
               styles.helpText,
               { fontWeight: "bold", fontSize: 18, marginBottom: 2 },
-              currentStep === onboardingSteps.length - 1 && {
+              (currentStep === onboardingSteps.length - 1 ||
+                currentStep === 8) && {
+                // The transition step
                 fontWeight: "bold",
                 fontSize: 24,
                 marginBottom: 2,
@@ -174,10 +248,12 @@ export default function HomeOnboardingScreen() {
               ]}
             />
           )}
+
           <TouchableOpacity
             style={[
               styles.nextButton,
-              currentStep === onboardingSteps.length - 1 && {
+              (currentStep === onboardingSteps.length - 1 ||
+                onboardingSteps[currentStep].showSpecialButton) && {
                 paddingVertical: 16,
                 paddingHorizontal: 32,
               },
@@ -187,45 +263,67 @@ export default function HomeOnboardingScreen() {
             <Text style={styles.nextButtonText}>
               {currentStep === onboardingSteps.length - 1
                 ? "Get Started"
+                : onboardingSteps[currentStep].showSpecialButton
+                ? "Continue to Recording"
                 : "Next"}
             </Text>
           </TouchableOpacity>
         </View>
       </View>
 
-      {/* Mock Home Screen UI */}
-      <View style={styles.container}>
-        <View style={styles.headerContainer}>
-          <Text style={styles.title}>Cleft Care</Text>
-          <View style={styles.iconsContainer}>
-            <TouchableOpacity style={styles.icon}>
-              <Feather name="search" size={25} color={Colors.text} />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.icon}>
-              <Feather name="edit" size={23} color={Colors.text} />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.icon}>
-              <Feather name="mail" size={25} color={Colors.text} />
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        <View style={styles.recordsContainer}>
+      {/* Show appropriate UI based on step */}
+      {!onboardingSteps[currentStep].showRecordUI ? (
+        /* Original Home UI mockup */
+        <View style={styles.container}>
           <View style={styles.headerContainer}>
-            <Text style={styles.recordsTitle}>View Records</Text>
-            <Text style={styles.recordsCount}>3 records</Text>
+            <Text style={styles.title}>Cleft Care</Text>
+            <View style={styles.iconsContainer}>
+              <TouchableOpacity style={styles.icon}>
+                <Feather name="search" size={25} color={Colors.text} />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.icon}>
+                <Feather name="edit" size={23} color={Colors.text} />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.icon}>
+                <Feather name="mail" size={25} color={Colors.text} />
+              </TouchableOpacity>
+            </View>
           </View>
 
-          <View style={styles.recordListContainer}>
-            {[1, 2, 3].map((i) => (
-              <View key={i} style={styles.recordItem}>
-                <Text style={styles.recordName}>Patient {i}</Text>
-                <Text style={styles.recordDate}>DOB: 01/01/2010</Text>
-              </View>
-            ))}
+          <View style={styles.recordsContainer}>
+            <View style={styles.headerContainer}>
+              <Text style={styles.recordsTitle}>View Records</Text>
+              <Text style={styles.recordsCount}>3 records</Text>
+            </View>
+
+            <View style={styles.recordListContainer}>
+              {[1, 2, 3].map((i) => (
+                <View key={i} style={styles.recordItem}>
+                  <Text style={styles.recordName}>Patient {i}</Text>
+                  <Text style={styles.recordDate}>DOB: 01/01/2010</Text>
+                </View>
+              ))}
+            </View>
           </View>
         </View>
-      </View>
+      ) : (
+        /* Record Screen UI mockup */
+        <View style={styles.container}>
+          <View style={styles.bodyContainer}>
+            <Text style={styles.bodyText}>
+              Prompt: Speak predefined sentence
+            </Text>
+            <TouchableOpacity style={styles.recordButton}>
+              <Feather name="mic" size={40} color="black" />
+            </TouchableOpacity>
+            <Text style={styles.instructions}>Press the mic to record</Text>
+          </View>
+          <View style={styles.progressTextContainer}>
+            <Text style={styles.progressText}>1/</Text>
+            <Text style={styles.finalProgressText}>25</Text>
+          </View>
+        </View>
+      )}
     </Page>
   );
 }
@@ -241,6 +339,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     width: "100%",
+  },
+  headerRightText: {
+    fontSize: 16,
+    fontWeight: "bold",
   },
   title: {
     fontSize: 28,
@@ -261,7 +363,7 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     backgroundColor: "rgba(0, 0, 0, 0.6)",
-    zIndex: 1,
+    zIndex: 2,
   },
   overlayContent: {
     position: "absolute",
@@ -350,5 +452,61 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     flex: 1,
+  },
+  bodyContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    height: "90%",
+  },
+  bodyText: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 20,
+    textAlign: "center",
+  },
+  recordButton: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginVertical: 40,
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: "#F0E5E5",
+  },
+  instructions: {
+    fontSize: 16,
+    color: Colors.secondaryText,
+    textAlign: "center",
+  },
+  progressTextContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+  },
+  progressText: {
+    fontSize: 18,
+    fontWeight: "500",
+    color: Colors.tint,
+  },
+  finalProgressText: {
+    fontSize: 18,
+    color: Colors.secondaryText,
+  },
+  customHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 10,
+  },
+  headerButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 5,
+  },
+  headerButtonText: {
+    fontSize: 16,
+    fontWeight: "500",
   },
 });
