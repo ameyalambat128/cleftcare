@@ -2,7 +2,7 @@
   "expo": {
     "name": "Cleft Care",
     "slug": "cleftCare",
-    "version": "1.1.5",
+    "version": "1.1.6",
     "orientation": "portrait",
     "icon": "./assets/images/cleftcare-icon.png",
     "scheme": "myapp",
