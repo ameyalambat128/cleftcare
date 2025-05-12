@@ -71,6 +71,8 @@ export default function Screen() {
               placeholderTextColor={Colors.secondaryText}
               value={mail}
               onChangeText={setMail}
+              editable={false}
+              style={{ color: Colors.text }}
             />
           </View>
 
