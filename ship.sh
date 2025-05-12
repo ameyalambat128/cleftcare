@@ -30,8 +30,27 @@ echo "📦 APK copied and renamed to $RENAMED_PATH"
 
 # === STEP 5: Upload to Google Drive ===
 echo "☁️ Uploading to Google Drive..."
-FILE_ID=$(gdrive files upload --parent "$FOLDER_ID" --print-only-id "$RENAMED_PATH")
-echo "✅ Uploaded successfully!"
+LOG_FILE=$(mktemp)
+
+gdrive files upload --parent "$FOLDER_ID" --print-only-id "$RENAMED_PATH" 2>&1 | tee "$LOG_FILE"
+UPLOAD_OUTPUT=$(cat "$LOG_FILE")
+
+if [[ "$UPLOAD_OUTPUT" == *"Gdrive requires permissions"* ]]; then
+    echo "🔐 Authentication required!"
+    echo "$UPLOAD_OUTPUT"
+    rm "$LOG_FILE"
+    exit 1
+elif [[ "$UPLOAD_OUTPUT" == *"Error"* ]]; then
+    echo "❌ Error uploading to Google Drive:"
+    echo "$UPLOAD_OUTPUT"
+    rm "$LOG_FILE"
+    exit 1
+else
+    FILE_ID=$(echo "$UPLOAD_OUTPUT" | tail -n1 | xargs)
+    echo "✅ Uploaded successfully with File ID: $FILE_ID"
+fi
+
+rm "$LOG_FILE"
 
 # # === STEP 6: Make file shareable ===
 echo "🔗 Retrieving shareable link..."
