@@ -192,12 +192,14 @@ export default function Screen() {
     );
     console.log("OHM Score Prompt 1", ohmScore);
     const fileUrl = `https://cleftcare-test.s3.amazonaws.com/${latestUploadFileName}`;
+
     // TODO: Fix the duration
     const durationInSeconds = status?.durationMillis
       ? Math.round(status.durationMillis / 1000)
       : undefined;
     const ohmScoreNumber = ohmScore?.perceptualRating;
 
+    // Create an audio file record in the database
     const audioFileCreated = await createAudioFile(
       user?.id!,
       t("recordingScreen.prompt1"),

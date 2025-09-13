@@ -135,10 +135,10 @@ export const DoneState: React.FC<{
 };
 
 export default function Screen() {
+  const router = useRouter();
   const { userId: userIdLocalParam } = useLocalSearchParams<{
     userId: string;
   }>();
-  const router = useRouter();
   const { i18n, t } = useTranslation();
 
   const { getUser } = useUserStore();
@@ -179,6 +179,7 @@ export default function Screen() {
 
   const handleResults = async () => {
     const user = await getRecordByUserId(userIdLocalParam);
+    console.log("CHECKTHIS:", user.id);
     console.log("CHECKTHIS:", latestUploadFileName);
     const ohmScore = await predictOhmRating(
       user?.id!,
@@ -189,16 +190,17 @@ export default function Screen() {
       latestUploadFileName,
       true
     );
+    console.log("OHM Score Prompt 25", ohmScore);
     const fileUrl = `https://cleftcare-test.s3.amazonaws.com/${latestUploadFileName}`;
 
     // TODO: Fix the duration
-    const durationInSeconds = status?.durationMillis;
-    console.log("Duration in seconds:", durationInSeconds);
-
+    const durationInSeconds = status?.durationMillis
+      ? Math.round(status.durationMillis / 1000)
+      : undefined;
     const ohmScoreNumber = ohmScore?.perceptualRating;
 
     // Create an audio file record in the database
-    createAudioFile(
+    const audioFileCreated = await createAudioFile(
       user?.id!,
       t("recordingScreen.prompt25"),
       promptNumber,
@@ -206,6 +208,7 @@ export default function Screen() {
       durationInSeconds,
       ohmScoreNumber
     );
+    console.log("audioFileCreated Prompt 25", audioFileCreated);
   };
 
   const handleUpdateAverageOhmScore = async () => {
@@ -260,6 +263,10 @@ export default function Screen() {
     setTimeout(() => setScreenState("done"), 2000);
   };
 
+  /**
+   * onDone function is called after the recording is stopped and unloaded.
+   * It saves the recording to local storage and uploads it to S3.
+   */
   const onDone = async () => {
     setCompleted(true);
     setRecordingCount((prevCount) => prevCount + 1);
