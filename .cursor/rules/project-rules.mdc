@@ -1,0 +1,28 @@
+---
+alwaysApply: true
+---
+
+# Project Rules
+
+## Package Management
+
+- Always use `npx expo install <dependency>` for installing Expo-specific dependencies
+- Do not start the dev client unless specified
+- Use `pnpm` as the primary package manager for all other operations (install, run, build, etc.)
+- Prefer `pnpm` over npm or yarn for consistency
+
+## Code Style
+
+- Use Context7 MCP to fetch the latest docs for Expo.
+- Use TypeScript whenever possible.
+- Use kebab-case for all file names. Avoid capital letters.
+- Use @/ path aliases for imports.
+- Use root src directory.
+- Use TailwindCSS whenever possible.
+
+## Project Structure
+
+- Keep components in the `components/` directory.
+- Maintain global state or store logic in the `store/` directory.
+- Follow Expo Router conventions for file-based routing.
+- Don't Edit anything in /ios since these are complied folders.

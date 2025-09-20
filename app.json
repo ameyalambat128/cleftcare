@@ -39,6 +39,7 @@
         }
       ],
       "expo-localization",
+      "@react-native-community/datetimepicker",
       [
         "expo-build-properties",
         {
@@ -46,7 +47,10 @@
             "usesCleartextTraffic": true
           }
         }
-      ]
+      ],
+      "expo-font",
+      "expo-web-browser",
+      "expo-audio"
     ],
     "experiments": {
       "typedRoutes": true

@@ -17,7 +17,6 @@ import DateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
 import * as ImagePicker from "expo-image-picker";
-import { randomUUID } from "expo-crypto";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "expo-router";
 
