@@ -2,22 +2,28 @@ import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
 import { Audio } from "expo-av";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
-import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Alert,
+  Modal,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import * as FileSystem from "expo-file-system";
-import { PutObjectCommand } from "@aws-sdk/client-s3";
-import { Buffer } from "buffer";
 import { useTranslation } from "react-i18next";
 
 import Page from "@/components/Page";
 import Colors from "@/constants/Colors";
 import { useCommunityWorkerStore, useUserStore } from "@/lib/store";
 import { formatDuration } from "@/lib/utils";
-import { s3Client } from "@/lib/aws";
 import PrimaryButton from "@/components/PrimaryButton";
 import {
   createAudioFile,
   getRecordByUserId,
-  predictOhmRating,
+  presignAttemptUpload,
+  uploadAttemptToS3,
+  completeSentence,
   updateAverageOhmScore,
 } from "@/lib/api";
 import { saveRecordingProgress } from "@/lib/recordingProgress";
@@ -153,7 +159,7 @@ export default function Screen() {
   const [timer, setTimer] = useState<string>("00:00");
   const [completed, setCompleted] = useState(false);
   const [recordingCount, setRecordingCount] = useState<number>(0);
-  const [latestUploadFileName, setLatestUploadFileName] = useState<string>("");
+  const [attemptKeys, setAttemptKeys] = useState<string[]>([]);
   const [status, setStatus] = useState<Audio.RecordingStatus | null>(null);
   const [meter, setMeter] = useState(0);
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -178,37 +184,36 @@ export default function Screen() {
   };
 
   const handleResults = async () => {
+    if (attemptKeys.length === 0) {
+      return;
+    }
     const user = await getRecordByUserId(userIdLocalParam);
-    console.log("CHECKTHIS:", user.id);
-    console.log("CHECKTHIS:", latestUploadFileName);
-    const ohmScore = await predictOhmRating(
-      user?.id!,
-      user?.name!,
-      communityWorker?.name!,
-      promptNumber,
-      i18n.language,
-      latestUploadFileName,
-      true
-    );
-    console.log("OHM Score Prompt 25", ohmScore);
-    const fileUrl = `https://cleftcare-test.s3.amazonaws.com/${latestUploadFileName}`;
+    const batchResult = await completeSentence({
+      userId: user?.id!,
+      name: user?.name!,
+      communityWorkerName: communityWorker?.name!,
+      sentenceId: promptNumber,
+      transcript: t("recordingScreen.prompt25"),
+      language: i18n.language as "kn" | "en",
+      attemptKeys: attemptKeys,
+    });
 
-    // TODO: Fix the duration
-    const durationInSeconds = status?.durationMillis
-      ? Math.round(status.durationMillis / 1000)
-      : undefined;
-    const ohmScoreNumber = ohmScore?.perceptualRating;
-
-    // Create an audio file record in the database
-    const audioFileCreated = await createAudioFile(
-      user?.id!,
-      t("recordingScreen.prompt25"),
-      promptNumber,
-      fileUrl,
-      durationInSeconds,
-      ohmScoreNumber
-    );
-    console.log("audioFileCreated Prompt 25", audioFileCreated);
+    if (batchResult.success && batchResult.data) {
+      const { bestFile, ohmRating } = batchResult.data;
+      const fileUrl = `https://cleftcare-test.s3.amazonaws.com/${bestFile.filename}`;
+      const durationInSeconds = status?.durationMillis
+        ? Math.round(status.durationMillis / 1000)
+        : undefined;
+      const audioFileCreated = await createAudioFile(
+        user?.id!,
+        t("recordingScreen.prompt25"),
+        promptNumber,
+        fileUrl,
+        durationInSeconds,
+        ohmRating ?? undefined
+      );
+      console.log("audioFileCreated Prompt 25", audioFileCreated);
+    }
   };
 
   const handleUpdateAverageOhmScore = async () => {
@@ -265,7 +270,7 @@ export default function Screen() {
 
   /**
    * onDone function is called after the recording is stopped and unloaded.
-   * It saves the recording to local storage and uploads it to S3.
+   * It saves the recording to local storage and uploads it to S3 using presigned URLs.
    */
   const onDone = async () => {
     setCompleted(true);
@@ -277,9 +282,8 @@ export default function Screen() {
     try {
       const uri = currentRecording.getURI();
       console.log("Recording URI:", uri);
-      const fileName = `${userIdLocalParam}-${new Date().getTime()}-${promptNumber}-${
-        recordingCount + 1
-      }.m4a`;
+      const fileName = `attempt-${recordingCount + 1}.m4a`;
+      const contentType = "audio/m4a";
       const localFileUri = `${FileSystem.cacheDirectory}/${fileName}`; // Path to store the recording locally
 
       // Copy the recording to local storage
@@ -289,48 +293,23 @@ export default function Screen() {
       });
       console.log("File saved locally at:", localFileUri);
 
-      await uploadToS3(localFileUri, fileName);
-    } catch (error) {
-      console.error("Error during recording processing:", error);
-    }
-  };
-
-  // Helper function to upload file to S3
-  const uploadToS3 = async (localFileUri: string, fileName: string) => {
-    try {
-      // Read the file from the local storage
-      const fileInfo = await FileSystem.getInfoAsync(localFileUri);
-      if (!fileInfo.exists) {
-        throw new Error("File does not exist");
+      if (!userIdLocalParam) {
+        throw new Error("Missing userId");
       }
 
-      const fileBlob = await FileSystem.readAsStringAsync(localFileUri, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
+      const presignResponse = await presignAttemptUpload(
+        fileName,
+        contentType,
+        String(userIdLocalParam)
+      );
+      await uploadAttemptToS3(presignResponse.url, localFileUri, contentType);
+      setAttemptKeys((prev) => [...prev, presignResponse.key]);
 
-      // Convert the Base64 string to a Blob or ArrayBuffer before uploading to S3
-      const buffer = Buffer.from(fileBlob, "base64");
-
-      const uploadParams = {
-        Bucket: "cleftcare-test", // The name of the bucket
-        Key: fileName, // The name of the file to be uploaded
-        Body: buffer, // Upload the file content
-        ContentType: "audio/mp4", // M4A files use this MIME type
-      };
-
-      // Upload to S3
-      const command = new PutObjectCommand(uploadParams);
-      const data = await s3Client.send(command);
-
-      setLatestUploadFileName(fileName);
-      console.log("Successfully uploaded audio to S3:", data);
-
-      // Delete from local storage after successful upload
       await FileSystem.deleteAsync(localFileUri);
       console.log("File deleted from local storage after successful upload");
     } catch (error) {
-      console.error("Error uploading to S3:", error);
-      // Handle the case where the file should remain locally for future upload retries
+      console.error("Error during recording processing:", error);
+      Alert.alert("Upload Error", "Failed to upload recording.");
     }
   };
 

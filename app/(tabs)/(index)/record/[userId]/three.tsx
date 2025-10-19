@@ -1,17 +1,25 @@
 import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
 import { Audio } from "expo-av";
-import { Stack, useRouter } from "expo-router";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import * as FileSystem from "expo-file-system";
+import { useTranslation } from "react-i18next";
 
 import Page from "@/components/Page";
 import Colors from "@/constants/Colors";
-import { useUserStore } from "@/lib/store";
+import { useCommunityWorkerStore, useUserStore } from "@/lib/store";
 import { formatDuration } from "@/lib/utils";
-import { s3Client } from "@/lib/aws";
+import {
+  createAudioFile,
+  getRecordByUserId,
+  presignAttemptUpload,
+  uploadAttemptToS3,
+  completeSentence,
+} from "@/lib/api";
 
 const prompt = "This is the final recording prompt";
+const promptNumber: number = 3;
 
 export const InitialScreenState: React.FC<{
   onStartRecording: () => void;
@@ -110,16 +118,12 @@ export const DoneState: React.FC<{
 
 export default function Screen() {
   const router = useRouter();
-  const { getUser } = useUserStore();
-  const user = getUser();
-  console.log("User data:", user);
-  if (user) {
-    Object.entries(user).forEach(([key, value]) => {
-      console.log(`${key}:`, value);
-    });
-  } else {
-    console.log("No user data available");
-  }
+  const { userId: userIdLocalParam } = useLocalSearchParams<{
+    userId: string;
+  }>();
+  const { i18n } = useTranslation();
+  const { getCommunityWorker } = useCommunityWorkerStore();
+  const communityWorker = getCommunityWorker();
 
   const recordingRef = useRef<Audio.Recording | null>(null);
   const [screenState, setScreenState] = useState<
@@ -128,6 +132,7 @@ export default function Screen() {
   const [timer, setTimer] = useState<string>("00:00");
   const [completed, setCompleted] = useState(false);
   const [recordingCount, setRecordingCount] = useState<number>(0);
+  const [attemptKeys, setAttemptKeys] = useState<string[]>([]);
   const [status, setStatus] = useState<Audio.RecordingStatus | null>(null);
   const [meter, setMeter] = useState(0);
 
@@ -182,33 +187,80 @@ export default function Screen() {
   const onDone = async () => {
     setCompleted(true);
     setRecordingCount((prevCount) => prevCount + 1);
-    // record and store the audio locally and upload also but if internet connection is lost we upload in this in the end.
+
     const currentRecording = recordingRef.current;
     if (!currentRecording) return;
 
     try {
-      const uri = currentRecording.getURI(); // Get the URI of the recording
-      const fileName = `audio-${new Date().toISOString()}.m4a`;
+      const uri = currentRecording.getURI();
+      console.log("Recording URI:", uri);
 
-      // Convert the recording to a Blob or a Buffer before uploading
-      const response = await fetch(uri!);
-      const blob = await response.blob();
+      const fileName = `attempt-${recordingCount + 1}.m4a`;
+      const contentType = "audio/m4a";
+      const localFileUri = `${FileSystem.cacheDirectory}/${fileName}`;
 
-      // Create the parameters for the S3 upload
-      const uploadParams = {
-        Bucket: "cleftcare-test", // The name of the bucket
-        Key: fileName, // The name of the file to be uploaded
-        Body: blob, // The audio blob to upload
-        ContentType: "audio/mp4", // Specify the file type
-      };
+      await FileSystem.copyAsync({ from: uri!, to: localFileUri });
+      console.log("File saved locally at:", localFileUri);
 
-      // Upload to S3
-      const command = new PutObjectCommand(uploadParams);
-      const data = await s3Client.send(command);
+      if (!userIdLocalParam) {
+        throw new Error("Missing userId");
+      }
 
-      console.log("Successfully uploaded audio to S3", data);
+      const presignResponse = await presignAttemptUpload(
+        fileName,
+        contentType,
+        String(userIdLocalParam)
+      );
+      await uploadAttemptToS3(presignResponse.url, localFileUri, contentType);
+      setAttemptKeys((prev) => [...prev, presignResponse.key]);
+
+      await FileSystem.deleteAsync(localFileUri);
+      console.log("Upload complete and local file deleted");
     } catch (error) {
-      console.error("Error uploading audio to S3:", error);
+      console.error("Error during recording upload:", error);
+      Alert.alert("Upload Error", "Failed to upload recording.");
+    }
+  };
+
+  const handleNext = async () => {
+    if (attemptKeys.length === 0) {
+      Alert.alert("No recordings", "Please record at least one attempt.");
+      return;
+    }
+
+    try {
+      const user = await getRecordByUserId(userIdLocalParam);
+      const batchResult = await completeSentence({
+        userId: user?.id!,
+        name: user?.name!,
+        communityWorkerName: communityWorker?.name!,
+        sentenceId: promptNumber,
+        transcript: prompt,
+        language: (i18n?.language as "kn" | "en") || "en",
+        attemptKeys: attemptKeys,
+      });
+
+      if (batchResult.success && batchResult.data) {
+        const { bestFile, ohmRating } = batchResult.data;
+        const fileUrl = `https://cleftcare-test.s3.amazonaws.com/${bestFile.filename}`;
+        const durationInSeconds = status?.durationMillis
+          ? Math.round(status.durationMillis / 1000)
+          : undefined;
+        await createAudioFile(
+          user?.id!,
+          prompt,
+          promptNumber,
+          fileUrl,
+          durationInSeconds,
+          ohmRating ?? undefined
+        );
+      }
+
+      // Navigate forward or stay; keeping current behavior minimal
+      // router.push("/record/four"); // Optional future route
+    } catch (error) {
+      console.error("Error processing attempts:", error);
+      Alert.alert("Processing Error", "Failed to process recordings.");
     }
   };
 
@@ -247,12 +299,7 @@ export default function Screen() {
           ),
           headerRight: () => (
             <View>
-              <TouchableOpacity
-                onPress={() => {
-                  router.push("/record/three"); // TODO: Navigate to the next screen
-                }}
-                disabled={!completed}
-              >
+              <TouchableOpacity onPress={handleNext} disabled={!completed}>
                 <Text
                   style={[
                     styles.headerRightText,

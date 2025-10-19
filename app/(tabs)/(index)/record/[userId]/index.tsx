@@ -2,21 +2,20 @@ import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
 import { Audio } from "expo-av";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View, Alert } from "react-native";
 import * as FileSystem from "expo-file-system";
-import { PutObjectCommand } from "@aws-sdk/client-s3";
-import { Buffer } from "buffer";
 import { useTranslation } from "react-i18next";
 
 import Page from "@/components/Page";
 import Colors from "@/constants/Colors";
 import { useCommunityWorkerStore, useUserStore } from "@/lib/store";
 import { formatDuration } from "@/lib/utils";
-import { s3Client } from "@/lib/aws";
 import {
   createAudioFile,
   getRecordByUserId,
-  predictOhmRating,
+  presignAttemptUpload,
+  uploadAttemptToS3,
+  completeSentence,
 } from "@/lib/api";
 import {
   saveRecordingProgress,
@@ -154,7 +153,7 @@ export default function Screen() {
   const [timer, setTimer] = useState<string>("00:00");
   const [completed, setCompleted] = useState(false);
   const [recordingCount, setRecordingCount] = useState<number>(0);
-  const [latestUploadFileName, setLatestUploadFileName] = useState<string>("");
+  const [attemptKeys, setAttemptKeys] = useState<string[]>([]);
   const [status, setStatus] = useState<Audio.RecordingStatus | null>(null);
   const [meter, setMeter] = useState(0);
   const [progressData, setProgressData] = useState<any>({});
@@ -164,51 +163,75 @@ export default function Screen() {
   }>({ completed: 0, total: 25 });
 
   const handleNext = async () => {
-    if (userIdLocalParam) {
-      await saveRecordingProgress(
-        userIdLocalParam,
-        promptNumber,
-        recordingCount,
-        true
+    if (attemptKeys.length === 0) {
+      Alert.alert(
+        "No recordings",
+        "Please record at least one attempt before proceeding."
       );
+      return;
     }
 
-    handleResults();
-    router.push(`/record/${userIdLocalParam}/twentyfive`);
-  };
+    try {
+      // Save recording progress
+      if (userIdLocalParam) {
+        await saveRecordingProgress(
+          userIdLocalParam,
+          promptNumber,
+          recordingCount,
+          true
+        );
+      }
 
-  const handleResults = async () => {
-    const user = await getRecordByUserId(userIdLocalParam);
-    console.log("CHECKTHIS:", user.id);
-    console.log("CHECKTHIS:", latestUploadFileName);
-    const ohmScore = await predictOhmRating(
-      user?.id!,
-      user?.name!,
-      communityWorker?.name!,
-      promptNumber,
-      i18n.language,
-      latestUploadFileName,
-      false
-    );
-    console.log("OHM Score Prompt 1", ohmScore);
-    const fileUrl = `https://cleftcare-test.s3.amazonaws.com/${latestUploadFileName}`;
+      // Get user and community worker info
+      const user = await getRecordByUserId(userIdLocalParam);
 
-    // TODO: Fix the duration
-    const durationInSeconds = status?.durationMillis
-      ? Math.round(status.durationMillis / 1000)
-      : undefined;
-    const ohmScoreNumber = ohmScore?.perceptualRating;
+      // Submit all attempts for batch processing
+      console.log(
+        `Submitting ${attemptKeys.length} attempts for sentence ${promptNumber}`
+      );
+      const batchResult = await completeSentence({
+        userId: user?.id!,
+        name: user?.name!,
+        communityWorkerName: communityWorker?.name!,
+        sentenceId: promptNumber,
+        transcript: t("recordingScreen.prompt1"),
+        language: i18n.language as "kn" | "en",
+        attemptKeys: attemptKeys,
+      });
 
-    // Create an audio file record in the database
-    const audioFileCreated = await createAudioFile(
-      user?.id!,
-      t("recordingScreen.prompt1"),
-      promptNumber,
-      fileUrl,
-      durationInSeconds,
-      ohmScoreNumber
-    );
-    console.log("audioFileCreated Prompt 1", audioFileCreated);
+      console.log("Batch processing result:", batchResult);
+
+      if (batchResult.success && batchResult.data) {
+        const { bestFile, ohmRating } = batchResult.data;
+        const fileUrl = `https://cleftcare-test.s3.amazonaws.com/${bestFile.filename}`;
+
+        // Get duration from status (of the last recording)
+        const durationInSeconds = status?.durationMillis
+          ? Math.round(status.durationMillis / 1000)
+          : undefined;
+
+        // Create an audio file record in the database with the best file
+        const audioFileCreated = await createAudioFile(
+          user?.id!,
+          t("recordingScreen.prompt1"),
+          promptNumber,
+          fileUrl,
+          durationInSeconds,
+          ohmRating ?? undefined
+        );
+        console.log("Audio file created for prompt 1:", audioFileCreated);
+      }
+
+      // Navigate to next screen
+      router.push(`/record/${userIdLocalParam}/twentyfive`);
+    } catch (error: any) {
+      console.error("Error in handleNext:", error);
+      Alert.alert(
+        "Processing Error",
+        "Failed to process recordings. Please try again.",
+        [{ text: "OK" }]
+      );
+    }
   };
 
   const onStartRecording = async () => {
@@ -261,7 +284,7 @@ export default function Screen() {
 
   /**
    * onDone function is called after the recording is stopped and unloaded.
-   * It saves the recording to local storage and uploads it to S3.
+   * It saves the recording to local storage and uploads it to S3 using presigned URLs.
    */
   const onDone = async () => {
     setCompleted(true);
@@ -273,10 +296,10 @@ export default function Screen() {
     try {
       const uri = currentRecording.getURI();
       console.log("Recording URI:", uri);
-      const fileName = `${userIdLocalParam}-${new Date().getTime()}-${promptNumber}-${
-        recordingCount + 1
-      }.m4a`;
-      const localFileUri = `${FileSystem.cacheDirectory}/${fileName}`; // Path to store the recording locally
+
+      const fileName = `attempt-${recordingCount + 1}.m4a`;
+      const contentType = "audio/m4a";
+      const localFileUri = `${FileSystem.cacheDirectory}/${fileName}`;
 
       // Copy the recording to local storage
       await FileSystem.copyAsync({
@@ -285,48 +308,36 @@ export default function Screen() {
       });
       console.log("File saved locally at:", localFileUri);
 
-      await uploadToS3(localFileUri, fileName);
-    } catch (error) {
-      console.error("Error during recording processing:", error);
-    }
-  };
+      // Get presigned URL from Express
+      console.log("Requesting presigned URL...");
+      const presignResponse = await presignAttemptUpload(
+        fileName,
+        contentType,
+        userIdLocalParam!
+      );
+      console.log("Presigned URL received, key:", presignResponse.key);
 
-  // Helper function to upload file to S3
-  const uploadToS3 = async (localFileUri: string, fileName: string) => {
-    try {
-      // Read the file from the local storage
-      const fileInfo = await FileSystem.getInfoAsync(localFileUri);
-      if (!fileInfo.exists) {
-        throw new Error("File does not exist");
-      }
+      // Upload to S3 using presigned URL
+      await uploadAttemptToS3(presignResponse.url, localFileUri, contentType);
+      console.log("Successfully uploaded to S3");
 
-      const fileBlob = await FileSystem.readAsStringAsync(localFileUri, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
-
-      // Convert the Base64 string to a Blob or ArrayBuffer before uploading to S3
-      const buffer = Buffer.from(fileBlob, "base64");
-
-      const uploadParams = {
-        Bucket: "cleftcare-test", // The name of the bucket
-        Key: fileName, // The name of the file to be uploaded
-        Body: buffer, // Upload the file content
-        ContentType: "audio/mp4", // M4A files use this MIME type
-      };
-
-      // Upload to S3
-      const command = new PutObjectCommand(uploadParams);
-      const data = await s3Client.send(command);
-
-      setLatestUploadFileName(fileName);
-      console.log("Successfully uploaded audio to S3:", data);
+      // Store the S3 key for batch processing
+      setAttemptKeys((prev) => [...prev, presignResponse.key]);
+      console.log(
+        `Attempt ${recordingCount + 1} uploaded with key:`,
+        presignResponse.key
+      );
 
       // Delete from local storage after successful upload
       await FileSystem.deleteAsync(localFileUri);
       console.log("File deleted from local storage after successful upload");
     } catch (error) {
-      console.error("Error uploading to S3:", error);
-      // Handle the case where the file should remain locally for future upload retries
+      console.error("Error during recording processing:", error);
+      Alert.alert(
+        "Upload Error",
+        "Failed to upload recording. Please try again.",
+        [{ text: "OK" }]
+      );
     }
   };
 
