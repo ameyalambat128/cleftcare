@@ -17,7 +17,7 @@ import { useTranslation } from "react-i18next";
 import Colors from "@/constants/Colors";
 import Page from "@/components/Page";
 import PrimaryButton from "@/components/PrimaryButton";
-import { testProdApi, validateLogin } from "@/lib/api";
+import { validateLogin } from "@/lib/api";
 
 const LANGUAGE_STORAGE_KEY = "user-language";
 
@@ -82,8 +82,6 @@ export default function Screen() {
     setEmailError(""); // Clear any previous errors
 
     try {
-      const test = testProdApi();
-      console.log("Test API response:", test);
       const response = await validateLogin(email);
 
       if (response?.role) {
