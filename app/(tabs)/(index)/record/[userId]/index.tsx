@@ -298,7 +298,7 @@ export default function Screen() {
       console.log("Recording URI:", uri);
 
       const fileName = `attempt-${recordingCount + 1}.m4a`;
-      const contentType = "audio/m4a";
+      const contentType = "audio/mp4";
       const localFileUri = `${FileSystem.cacheDirectory}/${fileName}`;
 
       // Copy the recording to local storage
