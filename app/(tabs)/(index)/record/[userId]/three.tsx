@@ -252,7 +252,8 @@ export default function Screen() {
           promptNumber,
           fileUrl,
           durationInSeconds,
-          ohmRating ?? undefined
+          ohmRating ?? undefined,
+          bestFile.gopScore ?? undefined
         );
       }
 

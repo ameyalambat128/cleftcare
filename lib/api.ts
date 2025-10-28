@@ -178,7 +178,8 @@ export const createAudioFile = async (
   promptNumber: number,
   fileUrl: string,
   duration?: number,
-  ohmScore?: number
+  ohmScore?: number,
+  gopScore?: number
 ) => {
   try {
     const response = await axios.post(
@@ -190,6 +191,7 @@ export const createAudioFile = async (
         fileUrl,
         duration,
         ohmScore,
+        gopScore,
       },
       { headers: { "X-API-Key": EXPRESS_API_KEY } }
     );
@@ -218,6 +220,25 @@ export const updateAverageOhmScore = async (userId: string) => {
     );
     throw (
       error.response?.data || { error: "Failed to fetch average OHM score" }
+    );
+  }
+};
+
+export const updateAverageGopScore = async (userId: string) => {
+  try {
+    const response = await axios.patch(
+      `${EXPRESS_API_BASE}/users/${userId}/average-gop-score`,
+      {},
+      { headers: { "X-API-Key": EXPRESS_API_KEY } }
+    );
+    return response.data;
+  } catch (error: any) {
+    console.error(
+      "Error fetching average GOP score:",
+      error.response?.data || error.message
+    );
+    throw (
+      error.response?.data || { error: "Failed to fetch average GOP score" }
     );
   }
 };

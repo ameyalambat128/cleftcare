@@ -25,6 +25,7 @@ import {
   uploadAttemptToS3,
   completeSentence,
   updateAverageOhmScore,
+  updateAverageGopScore,
 } from "@/lib/api";
 import { saveRecordingProgress } from "@/lib/recordingProgress";
 
@@ -179,6 +180,7 @@ export default function Screen() {
   const handleModalClose = () => {
     handleResults();
     handleUpdateAverageOhmScore();
+    handleUpdateAverageGopScore();
     setShowModal(false);
     router.push("/"); // Navigate to home after closing
   };
@@ -210,7 +212,8 @@ export default function Screen() {
         promptNumber,
         fileUrl,
         durationInSeconds,
-        ohmRating ?? undefined
+        ohmRating ?? undefined,
+        bestFile.gopScore ?? undefined
       );
       console.log("audioFileCreated Prompt 25", audioFileCreated);
     }
@@ -218,6 +221,10 @@ export default function Screen() {
 
   const handleUpdateAverageOhmScore = async () => {
     const averageScore = await updateAverageOhmScore(userIdLocalParam);
+  };
+
+  const handleUpdateAverageGopScore = async () => {
+    const averageScore = await updateAverageGopScore(userIdLocalParam);
   };
 
   const onStartRecording = async () => {

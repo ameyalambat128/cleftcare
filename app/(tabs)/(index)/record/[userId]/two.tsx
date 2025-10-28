@@ -197,7 +197,8 @@ export default function Screen() {
           promptNumber,
           fileUrl,
           durationInSeconds,
-          ohmRating ?? undefined
+          ohmRating ?? undefined,
+          bestFile.gopScore ?? undefined
         );
         console.log("Audio file created for prompt 2:", audioFileCreated);
       }

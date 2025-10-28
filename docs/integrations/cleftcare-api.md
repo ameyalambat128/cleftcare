@@ -13,6 +13,7 @@ This guide shows how to integrate the speech assessment API with an Expo app usi
 - Express
   - POST `/uploads/presign` → `{ url, key, expiresIn }`
   - POST `/sentences/complete` → triggers ML batch processing
+  - PATCH `/users/{userId}/average-gop-score` → updates user's average GOP score
 - FastAPI (ML)
   - POST `/api/v1/process-sentence` → GOP+OHM for one sentence
   - (Dev) POST `/api/v1/test/gop-ohm` → combined test with WAV upload
@@ -31,13 +32,13 @@ This guide shows how to integrate the speech assessment API with an Expo app usi
 const { url, key } = await fetch(`${API_BASE}/uploads/presign`, {
   method: "POST",
   headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ filename, contentType: "audio/m4a", userId }),
+  body: JSON.stringify({ filename, contentType: "audio/mp4", userId }),
 }).then((r) => r.json());
 
 // 2) Upload to S3
 await FileSystem.uploadAsync(url, localFileUri, {
   httpMethod: "PUT",
-  headers: { "Content-Type": "audio/m4a" },
+  headers: { "Content-Type": "audio/mp4" },
   uploadType: FileSystem.FileSystemUploadType.BINARY_CONTENT,
 });
 
@@ -70,7 +71,7 @@ import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import crypto from "crypto";
 const r = Router();
-const s3 = new S3Client({ region: process.env.AWS_REGION });
+const s3 = new S3Client({ region: process.env.APP_AWS_REGION });
 const sanitize = (s: string) => s.replace(/[^a-zA-Z0-9._-]/g, "-");
 
 r.post("/uploads/presign", async (req, res) => {
@@ -255,7 +256,7 @@ const attemptKeys: string[] = [];
 
 async function onRecordAttemptDone(localUri: string) {
   const filename = "attempt.m4a"; // name for presign; server will return a flat key
-  const contentType = "audio/m4a";
+  const contentType = "audio/mp4";
   const { url, key } = await presignAttempt(
     API_BASE,
     filename,
