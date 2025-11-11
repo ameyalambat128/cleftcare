@@ -224,7 +224,7 @@ export default function Screen() {
       }
 
       // Navigate to next screen
-      router.push(`/record/${userIdLocalParam}/twentyfive`);
+      router.push(`/record/${userIdLocalParam}/two`);
     } catch (error: any) {
       console.error("Error in handleNext:", error);
       Alert.alert(
