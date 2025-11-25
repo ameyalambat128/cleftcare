@@ -6,7 +6,8 @@ This guide shows how to integrate the speech assessment API with an Expo app usi
 
 - Expo uploads each audio attempt directly to S3 using a presigned URL from Express.
 - When the user taps Done for a sentence, Express calls FastAPI to run GOP on all attempts, selects the best, and runs OHM on the best file.
-- FastAPI returns combined results; Express can persist them to a database.
+- FastAPI returns combined results; Express persists them to a database.
+- **OHM and GOP average scores are calculated on the API side** (not in the Expo app). The app consumes pre-computed averages from the API.
 
 ## Sentence ID Mapping
 
@@ -47,13 +48,14 @@ All recording screens are located in: `app/(tabs)/(index)/record/[userId]/`
 
 ## Endpoints
 
-- Express
+- Express (Expo app calls)
   - POST `/uploads/presign` → `{ url, key, expiresIn }`
   - POST `/sentences/complete` → triggers ML batch processing
-  - PATCH `/users/{userId}/average-gop-score` → updates user's average GOP score
-- FastAPI (ML)
+- FastAPI (ML, called from Express)
   - POST `/api/v1/process-sentence` → GOP+OHM for one sentence
   - (Dev) POST `/api/v1/test/gop-ohm` → combined test with WAV upload
+- Backend-only responsibilities
+  - After FastAPI finishes processing all required sentences, the Express + ML stack updates OHM/GOP averages in the database without any Expo involvement.
 
 ## Key rules
 
@@ -227,6 +229,7 @@ export type BatchResult = {
     error: string | null;
   };
 };
+
 ```
 
 ### Helpers (Expo)
@@ -378,8 +381,19 @@ type BatchProcessRequest = {
 }
 ```
 
+## OHM/GOP Average Score Calculation
+
+**Important**: The Expo app does **not** trigger or consume OHM/GOP averages. Once recordings are uploaded and each sentence is submitted, the Express + FastAPI stack:
+
+1. Stores per-sentence OHM/GOP scores (via `/sentences/complete`).
+2. Detects when all required sentences are finished for a user.
+3. Computes and persists the average OHM and GOP scores directly in the database.
+
+From the mobile perspective there is no additional API to call—just keep uploading attempts and calling `completeSentence`. Any dashboards or backend tooling that needs the averages should read them directly from the backend data store.
+
 ## Troubleshooting
 
 - 403 on PUT: wrong Content-Type header or URL expired; re-presign.
 - 415/400 at FastAPI: ensure filenames are flat and extensions allowed.
 - 429 at FastAPI: backoff and retry; avoid concurrent batch calls.
+- Missing average scores: verify the backend job processed all sentences and check server logs.

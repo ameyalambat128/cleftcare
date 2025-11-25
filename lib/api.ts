@@ -205,44 +205,6 @@ export const createAudioFile = async (
   }
 };
 
-export const updateAverageOhmScore = async (userId: string) => {
-  try {
-    const response = await axios.patch(
-      `${EXPRESS_API_BASE}/users/${userId}/average-ohm-score`,
-      {},
-      { headers: { "X-API-Key": EXPRESS_API_KEY } }
-    );
-    return response.data;
-  } catch (error: any) {
-    console.error(
-      "Error fetching average OHM score:",
-      error.response?.data || error.message
-    );
-    throw (
-      error.response?.data || { error: "Failed to fetch average OHM score" }
-    );
-  }
-};
-
-export const updateAverageGopScore = async (userId: string) => {
-  try {
-    const response = await axios.patch(
-      `${EXPRESS_API_BASE}/users/${userId}/average-gop-score`,
-      {},
-      { headers: { "X-API-Key": EXPRESS_API_KEY } }
-    );
-    return response.data;
-  } catch (error: any) {
-    console.error(
-      "Error fetching average GOP score:",
-      error.response?.data || error.message
-    );
-    throw (
-      error.response?.data || { error: "Failed to fetch average GOP score" }
-    );
-  }
-};
-
 // ============================================================================
 // New API Functions for Presigned Upload Flow
 // ============================================================================

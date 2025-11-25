@@ -155,15 +155,7 @@ export default function Screen() {
   }, []);
 
   const handleDevPress = async () => {
-    // TODO: Delete onboarding key for specific user
-    const specificUserId = "b2bd8db9-7693-4c8d-a503-107be818ad6e";
-    await AsyncStorage.removeItem(`home-onboarded-${specificUserId}`);
-    console.log(`Removed onboarding key for user: ${specificUserId}`);
-
-    // Original dev functions
-    // @ts-expect-error - Testing only
-    router.push({ pathname: "/_sitemap" });
-    // router.push({ pathname: "/record/d5ec1673-ac95-4087-8170-ce1ef7dcd53a/" });
+    router.push("/(tabs)/(index)/dev-settings");
   };
 
   const handleSearchPress = () => {

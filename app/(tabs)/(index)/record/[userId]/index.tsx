@@ -21,6 +21,7 @@ import {
   saveRecordingProgress,
   getRecordingProgress,
 } from "@/lib/recordingProgress";
+import { getNextPromptRoute } from "@/lib/recordingFlow";
 
 const promptNumber: number = 1;
 
@@ -224,7 +225,8 @@ export default function Screen() {
       }
 
       // Navigate to next screen
-      router.push(`/record/${userIdLocalParam}/two`);
+      const nextRoute = getNextPromptRoute(promptNumber, userIdLocalParam);
+      router.push(nextRoute as any);
     } catch (error: any) {
       console.error("Error in handleNext:", error);
       Alert.alert(
