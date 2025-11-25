@@ -1,48 +1,39 @@
 import { Stack } from "expo-router";
 
+const SCREEN_NAMES = [
+  "index",
+  "onboarding",
+  "two",
+  "three",
+  "four",
+  "five",
+  "six",
+  "seven",
+  "eight",
+  "nine",
+  "ten",
+  "eleven",
+  "twelve",
+  "thirteen",
+  "fourteen",
+  "fifteen",
+  "sixteen",
+  "seventeen",
+  "twentyfive",
+];
+
+const screenOptions = {
+  title: "Record Audio",
+  headerShadowVisible: false,
+  headerStyle: { backgroundColor: "white" },
+};
+
 export default function Layout() {
   return (
     <Stack>
-      <Stack.Screen
-        name="index"
-        options={{
-          title: "Record Audio",
-          headerShadowVisible: false,
-          headerStyle: { backgroundColor: "white" },
-        }}
-      />
-      <Stack.Screen
-        name="onboarding"
-        options={{
-          title: "Record Audio",
-          headerShadowVisible: false,
-          headerStyle: { backgroundColor: "white" },
-        }}
-      />
-      <Stack.Screen
-        name="two"
-        options={{
-          title: "Record Audio",
-          headerShadowVisible: false,
-          headerStyle: { backgroundColor: "white" },
-        }}
-      />
-      <Stack.Screen
-        name="three"
-        options={{
-          title: "Record Audio",
-          headerShadowVisible: false,
-          headerStyle: { backgroundColor: "white" },
-        }}
-      />
-      <Stack.Screen
-        name="twentyfive"
-        options={{
-          title: "Record Audio",
-          headerShadowVisible: false,
-          headerStyle: { backgroundColor: "white" },
-        }}
-      />
+      {SCREEN_NAMES.map((name) => (
+        <Stack.Screen key={name} name={name} options={screenOptions} />
+      ))}
     </Stack>
   );
 }

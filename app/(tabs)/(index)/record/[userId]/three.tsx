@@ -257,8 +257,7 @@ export default function Screen() {
         );
       }
 
-      // Navigate forward or stay; keeping current behavior minimal
-      // router.push("/record/four"); // Optional future route
+      router.push(`/record/${userIdLocalParam}/four`);
     } catch (error) {
       console.error("Error processing attempts:", error);
       Alert.alert("Processing Error", "Failed to process recordings.");

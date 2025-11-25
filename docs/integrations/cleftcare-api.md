@@ -6,17 +6,56 @@ This guide shows how to integrate the speech assessment API with an Expo app usi
 
 - Expo uploads each audio attempt directly to S3 using a presigned URL from Express.
 - When the user taps Done for a sentence, Express calls FastAPI to run GOP on all attempts, selects the best, and runs OHM on the best file.
-- FastAPI returns combined results; Express can persist them to a database.
+- FastAPI returns combined results; Express persists them to a database.
+- **OHM and GOP average scores are calculated on the API side** (not in the Expo app). The app consumes pre-computed averages from the API.
+
+## Sentence ID Mapping
+
+The app uses a sequential flow through 17 prompts (1-8 ORAL, 10-17 NASAL) plus prompt 25. Each sentence has a corresponding `sentenceId`, i18n key, and route file:
+
+| sentenceId | i18n Key                   | Route File       | Type       | Next Route   |
+| ---------- | -------------------------- | ---------------- | ---------- | ------------ |
+| 1          | `recordingScreen.prompt1`  | `index.tsx`      | ORAL       | `two`        |
+| 2          | `recordingScreen.prompt2`  | `two.tsx`        | ORAL       | `three`      |
+| 3          | `recordingScreen.prompt3`  | `three.tsx`      | ORAL       | `four`       |
+| 4          | `recordingScreen.prompt4`  | `four.tsx`       | ORAL       | `five`       |
+| 5          | `recordingScreen.prompt5`  | `five.tsx`       | ORAL       | `six`        |
+| 6          | `recordingScreen.prompt6`  | `six.tsx`        | ORAL       | `seven`      |
+| 7          | `recordingScreen.prompt7`  | `seven.tsx`      | ORAL       | `eight`      |
+| 8          | `recordingScreen.prompt8`  | `eight.tsx`      | ORAL       | `nine`       |
+| 9          | `recordingScreen.prompt9`  | `nine.tsx`       | (reserved) | `ten`        |
+| 10         | `recordingScreen.prompt10` | `ten.tsx`        | NASAL      | `eleven`     |
+| 11         | `recordingScreen.prompt11` | `eleven.tsx`     | NASAL      | `twelve`     |
+| 12         | `recordingScreen.prompt12` | `twelve.tsx`     | NASAL      | `thirteen`   |
+| 13         | `recordingScreen.prompt13` | `thirteen.tsx`   | NASAL      | `fourteen`   |
+| 14         | `recordingScreen.prompt14` | `fourteen.tsx`   | NASAL      | `fifteen`    |
+| 15         | `recordingScreen.prompt15` | `fifteen.tsx`    | NASAL      | `sixteen`    |
+| 16         | `recordingScreen.prompt16` | `sixteen.tsx`    | NASAL      | `seventeen`  |
+| 17         | `recordingScreen.prompt17` | `seventeen.tsx`  | NASAL      | `twentyfive` |
+| 25         | `recordingScreen.prompt25` | `twentyfive.tsx` | Final      | (home)       |
+
+### Flow Order
+
+The recording flow proceeds sequentially: `index` → `two` → `three` → `four` → `five` → `six` → `seven` → `eight` → `nine` → `ten` → `eleven` → `twelve` → `thirteen` → `fourteen` → `fifteen` → `sixteen` → `seventeen` → `twentyfive`.
+
+### Transcript Source
+
+Each screen uses `t("recordingScreen.prompt{sentenceId}")` to get the transcript text, which is then passed to `completeSentence()` as the `transcript` parameter. The transcript is language-aware (Kannada/English) based on the current i18n language setting.
+
+### Route Location
+
+All recording screens are located in: `app/(tabs)/(index)/record/[userId]/`
 
 ## Endpoints
 
-- Express
+- Express (Expo app calls)
   - POST `/uploads/presign` → `{ url, key, expiresIn }`
   - POST `/sentences/complete` → triggers ML batch processing
-  - PATCH `/users/{userId}/average-gop-score` → updates user's average GOP score
-- FastAPI (ML)
+- FastAPI (ML, called from Express)
   - POST `/api/v1/process-sentence` → GOP+OHM for one sentence
   - (Dev) POST `/api/v1/test/gop-ohm` → combined test with WAV upload
+- Backend-only responsibilities
+  - After FastAPI finishes processing all required sentences, the Express + ML stack updates OHM/GOP averages in the database without any Expo involvement.
 
 ## Key rules
 
@@ -190,6 +229,7 @@ export type BatchResult = {
     error: string | null;
   };
 };
+
 ```
 
 ### Helpers (Expo)
@@ -341,8 +381,19 @@ type BatchProcessRequest = {
 }
 ```
 
+## OHM/GOP Average Score Calculation
+
+**Important**: The Expo app does **not** trigger or consume OHM/GOP averages. Once recordings are uploaded and each sentence is submitted, the Express + FastAPI stack:
+
+1. Stores per-sentence OHM/GOP scores (via `/sentences/complete`).
+2. Detects when all required sentences are finished for a user.
+3. Computes and persists the average OHM and GOP scores directly in the database.
+
+From the mobile perspective there is no additional API to call—just keep uploading attempts and calling `completeSentence`. Any dashboards or backend tooling that needs the averages should read them directly from the backend data store.
+
 ## Troubleshooting
 
 - 403 on PUT: wrong Content-Type header or URL expired; re-presign.
 - 415/400 at FastAPI: ensure filenames are flat and extensions allowed.
 - 429 at FastAPI: backoff and retry; avoid concurrent batch calls.
+- Missing average scores: verify the backend job processed all sentences and check server logs.

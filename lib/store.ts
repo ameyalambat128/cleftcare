@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export type UserInfo = {
   userId: string;
@@ -118,3 +119,33 @@ export const useCommunityWorkerStore = create<CommunityWorkerStore>(
       })),
   })
 );
+
+// Dev Settings Store
+type DevSettingsStore = {
+  shortRecordingFlowEnabled: boolean;
+  setShortRecordingFlowEnabled: (enabled: boolean) => Promise<void>;
+  initializeDevSettings: () => Promise<void>;
+};
+
+const DEV_SETTINGS_KEY = "dev-settings-short-recording-flow";
+
+export const useDevSettingsStore = create<DevSettingsStore>((set, get) => ({
+  shortRecordingFlowEnabled: false,
+
+  setShortRecordingFlowEnabled: async (enabled: boolean) => {
+    set({ shortRecordingFlowEnabled: enabled });
+    await AsyncStorage.setItem(DEV_SETTINGS_KEY, JSON.stringify(enabled));
+  },
+
+  initializeDevSettings: async () => {
+    try {
+      const stored = await AsyncStorage.getItem(DEV_SETTINGS_KEY);
+      if (stored !== null) {
+        const enabled = JSON.parse(stored);
+        set({ shortRecordingFlowEnabled: enabled });
+      }
+    } catch (error) {
+      console.error("Error loading dev settings:", error);
+    }
+  },
+}));

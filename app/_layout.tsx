@@ -15,6 +15,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import en from "@/i18n/locales/en.json";
 import kn from "@/i18n/locales/kn.json";
+import { useDevSettingsStore } from "@/lib/store";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -86,9 +87,11 @@ export default function RootLayout() {
 
 function RootLayoutNav({ isFirstLaunch }: { isFirstLaunch: boolean }) {
   const router = useRouter();
+  const { initializeDevSettings } = useDevSettingsStore();
 
   useEffect(() => {
     router.replace("/login");
+    initializeDevSettings();
   }, []);
 
   return (

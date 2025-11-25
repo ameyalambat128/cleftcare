@@ -21,9 +21,8 @@ import {
   saveRecordingProgress,
   getRecordingProgress,
 } from "@/lib/recordingProgress";
-import { getNextPromptRoute } from "@/lib/recordingFlow";
 
-const promptNumber: number = 1;
+const promptNumber: number = 11;
 
 export const InitialScreenState: React.FC<{
   onStartRecording: () => void;
@@ -31,7 +30,7 @@ export const InitialScreenState: React.FC<{
   const { t } = useTranslation();
   return (
     <View style={styles.bodyContainer}>
-      <Text style={styles.bodyText}>{t("recordingScreen.prompt1")}</Text>
+      <Text style={styles.bodyText}>{t("recordingScreen.prompt11")}</Text>
       <TouchableOpacity onPress={onStartRecording} style={styles.recordButton}>
         <Feather name="mic" size={40} color="black" />
       </TouchableOpacity>
@@ -50,7 +49,7 @@ export const RecordingState: React.FC<{
   return (
     <View style={styles.bodyContainer}>
       <Text style={[styles.bodyText, { color: Colors.tint }]}>
-        {t("recordingScreen.prompt1")}
+        {t("recordingScreen.prompt11")}
       </Text>
       <TouchableOpacity
         onPress={onStopRecording}
@@ -66,12 +65,11 @@ export const RecordingState: React.FC<{
   );
 };
 
-// TODO: Edit the 2 components below
 export const UploadingState: React.FC<{ timer: string }> = ({ timer }) => {
   const { t } = useTranslation();
   return (
     <View style={styles.bodyContainer}>
-      <Text style={styles.bodyText}>{t("recordingScreen.prompt1")}</Text>
+      <Text style={styles.bodyText}>{t("recordingScreen.prompt11")}</Text>
       <TouchableOpacity
         onPress={() => console.log("Uploading...")}
         style={[styles.recordButton]}
@@ -97,7 +95,7 @@ export const DoneState: React.FC<{
 
   return (
     <View style={styles.bodyContainer}>
-      <Text style={styles.bodyText}>{t("recordingScreen.prompt1")}</Text>
+      <Text style={styles.bodyText}>{t("recordingScreen.prompt11")}</Text>
       <TouchableOpacity
         onPress={onStartRecording}
         style={[styles.recordButton]}
@@ -158,10 +156,6 @@ export default function Screen() {
   const [status, setStatus] = useState<Audio.RecordingStatus | null>(null);
   const [meter, setMeter] = useState(0);
   const [progressData, setProgressData] = useState<any>({});
-  const [overallProgress, setOverallProgress] = useState<{
-    completed: number;
-    total: number;
-  }>({ completed: 0, total: 25 });
 
   const handleNext = async () => {
     if (attemptKeys.length === 0) {
@@ -173,7 +167,6 @@ export default function Screen() {
     }
 
     try {
-      // Save recording progress
       if (userIdLocalParam) {
         await saveRecordingProgress(
           userIdLocalParam,
@@ -183,10 +176,8 @@ export default function Screen() {
         );
       }
 
-      // Get user and community worker info
       const user = await getRecordByUserId(userIdLocalParam);
 
-      // Submit all attempts for batch processing
       console.log(
         `Submitting ${attemptKeys.length} attempts for sentence ${promptNumber}`
       );
@@ -195,7 +186,7 @@ export default function Screen() {
         name: user?.name!,
         communityWorkerName: communityWorker?.name!,
         sentenceId: promptNumber,
-        transcript: t("recordingScreen.prompt1"),
+        transcript: t("recordingScreen.prompt11"),
         language: i18n.language as "kn" | "en",
         attemptKeys: attemptKeys,
       });
@@ -206,27 +197,23 @@ export default function Screen() {
         const { bestFile, ohmRating } = batchResult.data;
         const fileUrl = `https://cleftcare-test.s3.amazonaws.com/${bestFile.filename}`;
 
-        // Get duration from status (of the last recording)
         const durationInSeconds = status?.durationMillis
           ? Math.round(status.durationMillis / 1000)
           : undefined;
 
-        // Create an audio file record in the database with the best file
         const audioFileCreated = await createAudioFile(
           user?.id!,
-          t("recordingScreen.prompt1"),
+          t("recordingScreen.prompt11"),
           promptNumber,
           fileUrl,
           durationInSeconds,
           ohmRating ?? undefined,
           bestFile.gopScore ?? undefined
         );
-        console.log("Audio file created for prompt 1:", audioFileCreated);
+        console.log("Audio file created for prompt 11:", audioFileCreated);
       }
 
-      // Navigate to next screen
-      const nextRoute = getNextPromptRoute(promptNumber, userIdLocalParam);
-      router.push(nextRoute as any);
+      router.push(`/record/${userIdLocalParam}/twelve`);
     } catch (error: any) {
       console.error("Error in handleNext:", error);
       Alert.alert(
@@ -245,7 +232,6 @@ export default function Screen() {
           allowsRecordingIOS: true,
           staysActiveInBackground: true,
           playsInSilentModeIOS: true,
-          // Android-specific settings
           shouldDuckAndroid: true,
           playThroughEarpieceAndroid: false,
         });
@@ -256,7 +242,6 @@ export default function Screen() {
         );
 
         recordingRef.current = newRecording;
-        // await newRecording.startAsync();
         setScreenState("recording");
         console.log("Recording started", newRecording);
       }
@@ -270,7 +255,7 @@ export default function Screen() {
     console.log("Recording status:", newStatus);
     if (newStatus.canRecord && newStatus.durationMillis != null) {
       const newFormattedTime = formatDuration(newStatus.durationMillis);
-      setTimer(newFormattedTime); // Update the formatted time
+      setTimer(newFormattedTime);
     }
   };
 
@@ -280,15 +265,9 @@ export default function Screen() {
     await currentRecording.stopAndUnloadAsync();
     setScreenState("uploading");
     console.log("Recording stopped");
-    // const uri = currentRecording.getURI();
-    // console.log("Recording URI:", uri);
     setTimeout(() => setScreenState("done"), 2000);
   };
 
-  /**
-   * onDone function is called after the recording is stopped and unloaded.
-   * It saves the recording to local storage and uploads it to S3 using presigned URLs.
-   */
   const onDone = async () => {
     setCompleted(true);
     setRecordingCount((prevCount) => prevCount + 1);
@@ -304,14 +283,12 @@ export default function Screen() {
       const contentType = "audio/mp4";
       const localFileUri = `${FileSystem.cacheDirectory}/${fileName}`;
 
-      // Copy the recording to local storage
       await FileSystem.copyAsync({
         from: uri!,
         to: localFileUri,
       });
       console.log("File saved locally at:", localFileUri);
 
-      // Get presigned URL from Express
       console.log("Requesting presigned URL...");
       const presignResponse = await presignAttemptUpload(
         fileName,
@@ -320,18 +297,15 @@ export default function Screen() {
       );
       console.log("Presigned URL received, key:", presignResponse.key);
 
-      // Upload to S3 using presigned URL
       await uploadAttemptToS3(presignResponse.url, localFileUri, contentType);
       console.log("Successfully uploaded to S3");
 
-      // Store the S3 key for batch processing
       setAttemptKeys((prev) => [...prev, presignResponse.key]);
       console.log(
         `Attempt ${recordingCount + 1} uploaded with key:`,
         presignResponse.key
       );
 
-      // Delete from local storage after successful upload
       await FileSystem.deleteAsync(localFileUri);
       console.log("File deleted from local storage after successful upload");
     } catch (error) {
@@ -355,19 +329,6 @@ export default function Screen() {
           setRecordingCount(promptProgress.recordingCount || 0);
           setCompleted(promptProgress.completed || false);
         }
-
-        // Calculate overall progress
-        let completedPrompts = 0;
-        for (let i = 1; i <= 25; i++) {
-          if (progress[i]?.completed) {
-            completedPrompts++;
-          }
-        }
-
-        setOverallProgress({
-          completed: completedPrompts,
-          total: 25,
-        });
       }
     };
 
@@ -388,7 +349,6 @@ export default function Screen() {
       content = <UploadingState timer={timer} />;
       break;
     case "done":
-      // Choose the best file running each at once and compare the scores
       content = (
         <DoneState onDone={onDone} onStartRecording={onStartRecording} />
       );
@@ -426,7 +386,7 @@ export default function Screen() {
       <View style={styles.container}>
         {content}
         <View style={styles.progressTextContainer}>
-          <Text style={styles.progressText}>{`${promptNumber}/`}</Text>
+          <Text style={styles.progressText}>{promptNumber}/</Text>
           <Text style={styles.finalProgressText}>25</Text>
         </View>
         <View style={styles.recordingCountContainer}>
@@ -528,3 +488,4 @@ const styles = StyleSheet.create({
     color: "white",
   },
 });
+
