@@ -126,18 +126,18 @@ export default function Screen() {
             },
           ]
         );
-        router.push(`/record/${userId}/`);
+        router.push(`/record/${userId}/1`);
       } else if (progress[1]?.completed) {
         // Otherwise start at prompt 1
-        router.push(`/record/${userId}/twentyfive`);
+        router.push(`/record/${userId}/25`);
       } else {
         // If prompt 1 is not done, go to prompt 1
-        router.push(`/record/${userId}/`);
+        router.push(`/record/${userId}/1`);
       }
     } catch (error) {
       console.error("Error checking recording progress:", error);
       // If there's an error, default to the first prompt
-      router.push(`/record/${userId}/`);
+      router.push(`/record/${userId}/1`);
     }
   };
 
