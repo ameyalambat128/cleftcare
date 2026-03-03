@@ -30,9 +30,7 @@ import {
   getRecordingProgress,
 } from "@/lib/recordingProgress";
 
-// The ordered list of prompt numbers in the recording flow.
-// To add more sentences, just append to this array.
-const SENTENCE_SEQUENCE = [1, 2, 3, 4, 5, 6, 7, 8, 25];
+import { SENTENCE_SEQUENCE } from "@/lib/sentenceSequence";
 
 const InitialScreenState: React.FC<{
   promptText: string;
