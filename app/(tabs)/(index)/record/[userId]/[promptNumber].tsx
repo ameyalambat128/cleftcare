@@ -2,14 +2,22 @@ import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
 import { Audio } from "expo-av";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View, Alert } from "react-native";
+import {
+  Alert,
+  Modal,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import * as FileSystem from "expo-file-system";
 import { useTranslation } from "react-i18next";
 
 import Page from "@/components/Page";
 import Colors from "@/constants/Colors";
-import { useCommunityWorkerStore, useUserStore } from "@/lib/store";
+import { useCommunityWorkerStore } from "@/lib/store";
 import { formatDuration } from "@/lib/utils";
+import PrimaryButton from "@/components/PrimaryButton";
 import {
   createAudioFile,
   getRecordByUserId,
@@ -22,15 +30,16 @@ import {
   getRecordingProgress,
 } from "@/lib/recordingProgress";
 
-const promptNumber: number = 12;
+import { SENTENCE_SEQUENCE } from "@/lib/sentenceSequence";
 
-export const InitialScreenState: React.FC<{
+const InitialScreenState: React.FC<{
+  promptText: string;
   onStartRecording: () => void;
-}> = ({ onStartRecording }) => {
+}> = ({ promptText, onStartRecording }) => {
   const { t } = useTranslation();
   return (
     <View style={styles.bodyContainer}>
-      <Text style={styles.bodyText}>{t("recordingScreen.prompt12")}</Text>
+      <Text style={styles.bodyText}>{promptText}</Text>
       <TouchableOpacity onPress={onStartRecording} style={styles.recordButton}>
         <Feather name="mic" size={40} color="black" />
       </TouchableOpacity>
@@ -41,15 +50,16 @@ export const InitialScreenState: React.FC<{
   );
 };
 
-export const RecordingState: React.FC<{
+const RecordingState: React.FC<{
+  promptText: string;
   onStopRecording: () => void;
   timer: string;
-}> = ({ onStopRecording, timer }) => {
+}> = ({ promptText, onStopRecording, timer }) => {
   const { t } = useTranslation();
   return (
     <View style={styles.bodyContainer}>
       <Text style={[styles.bodyText, { color: Colors.tint }]}>
-        {t("recordingScreen.prompt12")}
+        {promptText}
       </Text>
       <TouchableOpacity
         onPress={onStopRecording}
@@ -65,11 +75,14 @@ export const RecordingState: React.FC<{
   );
 };
 
-export const UploadingState: React.FC<{ timer: string }> = ({ timer }) => {
+const UploadingState: React.FC<{
+  promptText: string;
+  timer: string;
+}> = ({ promptText, timer }) => {
   const { t } = useTranslation();
   return (
     <View style={styles.bodyContainer}>
-      <Text style={styles.bodyText}>{t("recordingScreen.prompt12")}</Text>
+      <Text style={styles.bodyText}>{promptText}</Text>
       <TouchableOpacity
         onPress={() => console.log("Uploading...")}
         style={[styles.recordButton]}
@@ -84,10 +97,11 @@ export const UploadingState: React.FC<{ timer: string }> = ({ timer }) => {
   );
 };
 
-export const DoneState: React.FC<{
+const DoneState: React.FC<{
+  promptText: string;
   onDone: () => void;
   onStartRecording: () => void;
-}> = ({ onDone, onStartRecording }) => {
+}> = ({ promptText, onDone, onStartRecording }) => {
   const { t } = useTranslation();
   useEffect(() => {
     onDone();
@@ -95,7 +109,7 @@ export const DoneState: React.FC<{
 
   return (
     <View style={styles.bodyContainer}>
-      <Text style={styles.bodyText}>{t("recordingScreen.prompt12")}</Text>
+      <Text style={styles.bodyText}>{promptText}</Text>
       <TouchableOpacity
         onPress={onStartRecording}
         style={[styles.recordButton]}
@@ -122,28 +136,27 @@ export const DoneState: React.FC<{
           {t("recordingScreen.done")}
         </Text>
       </View>
-      <Text
-        style={{
-          marginTop: 10,
-        }}
-      >
-        {t("recordingScreen.reRecord")}
-      </Text>
+      <Text style={{ marginTop: 10 }}>{t("recordingScreen.reRecord")}</Text>
     </View>
   );
 };
 
-export default function Screen() {
+export default function RecordingScreen() {
   const router = useRouter();
-  const { userId: userIdLocalParam } = useLocalSearchParams<{
+  const { userId, promptNumber } = useLocalSearchParams<{
     userId: string;
+    promptNumber: string;
   }>();
   const { i18n, t } = useTranslation();
 
-  const { getUser } = useUserStore();
   const { getCommunityWorker } = useCommunityWorkerStore();
-
   const communityWorker = getCommunityWorker();
+
+  const promptNum = parseInt(promptNumber);
+  const promptText = t(`recordingScreen.prompt${promptNum}`);
+  const currentIndex = SENTENCE_SEQUENCE.indexOf(promptNum);
+  const isLastSentence = currentIndex === SENTENCE_SEQUENCE.length - 1;
+  const positionInSequence = currentIndex + 1;
 
   const recordingRef = useRef<Audio.Recording | null>(null);
   const [screenState, setScreenState] = useState<
@@ -154,39 +167,34 @@ export default function Screen() {
   const [recordingCount, setRecordingCount] = useState<number>(0);
   const [attemptKeys, setAttemptKeys] = useState<string[]>([]);
   const [status, setStatus] = useState<Audio.RecordingStatus | null>(null);
-  const [meter, setMeter] = useState(0);
-  const [progressData, setProgressData] = useState<any>({});
+  const [showCompletionModal, setShowCompletionModal] =
+    useState<boolean>(false);
 
   const handleNext = async () => {
     if (attemptKeys.length === 0) {
       Alert.alert(
         "No recordings",
-        "Please record at least one attempt before proceeding."
+        "Please record at least one attempt before proceeding.",
       );
       return;
     }
 
     try {
-      if (userIdLocalParam) {
-        await saveRecordingProgress(
-          userIdLocalParam,
-          promptNumber,
-          recordingCount,
-          true
-        );
+      if (userId) {
+        await saveRecordingProgress(userId, promptNum, recordingCount, true);
       }
 
-      const user = await getRecordByUserId(userIdLocalParam);
+      const user = await getRecordByUserId(userId);
 
       console.log(
-        `Submitting ${attemptKeys.length} attempts for sentence ${promptNumber}`
+        `Submitting ${attemptKeys.length} attempts for sentence ${promptNum}`,
       );
       const batchResult = await completeSentence({
         userId: user?.id!,
         name: user?.name!,
         communityWorkerName: communityWorker?.name!,
-        sentenceId: promptNumber,
-        transcript: t("recordingScreen.prompt12"),
+        sentenceId: promptNum,
+        transcript: promptText,
         language: i18n.language as "kn" | "en",
         attemptKeys: attemptKeys,
       });
@@ -203,25 +211,38 @@ export default function Screen() {
 
         const audioFileCreated = await createAudioFile(
           user?.id!,
-          t("recordingScreen.prompt12"),
-          promptNumber,
+          promptText,
+          promptNum,
           fileUrl,
           durationInSeconds,
           ohmRating ?? undefined,
-          bestFile.gopScore ?? undefined
+          bestFile.gopScore ?? undefined,
         );
-        console.log("Audio file created for prompt 12:", audioFileCreated);
+        console.log(
+          `Audio file created for prompt ${promptNum}:`,
+          audioFileCreated,
+        );
       }
 
-      router.push(`/record/${userIdLocalParam}/thirteen`);
+      if (isLastSentence) {
+        setShowCompletionModal(true);
+      } else {
+        const nextPromptNum = SENTENCE_SEQUENCE[currentIndex + 1];
+        router.push(`/record/${userId}/${nextPromptNum}` as any);
+      }
     } catch (error: any) {
       console.error("Error in handleNext:", error);
       Alert.alert(
         "Processing Error",
         "Failed to process recordings. Please try again.",
-        [{ text: "OK" }]
+        [{ text: "OK" }],
       );
     }
+  };
+
+  const handleCompletionModalClose = async () => {
+    setShowCompletionModal(false);
+    router.push("/");
   };
 
   const onStartRecording = async () => {
@@ -238,7 +259,7 @@ export default function Screen() {
 
         const { recording: newRecording } = await Audio.Recording.createAsync(
           Audio.RecordingOptionsPresets.HIGH_QUALITY,
-          onRecordingStatusUpdate
+          onRecordingStatusUpdate,
         );
 
         recordingRef.current = newRecording;
@@ -289,22 +310,17 @@ export default function Screen() {
       });
       console.log("File saved locally at:", localFileUri);
 
-      console.log("Requesting presigned URL...");
+      if (!userId) {
+        throw new Error("Missing userId");
+      }
+
       const presignResponse = await presignAttemptUpload(
         fileName,
         contentType,
-        userIdLocalParam!
+        String(userId),
       );
-      console.log("Presigned URL received, key:", presignResponse.key);
-
       await uploadAttemptToS3(presignResponse.url, localFileUri, contentType);
-      console.log("Successfully uploaded to S3");
-
       setAttemptKeys((prev) => [...prev, presignResponse.key]);
-      console.log(
-        `Attempt ${recordingCount + 1} uploaded with key:`,
-        presignResponse.key
-      );
 
       await FileSystem.deleteAsync(localFileUri);
       console.log("File deleted from local storage after successful upload");
@@ -313,17 +329,16 @@ export default function Screen() {
       Alert.alert(
         "Upload Error",
         "Failed to upload recording. Please try again.",
-        [{ text: "OK" }]
+        [{ text: "OK" }],
       );
     }
   };
 
   useEffect(() => {
     const loadProgress = async () => {
-      if (userIdLocalParam) {
-        const progress = await getRecordingProgress(userIdLocalParam);
-        const promptProgress = progress[promptNumber];
-        setProgressData(progress);
+      if (userId) {
+        const progress = await getRecordingProgress(userId);
+        const promptProgress = progress[promptNum];
 
         if (promptProgress) {
           setRecordingCount(promptProgress.recordingCount || 0);
@@ -333,24 +348,37 @@ export default function Screen() {
     };
 
     loadProgress();
-  }, [userIdLocalParam]);
+  }, [userId, promptNum]);
 
   let content;
   switch (screenState) {
     case "initial":
-      content = <InitialScreenState onStartRecording={onStartRecording} />;
+      content = (
+        <InitialScreenState
+          promptText={promptText}
+          onStartRecording={onStartRecording}
+        />
+      );
       break;
     case "recording":
       content = (
-        <RecordingState onStopRecording={onStopRecording} timer={timer} />
+        <RecordingState
+          promptText={promptText}
+          onStopRecording={onStopRecording}
+          timer={timer}
+        />
       );
       break;
     case "uploading":
-      content = <UploadingState timer={timer} />;
+      content = <UploadingState promptText={promptText} timer={timer} />;
       break;
     case "done":
       content = (
-        <DoneState onDone={onDone} onStartRecording={onStartRecording} />
+        <DoneState
+          promptText={promptText}
+          onDone={onDone}
+          onStartRecording={onStartRecording}
+        />
       );
       break;
   }
@@ -386,14 +414,44 @@ export default function Screen() {
       <View style={styles.container}>
         {content}
         <View style={styles.progressTextContainer}>
-          <Text style={styles.progressText}>{promptNumber}/</Text>
-          <Text style={styles.finalProgressText}>25</Text>
+          <Text style={styles.progressText}>{`${positionInSequence}/`}</Text>
+          <Text style={styles.finalProgressText}>
+            {SENTENCE_SEQUENCE.length}
+          </Text>
         </View>
         <View style={styles.recordingCountContainer}>
           <Text style={styles.recordingCountText}>
             {t("recordingScreen.recordings")}: {recordingCount}
           </Text>
         </View>
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={showCompletionModal}
+          onRequestClose={() => setShowCompletionModal(false)}
+        >
+          <TouchableOpacity
+            style={styles.modalContainer}
+            activeOpacity={1}
+            onPress={() => setShowCompletionModal(false)}
+          >
+            <View style={styles.modalContent}>
+              <AntDesign name="checkcircle" size={50} color={Colors.tint} />
+              <Text style={styles.modalTitle}>{t("audioSaveModal.title")}</Text>
+              <Text style={styles.modalSubtitle}>
+                {t("audioSaveModal.subtitle")}
+              </Text>
+              <PrimaryButton
+                style={{ marginTop: 20 }}
+                type="medium"
+                onPress={handleCompletionModalClose}
+              >
+                {t("audioSaveModal.buttonText")}
+              </PrimaryButton>
+            </View>
+          </TouchableOpacity>
+        </Modal>
       </View>
     </Page>
   );
@@ -487,5 +545,31 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "white",
   },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "space-around",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
+  },
+  modalContent: {
+    width: "90%",
+    height: "45%",
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 40,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  modalTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginVertical: 10,
+    textAlign: "center",
+  },
+  modalSubtitle: {
+    fontSize: 16,
+    color: Colors.secondaryText,
+    textAlign: "center",
+    marginBottom: 20,
+  },
 });
-

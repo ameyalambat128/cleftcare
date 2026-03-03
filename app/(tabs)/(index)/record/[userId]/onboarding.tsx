@@ -70,7 +70,7 @@ export default function Screen() {
       setCurrentStep(currentStep + 1);
     } else {
       await AsyncStorage.setItem("onboarded", "true");
-      router.replace(`/record/${userId}/`);
+      router.replace(`/record/${userId}/1`);
     }
   };
 

@@ -25,6 +25,7 @@ import Colors from "@/constants/Colors";
 import { getRecordByUserId, updateRecord } from "@/lib/api";
 import PrimaryButton from "@/components/PrimaryButton";
 import { getRecordingProgress } from "@/lib/recordingProgress";
+import { SENTENCE_SEQUENCE } from "@/lib/sentenceSequence";
 
 export default function Screen() {
   const router = useRouter();
@@ -111,33 +112,33 @@ export default function Screen() {
 
     try {
       const progress = await getRecordingProgress(userId);
-
       console.log("Recording progress:", progress);
-      // Check if prompt 1 is completed
-      if (progress[1]?.completed && progress[25]?.completed) {
-        // If prompt 1 is done, go to prompt 25
+
+      const firstIncompletePrompt = SENTENCE_SEQUENCE.find(
+        (num) => !progress[num]?.completed,
+      );
+
+      if (firstIncompletePrompt) {
+        router.push(`/record/${userId}/${firstIncompletePrompt}`);
+      } else {
         Alert.alert(
           "Recordings Complete",
           "All voice recordings have been completed for this patient. You can re-record if needed.",
           [
-            { text: "Cancel", style: "cancel", onPress: () => router.back() },
+            { text: "Cancel", style: "cancel" },
             {
               text: "Re-Record",
+              onPress: () =>
+                router.push(
+                  `/record/${userId}/${SENTENCE_SEQUENCE[0]}`,
+                ),
             },
-          ]
+          ],
         );
-        router.push(`/record/${userId}/`);
-      } else if (progress[1]?.completed) {
-        // Otherwise start at prompt 1
-        router.push(`/record/${userId}/twentyfive`);
-      } else {
-        // If prompt 1 is not done, go to prompt 1
-        router.push(`/record/${userId}/`);
       }
     } catch (error) {
       console.error("Error checking recording progress:", error);
-      // If there's an error, default to the first prompt
-      router.push(`/record/${userId}/`);
+      router.push(`/record/${userId}/${SENTENCE_SEQUENCE[0]}`);
     }
   };
 

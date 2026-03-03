@@ -80,7 +80,7 @@ export default function Screen() {
           JSON.stringify(currentChildUser)
         );
         console.log("Success", "User added successfully!", apiResponse.id);
-        router.push(`/record/${apiResponse.id}/`);
+        router.push(`/record/${apiResponse.id}/1`);
       } else {
         throw new Error("Invalid API response. Missing `id`.");
       }
