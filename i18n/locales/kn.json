@@ -1,60 +1,60 @@
 {
   "homeScreen": {
     "title": "Cleft Care",
-    "viewRecords": "View Children records",
-    "numberOfRecords": "records",
-    "noRecordsMessage": "Children's records are empty.",
-    "addRecordPrompt": "Please add a new one."
+    "viewRecords": "ಮಕ್ಕಳ ದಾಖಲೆಗಳನ್ನು ವೀಕ್ಷಿಸಿ",
+    "numberOfRecords": "ದಾಖಲೆಗಳನ್ನು",
+    "noRecordsMessage": "ಮಕ್ಕಳ ದಾಖಲೆಗಳು ಖಾಲಿಯಾಗಿದೆ.",
+    "addRecordPrompt": "ದಯವಿಟ್ಟು ಹೊಸದನ್ನು ಸೇರಿಸಿ."
   },
   "searchScreen": {
-    "searchPlaceholder": "Search name or record id",
-    "subtitle": "Type to search for records",
-    "noResults": "No results found for"
+    "searchPlaceholder": "ಹೆಸರು ಅಥವಾ ದಾಖಲೆ ಐಡಿಯನ್ನು ಹುಡುಕಿ",
+    "subtitle": "ದಾಖಲೆಗಳನ್ನು ಹುಡುಕಲು ಟೈಪ್ ಮಾಡಿ",
+    "noResults": "ಯಾವುದೇ ಫಲಿತಾಂಶಗಳು ಕಂಡುಬಂದಿಲ್ಲ"
   },
   "profileScreen": {
-    "headerText": "Community Worker",
-    "needHelpMessage": "Need help?"
+    "headerText": "ಸಮುದಾಯ ಕಾರ್ಯಕರ್ತ",
+    "needHelpMessage": "ಸಹಾಯ ಬೇಕೇ?"
   },
   "helpCenterScreen": {
-    "headerText": "Need help? Please let us know",
-    "emailPlaceholder": "Enter your email",
-    "messagePlaceholder": "Enter your message here",
-    "submitButton": "Submit"
+    "headerText": "ಸಹಾಯ ಬೇಕೇ? ದಯವಿಟ್ಟು ನಮಗೆ ತಿಳಿಸಿ",
+    "emailPlaceholder": "ನಿಮ್ಮ ಇಮೇಲ್ ನಮೂದಿಸಿ",
+    "messagePlaceholder": "ಇಲ್ಲಿ ನಿಮ್ಮ ಸಂದೇಶವನ್ನು ನಮೂದಿಸಿ",
+    "submitButton": "ಸಲ್ಲಿಸಿ"
   },
   "helpCenterMailSentModal": {
-    "title": "Email Sent!",
-    "subtitle": "We have received your message and will get back to you shortly.",
-    "buttonText": "Back to Home"
+    "title": "ಇಮೇಲ್ ಕಳುಹಿಸಲಾಗಿದೆ!",
+    "subtitle": "ನಾವು ನಿಮ್ಮ ಸಂದೇಶವನ್ನು ಸ್ವೀಕರಿಸಿದ್ದೇವೆ ಮತ್ತು ಶೀಘ್ರದಲ್ಲೇ ನಿಮ್ಮನ್ನು ಸಂಪರ್ಕಿಸುತ್ತೇವೆ.",
+    "buttonText": "ಮನೆಗೆ ಹಿಂತಿರುಗಿ"
   },
   "addRecordScreen": {
-    "headerText": "Please enter child's information to continue with the audio recording",
-    "namePlaceholder": "Enter your name",
-    "birthDatePlaceholder": "Select Birth Date",
-    "genderPlaceholder": "Select Gender",
-    "genderMale": "Male",
-    "genderFemale": "Female",
-    "genderOther": "Other",
-    "hearingStatusPlaceholder": "Hearing Status",
-    "hearingYes": "Yes, I have hearing loss",
-    "hearingNo": "No, I have no hearing loss",
-    "addressPlaceholder": "Enter your Address",
-    "contactNumberPlaceholder": "Contact number",
-    "takePhotoButton": "Take/Choose Photo (Optional)",
-    "nextButton": "Next"
+    "headerText": "ಆಡಿಯೊ ದಾಖಲೆಯನ್ನು ಮುಂದುವರಿಸಲು ದಯವಿಟ್ಟು ಮಗುವಿನ ಮಾಹಿತಿಯನ್ನು ನಮೂದಿಸಿ",
+    "namePlaceholder": "ನಿಮ್ಮ ಹೆಸರನ್ನು ನಮೂದಿಸಿ",
+    "birthDatePlaceholder": "ಜನ್ಮ ದಿನಾಂಕವನ್ನು ಆಯ್ಕೆಮಾಡಿ",
+    "genderPlaceholder": "ಲಿಂಗವನ್ನು ಆಯ್ಕೆಮಾಡಿ",
+    "genderMale": "ಗಂಡು",
+    "genderFemale": "ಹೆಣ್ಣು",
+    "genderOther": "ಇತರ",
+    "hearingStatusPlaceholder": "ಶ್ರವಣ ಸ್ಥಿತಿ",
+    "hearingYes": "ಹೌದು, ನನಗೆ ಕೇಳುವಿಕೆ ಕಳೆದುಕೊಂಡಿದೆ",
+    "hearingNo": "ಇಲ್ಲ, ನನಗೆ ಕೇಳುವಿಕೆಯ ಸಮಸ್ಯೆ ಇಲ್ಲ",
+    "addressPlaceholder": "ನಿಮ್ಮ ವಿಳಾಸವನ್ನು ನಮೂದಿಸಿ",
+    "contactNumberPlaceholder": "ಸಂಪರ್ಕ ಸಂಖ್ಯೆ",
+    "takePhotoButton": "ಫೋಟೋ ತೆರೆಯಿಕೆ/ಆಯ್ಕೆ ಮಾಡಿ (ಐಚ್ಛಿಕ)",
+    "nextButton": "ಮುಂದೆ"
   },
   "parentConsentScreen": {
-    "headerText": "Please carefully read and review the consent form to ensure the best care for your child.",
-    "formText": "I, [Parent/Guardian Name], consent to my child, [Child’s Name], using the CleftCare app, which supports care management for cleft conditions by providing personalized resources, appointment tracking, and educational materials. I understand the app will collect and store necessary personal and health-related information, which will be securely handled in compliance with privacy regulations. I acknowledge that I can revoke this consent at any time by contacting CleftCare support at [support contact information].",
-    "signatureLabel": "Add Signature",
-    "addSignatureButton": "Add Signature"
+    "headerText": "ದಯವಿಟ್ಟು ನಿಮ್ಮ ಮಗುವಿಗೆ ಉತ್ತಮ ಆರೈಕೆ ನೀಡಲು ಸಮಮತಿಯನ್ನು ಓದಿ ಮತ್ತು ಪರಿಶೀಲಿಸಿ.",
+    "formText": "ನಾನು, [ಪೋಷಕರು/ಪೋಷಕರ ಹೆಸರು], ನನ್ನ ಮಗು [ಮಗುವಿನ ಹೆಸರು] ಕ್ಲೆಫ್ಟ್‌ಕೇರ್ ಆಪ್ ಅನ್ನು ಬಳಸಲು ಸಮಮತಿಯನ್ನು ನೀಡುತ್ತೇನೆ, ಇದು ವೈಯಕ್ತಿಕ ಸಂಪತ್ತುಗಳು, ನೇಮಕಾತಿ ಟ್ರ್ಯಾಕಿಂಗ್ ಮತ್ತು ಶೈಕ್ಷಣಿಕ ಸಾಮಗ್ರಿಗಳನ್ನು ಒದಗಿಸುವ ಮೂಲಕ ಕ್ಲೆಫ್ಟ್ ಸ್ಥಿತಿಗಳಿಗೆ ಆರೈಕೆಯನ್ನು ನಿರ್ವಹಿಸಲು ಬೆಂಬಲಿಸುತ್ತದೆ. ಆಪ್ ಅಗತ್ಯವಾದ ವೈಯಕ್ತಿಕ ಮತ್ತು ಆರೋಗ್ಯ ಸಂಬಂಧಿತ ಮಾಹಿತಿಯನ್ನು ಸಂಗ್ರಹಿಸು ಮತ್ತು ಸಂಗ್ರಹಿಸುತ್ತದೆ ಎಂಬುದನ್ನು ನಾನು ಅರ್ಥಮಾಡಿಕೊಂಡಿದ್ದೇನೆ, ಇದು ಗೌಪ್ಯತಾ ನಿಯಮಾವಳಿಗಳನ್ನು ಅನುಸರಿಸುವ ಮೂಲಕ ಸುರಕ್ಷಿತವಾಗಿ ನಿರ್ವಹಿಸಲಾಗುತ್ತದೆ. ನಾನು ಯಾವಾಗಲಾದರೂ [ಸಹಾಯ ಸಂಪರ್ಕ ಮಾಹಿತಿ] ನಲ್ಲಿ ಕ್ಲೆಫ್ಟ್‌ಕೇರ್ ಬೆಂಬಲವನ್ನು ಸಂಪರ್ಕಿಸುವ ಮೂಲಕ ಈ ಸಮಮತಿಯನ್ನು ಹಿಂತೆಗೆದುಕೊಳ್ಳಬಹುದು ಎಂಬುದನ್ನು ನಾನು ಒಪ್ಪುತ್ತೇನೆ.",
+    "signatureLabel": "ಹಸ್ತಾಕ್ಷರವನ್ನು ಸೇರಿಸಿ",
+    "addSignatureButton": "ಹಸ್ತಾಕ್ಷರವನ್ನು ಸೇರಿಸಿ"
   },
   "addSignatureScreen": {
-    "headerText": "Please provide additional details and then add your full name as signature.",
-    "namePlaceholder": "Enter your full name",
-    "signatureBoxDesc": "Add Your Sign Here",
-    "signatureBoxConfirm": "Save",
-    "signatureBoxClear": "Clear",
-    "addSignatureButton": "Add Signature"
+    "headerText": "ದಯವಿಟ್ಟು ಹೆಚ್ಚಿನ ವಿವರಗಳನ್ನು ನೀಡಿರಿ ಮತ್ತು ನಂತರ ನಿಮ್ಮ ಸಂಪೂರ್ಣ ಹೆಸರನ್ನು ಹಸ್ತಾಕ್ಷರವಾಗಿ ಸೇರಿಸಿ.",
+    "namePlaceholder": "ನಿಮ್ಮ ಪೂರ್ಣ ಹೆಸರನ್ನು ನಮೂದಿಸಿ",
+    "signatureBoxDesc": "ನಿಮ್ಮ ಸಹಿಯನ್ನು ಇಲ್ಲಿ ಸೇರಿಸಿ",
+    "signatureBoxConfirm": "ಉಳಿಸಿ",
+    "signatureBoxClear": "ಅಳಿಸು",
+    "addSignatureButton": "ಹಸ್ತಾಕ್ಷರವನ್ನು ಸೇರಿಸಿ"
   },
   "recordingScreen": {
     "prompt1": "ಕಾಗೆ ಕಾಲು ಕಪ್ಪು.",
@@ -75,34 +75,34 @@
     "prompt16": "ನರಿ ನೆಲದಿಂದ ನೆಗೆಯಿತು.",
     "prompt17": "ಮಾಮನ ಮನೆ ಮಂಗಳೂರಿನಲ್ಲಿದೆ.",
     "prompt25": "ಗೀತ ಬೇಗ ಹೋಗು",
-    "startRecording": "Press the audio icon to start recording",
-    "recordingStarted": "Recording started...",
-    "uploading": "Audio is uploading...",
-    "done": "Done",
-    "reRecord": "To Re-Record press the mic button.",
-    "nextButton": "Next",
-    "recordings": "Recordings"
+    "startRecording": "ಆಡಿಯೊ ಐಕಾನ್ ಒತ್ತಿ ರೆಕಾರ್ಡಿಂಗ್ ಪ್ರಾರಂಭಿಸಲು",
+    "recordingStarted": "ರೆಕಾರ್ಡಿಂಗ್ ಪ್ರಾರಂಭವಾಗಿದೆ...",
+    "uploading": "ಆಡಿಯೊ ಅಪ್ಲೋಡ್ ಆಗುತ್ತಿದೆ...",
+    "done": "ಮುಗಿಯಿತು",
+    "reRecord": "ಮತ್ತೊಮ್ಮೆ ರೆಕಾರ್ಡಿಂಗ್ ಮಾಡಲು ಮೈಕ್ ಬಟನ್ ಒತ್ತಿ.",
+    "nextButton": "ಮುಂದೆ",
+    "recordings": "ರೆಕಾರ್ಡಿಂಗ್‌ಗಳು"
   },
   "audioSaveModal": {
-    "title": "All audio is saved!",
-    "subtitle": "Go to home to see the details of children records",
-    "buttonText": "Back to Home"
+    "title": "ಎಲ್ಲಾ ಆಡಿಯೊ ಉಳಿಸಲಾಗಿದೆ!",
+    "subtitle": "ಮಕ್ಕಳ ದಾಖಲೆಗಳ ವಿವರಗಳನ್ನು ನೋಡಲು ಹೋಮ್‌ಗೆ ಹೋಗಿ",
+    "buttonText": "ಮನೆಗೆ ಹಿಂತಿರುಗಿ"
   },
   "editRecordScreen": {
-    "headerText": "Edit child's information based on your requirements",
-    "namePlaceholder": "Enter your name",
-    "birthDatePlaceholder": "Select Birth Date",
-    "genderPlaceholder": "Select Gender",
-    "genderMale": "Male",
-    "genderFemale": "Female",
-    "genderOther": "Other",
-    "hearingStatusPlaceholder": "Hearing Status",
-    "hearingYes": "Yes, I have hearing loss",
-    "hearingNo": "No, I have no hearing loss",
-    "addressPlaceholder": "Enter your Address",
-    "contactNumberPlaceholder": "Contact number",
-    "takePhotoButton": "Take/Choose Photo (Optional)",
-    "editRecordingsButton": "Edit Recordings",
-    "updateButton": "Update"
+    "headerText": "ನಿಮ್ಮ ಅವಶ್ಯಕತೆಗಳ ಆಧಾರದ ಮೇಲೆ ಮಗುವಿನ ಮಾಹಿತಿಯನ್ನು ಸಂಪಾದಿಸಿ",
+    "namePlaceholder": "ನಿಮ್ಮ ಹೆಸರನ್ನು ನಮೂದಿಸಿ",
+    "birthDatePlaceholder": "ಜನ್ಮ ದಿನಾಂಕವನ್ನು ಆಯ್ಕೆಮಾಡಿ",
+    "genderPlaceholder": "ಲಿಂಗವನ್ನು ಆಯ್ಕೆಮಾಡಿ",
+    "genderMale": "ಗಂಡು",
+    "genderFemale": "ಹೆಣ್ಣು",
+    "genderOther": "ಇತರ",
+    "hearingStatusPlaceholder": "ಶ್ರವಣ ಸ್ಥಿತಿ",
+    "hearingYes": "ಹೌದು, ನನಗೆ ಕೇಳುವಿಕೆ ಕಳೆದುಕೊಂಡಿದೆ",
+    "hearingNo": "ಇಲ್ಲ, ನನಗೆ ಕೇಳುವಿಕೆಯ ಸಮಸ್ಯೆ ಇಲ್ಲ",
+    "addressPlaceholder": "ನಿಮ್ಮ ವಿಳಾಸವನ್ನು ನಮೂದಿಸಿ",
+    "contactNumberPlaceholder": "ಸಂಪರ್ಕ ಸಂಖ್ಯೆ",
+    "takePhotoButton": "ಫೋಟೋ ತೆರೆಯಿಕೆ/ಆಯ್ಕೆ ಮಾಡಿ (ಐಚ್ಛಿಕ)",
+    "editRecordingsButton": "ರೆಕಾರ್ಡಿಂಗ್‌ಗಳನ್ನು ಸಂಪಾದಿಸಿ",
+    "updateButton": "ನವೀಕರಿಸಿ"
   }
 }
