@@ -298,14 +298,17 @@ export default function Screen() {
                 />
                 <Picker.Item
                   label={t("addRecordScreen.genderMale")}
+                  style={{ color: Colors.text }}
                   value="Male"
                 />
                 <Picker.Item
                   label={t("addRecordScreen.genderFemale")}
+                  style={{ color: Colors.text }}
                   value="Female"
                 />
                 <Picker.Item
                   label={t("addRecordScreen.genderOther")}
+                  style={{ color: Colors.text }}
                   value="Other"
                 />
               </Picker>
@@ -407,10 +410,12 @@ export default function Screen() {
                 />
                 <Picker.Item
                   label={t("addRecordScreen.hearingYes")}
+                  style={{ color: Colors.text }}
                   value="Yes, I have hearing loss"
                 />
                 <Picker.Item
                   label={t("addRecordScreen.hearingNo")}
+                  style={{ color: Colors.text }}
                   value="No, I have no hearing loss"
                 />
               </Picker>
