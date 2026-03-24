@@ -6,6 +6,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import Page from "@/components/Page";
 import Colors from "@/constants/Colors";
+import { SENTENCE_SEQUENCE } from "@/lib/sentenceSequence";
 
 export default function HomeOnboardingScreen() {
   const router = useRouter();
@@ -320,7 +321,7 @@ export default function HomeOnboardingScreen() {
           </View>
           <View style={styles.progressTextContainer}>
             <Text style={styles.progressText}>1/</Text>
-            <Text style={styles.finalProgressText}>25</Text>
+            <Text style={styles.finalProgressText}>{SENTENCE_SEQUENCE.length}</Text>
           </View>
         </View>
       )}

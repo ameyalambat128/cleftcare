@@ -36,7 +36,7 @@ export default function DevSettingsScreen() {
           <View style={styles.settingInfo}>
             <Text style={styles.settingTitle}>Short Recording Flow</Text>
             <Text style={styles.settingDescription}>
-              Enable to test with only prompts 1, 2, and 25 (skips prompts 3-17)
+              Enable to test with only prompts 1, 2, and 17 (skips prompts 3-16)
             </Text>
           </View>
           <Switch

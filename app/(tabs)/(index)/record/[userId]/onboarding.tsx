@@ -6,6 +6,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import Page from "@/components/Page";
 import Colors from "@/constants/Colors";
+import { SENTENCE_SEQUENCE } from "@/lib/sentenceSequence";
 
 const promptNumber: number = 1;
 
@@ -165,7 +166,7 @@ export default function Screen() {
         </View>
         <View style={styles.progressTextContainer}>
           <Text style={styles.progressText}>{`${promptNumber}/`}</Text>
-          <Text style={styles.finalProgressText}>25</Text>
+          <Text style={styles.finalProgressText}>{SENTENCE_SEQUENCE.length}</Text>
         </View>
       </View>
     </Page>
