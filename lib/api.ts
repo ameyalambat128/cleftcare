@@ -1,5 +1,5 @@
 import axios from "axios";
-import * as FileSystem from "expo-file-system";
+import * as FileSystem from "expo-file-system/legacy";
 import { UserInfo } from "./store";
 // import { DEV_ENV, CLEFTCARE_API_KEY } from "@/constants/Data";
 
@@ -77,49 +77,49 @@ export const validateLogin = async (email: string) => {
     const response = await axios.post(
       `${EXPRESS_API_BASE}/auth/login`,
       { emailId: email },
-      { headers: { "X-API-Key": EXPRESS_API_KEY } }
+      { headers: { "X-API-Key": EXPRESS_API_KEY } },
     );
     return response.data;
   } catch (error: any) {
     console.log(
       "Error validating login:",
-      error.response?.data || error.message
+      error.response?.data || error.message,
     );
     throw error.response?.data || { error: "Network or server error" };
   }
 };
 
 export const getCommunityWorkerByCommunityWorkerId = async (
-  communityWorkerId: string
+  communityWorkerId: string,
 ) => {
   try {
     const response = await axios.get(
       `${EXPRESS_API_BASE}/community-workers/${communityWorkerId}`,
-      { headers: { "X-API-Key": EXPRESS_API_KEY } }
+      { headers: { "X-API-Key": EXPRESS_API_KEY } },
     );
     return response.data;
   } catch (error: any) {
     console.error(
       "Error fetching community worker by ID:",
-      error.response?.data || error.message
+      error.response?.data || error.message,
     );
     throw error.response?.data || { error: "Failed to fetch community worker" };
   }
 };
 
 export const getRecordsByCommunityWorkerId = async (
-  communityWorkerId: string
+  communityWorkerId: string,
 ) => {
   try {
     const response = await axios.get(
       `${EXPRESS_API_BASE}/community-workers/${communityWorkerId}/users`,
-      { headers: { "X-API-Key": EXPRESS_API_KEY } }
+      { headers: { "X-API-Key": EXPRESS_API_KEY } },
     );
     return response.data;
   } catch (error: any) {
     console.error(
       "Error fetching records by community worker ID:",
-      error.response?.data || error.message
+      error.response?.data || error.message,
     );
     throw error.response?.data || { error: "Failed to fetch records" };
   }
@@ -134,7 +134,7 @@ export const getRecordByUserId = async (userId: string) => {
   } catch (error: any) {
     console.error(
       "Error fetching record by User ID:",
-      error.response?.data || error.message
+      error.response?.data || error.message,
     );
     throw error.response?.data || { error: "Failed to fetch record" };
   }
@@ -154,19 +154,19 @@ export const addRecord = async (record: Partial<UserInfo>) => {
 
 export const updateRecord = async (
   userId: string,
-  record: Partial<UserInfo>
+  record: Partial<UserInfo>,
 ) => {
   try {
     const response = await axios.patch(
       `${EXPRESS_API_BASE}/users/${userId}`,
       record,
-      { headers: { "X-API-Key": EXPRESS_API_KEY } }
+      { headers: { "X-API-Key": EXPRESS_API_KEY } },
     );
     return response.data;
   } catch (error: any) {
     console.error(
       "Error updating user:",
-      error.response?.data || error.message
+      error.response?.data || error.message,
     );
     throw error.response?.data || { error: "Failed to update user" };
   }
@@ -179,7 +179,7 @@ export const createAudioFile = async (
   fileUrl: string,
   duration?: number,
   ohmScore?: number,
-  gopScore?: number
+  gopScore?: number,
 ) => {
   try {
     const response = await axios.post(
@@ -193,13 +193,13 @@ export const createAudioFile = async (
         ohmScore,
         gopScore,
       },
-      { headers: { "X-API-Key": EXPRESS_API_KEY } }
+      { headers: { "X-API-Key": EXPRESS_API_KEY } },
     );
     return response.data;
   } catch (error: any) {
     console.error(
       "Error creating audio file:",
-      error.response?.data || error.message
+      error.response?.data || error.message,
     );
     throw error.response?.data || { error: "Failed to create audio file" };
   }
@@ -234,7 +234,7 @@ const jsonFetch = async <T>(url: string, init?: RequestInit): Promise<T> => {
 export const presignAttemptUpload = async (
   filename: string,
   contentType: string,
-  userId: string
+  userId: string,
 ): Promise<PresignResponse> => {
   try {
     return await jsonFetch<PresignResponse>(
@@ -246,7 +246,7 @@ export const presignAttemptUpload = async (
           "X-API-Key": EXPRESS_API_KEY,
         },
         body: JSON.stringify({ filename, contentType, userId }),
-      }
+      },
     );
   } catch (error: any) {
     console.error("Error requesting presigned URL:", error);
@@ -263,7 +263,7 @@ export const presignAttemptUpload = async (
 export const uploadAttemptToS3 = async (
   signedUrl: string,
   localFileUri: string,
-  contentType: string
+  contentType: string,
 ): Promise<void> => {
   try {
     const result = await FileSystem.uploadAsync(signedUrl, localFileUri, {
@@ -289,7 +289,7 @@ export const uploadAttemptToS3 = async (
  * @returns Promise with batch processing results including best file and OHM rating
  */
 export const completeSentence = async (
-  request: SentenceCompleteRequest
+  request: SentenceCompleteRequest,
 ): Promise<BatchResult> => {
   try {
     return await jsonFetch<BatchResult>(
@@ -301,7 +301,7 @@ export const completeSentence = async (
           "X-API-Key": EXPRESS_API_KEY,
         },
         body: JSON.stringify(request),
-      }
+      },
     );
   } catch (error: any) {
     console.error("Error completing sentence:", error);

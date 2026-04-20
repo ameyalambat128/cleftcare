@@ -166,7 +166,9 @@ export default function Screen() {
         </View>
         <View style={styles.progressTextContainer}>
           <Text style={styles.progressText}>{`${promptNumber}/`}</Text>
-          <Text style={styles.finalProgressText}>{SENTENCE_SEQUENCE.length}</Text>
+          <Text style={styles.finalProgressText}>
+            {SENTENCE_SEQUENCE.length}
+          </Text>
         </View>
       </View>
     </Page>

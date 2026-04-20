@@ -1,7 +1,13 @@
 import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
-import { Audio } from "expo-av";
+import {
+  RecordingPresets,
+  requestRecordingPermissionsAsync,
+  setAudioModeAsync,
+  useAudioRecorder,
+  useAudioRecorderState,
+} from "expo-audio";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Alert,
   Modal,
@@ -10,7 +16,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import * as FileSystem from "expo-file-system";
+import * as FileSystem from "expo-file-system/legacy";
 import { useTranslation } from "react-i18next";
 
 import Page from "@/components/Page";
@@ -124,7 +130,7 @@ const DoneState: React.FC<{
           marginTop: 50,
         }}
       >
-        <AntDesign name="checkcircle" size={20} color={Colors.tint} />
+        <AntDesign name="check-circle" size={20} color={Colors.tint} />
         <Text
           style={{
             fontSize: 16,
@@ -158,7 +164,8 @@ export default function RecordingScreen() {
   const isLastSentence = currentIndex === SENTENCE_SEQUENCE.length - 1;
   const positionInSequence = currentIndex + 1;
 
-  const recordingRef = useRef<Audio.Recording | null>(null);
+  const recorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
+  const recorderState = useAudioRecorderState(recorder, 200);
   const [screenState, setScreenState] = useState<
     "initial" | "recording" | "uploading" | "done"
   >("initial");
@@ -166,7 +173,6 @@ export default function RecordingScreen() {
   const [completed, setCompleted] = useState(false);
   const [recordingCount, setRecordingCount] = useState<number>(0);
   const [attemptKeys, setAttemptKeys] = useState<string[]>([]);
-  const [status, setStatus] = useState<Audio.RecordingStatus | null>(null);
   const [showCompletionModal, setShowCompletionModal] =
     useState<boolean>(false);
 
@@ -205,8 +211,8 @@ export default function RecordingScreen() {
         const { bestFile, ohmRating } = batchResult.data;
         const fileUrl = `https://cleftcare-test.s3.amazonaws.com/${bestFile.filename}`;
 
-        const durationInSeconds = status?.durationMillis
-          ? Math.round(status.durationMillis / 1000)
+        const durationInSeconds = recorderState.durationMillis
+          ? Math.round(recorderState.durationMillis / 1000)
           : undefined;
 
         const audioFileCreated = await createAudioFile(
@@ -247,43 +253,34 @@ export default function RecordingScreen() {
 
   const onStartRecording = async () => {
     try {
-      const permission = await Audio.requestPermissionsAsync();
+      const permission = await requestRecordingPermissionsAsync();
       if (permission.status === "granted") {
-        await Audio.setAudioModeAsync({
-          allowsRecordingIOS: true,
-          staysActiveInBackground: true,
-          playsInSilentModeIOS: true,
-          shouldDuckAndroid: true,
-          playThroughEarpieceAndroid: false,
+        await setAudioModeAsync({
+          allowsRecording: true,
+          shouldPlayInBackground: true,
+          playsInSilentMode: true,
+          interruptionMode: "doNotMix",
+          interruptionModeAndroid: "duckOthers",
+          shouldRouteThroughEarpiece: false,
         });
-
-        const { recording: newRecording } = await Audio.Recording.createAsync(
-          Audio.RecordingOptionsPresets.HIGH_QUALITY,
-          onRecordingStatusUpdate,
-        );
-
-        recordingRef.current = newRecording;
+        await recorder.prepareToRecordAsync();
+        recorder.record();
         setScreenState("recording");
-        console.log("Recording started", newRecording);
+        console.log("Recording started", recorder.id);
       }
     } catch (error) {
       console.error("Error starting recording:", error);
     }
   };
 
-  const onRecordingStatusUpdate = async (newStatus: Audio.RecordingStatus) => {
-    setStatus(newStatus);
-    console.log("Recording status:", newStatus);
-    if (newStatus.canRecord && newStatus.durationMillis != null) {
-      const newFormattedTime = formatDuration(newStatus.durationMillis);
-      setTimer(newFormattedTime);
-    }
-  };
+  useEffect(() => {
+    if (!recorderState.isRecording) return;
+    setTimer(formatDuration(recorderState.durationMillis));
+  }, [recorderState.durationMillis, recorderState.isRecording]);
 
   const onStopRecording = async () => {
-    const currentRecording = recordingRef.current;
-    if (!currentRecording) return;
-    await currentRecording.stopAndUnloadAsync();
+    if (!recorderState.isRecording) return;
+    await recorder.stop();
     setScreenState("uploading");
     console.log("Recording stopped");
     setTimeout(() => setScreenState("done"), 2000);
@@ -293,19 +290,20 @@ export default function RecordingScreen() {
     setCompleted(true);
     setRecordingCount((prevCount) => prevCount + 1);
 
-    const currentRecording = recordingRef.current;
-    if (!currentRecording) return;
-
     try {
-      const uri = currentRecording.getURI();
+      const uri = recorder.uri;
       console.log("Recording URI:", uri);
+
+      if (!uri) {
+        throw new Error("Missing recording URI");
+      }
 
       const fileName = `attempt-${recordingCount + 1}.m4a`;
       const contentType = "audio/mp4";
       const localFileUri = `${FileSystem.cacheDirectory}/${fileName}`;
 
       await FileSystem.copyAsync({
-        from: uri!,
+        from: uri,
         to: localFileUri,
       });
       console.log("File saved locally at:", localFileUri);
@@ -437,7 +435,7 @@ export default function RecordingScreen() {
             onPress={() => setShowCompletionModal(false)}
           >
             <View style={styles.modalContent}>
-              <AntDesign name="checkcircle" size={50} color={Colors.tint} />
+              <AntDesign name="check-circle" size={50} color={Colors.tint} />
               <Text style={styles.modalTitle}>{t("audioSaveModal.title")}</Text>
               <Text style={styles.modalSubtitle}>
                 {t("audioSaveModal.subtitle")}

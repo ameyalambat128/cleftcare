@@ -129,9 +129,7 @@ export default function Screen() {
             {
               text: "Re-Record",
               onPress: () =>
-                router.push(
-                  `/record/${userId}/${SENTENCE_SEQUENCE[0]}`,
-                ),
+                router.push(`/record/${userId}/${SENTENCE_SEQUENCE[0]}`),
             },
           ],
         );
@@ -164,7 +162,7 @@ export default function Screen() {
     if (status !== "granted") {
       Alert.alert(
         "Sorry",
-        "We need camera roll permissions to make this work!"
+        "We need camera roll permissions to make this work!",
       );
       return;
     }
@@ -605,7 +603,7 @@ export default function Screen() {
                   { text: "Choose from Gallery", onPress: handlePickImage },
                   { text: "Cancel", style: "cancel" },
                 ],
-                { cancelable: true }
+                { cancelable: true },
               );
             }}
           >
