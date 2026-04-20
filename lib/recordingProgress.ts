@@ -10,7 +10,7 @@ const saveRecordingProgress = async (
   userId: string,
   promptNumber: number,
   recordingCount: number,
-  isCompleted: boolean
+  isCompleted: boolean,
 ) => {
   try {
     // Get existing progress
@@ -30,7 +30,7 @@ const saveRecordingProgress = async (
     // Save updated progress
     await AsyncStorage.setItem(progressKey, JSON.stringify(existingProgress));
     console.log(
-      `Recording progress saved for user ${userId}, prompt ${promptNumber}`
+      `Recording progress saved for user ${userId}, prompt ${promptNumber}`,
     );
   } catch (error) {
     console.error("Error saving recording progress:", error);

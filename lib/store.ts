@@ -69,7 +69,7 @@ export const useAllUsersStore = create<AllUsersStore>((set, get) => ({
   updateUser: (id, updatedUser) =>
     set((state) => ({
       users: state.users.map(
-        (user) => (user.userId === id ? { ...user, ...updatedUser } : user) // Update only the matching user
+        (user) => (user.userId === id ? { ...user, ...updatedUser } : user), // Update only the matching user
       ),
     })),
 
@@ -117,7 +117,7 @@ export const useCommunityWorkerStore = create<CommunityWorkerStore>(
       set(() => ({
         communityWorker: null,
       })),
-  })
+  }),
 );
 
 // Dev Settings Store

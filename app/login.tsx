@@ -39,22 +39,22 @@ export default function Screen() {
       !inputValue && hasAttemptedSubmit
         ? "red"
         : inputValue
-        ? Colors.tint
-        : "#E5E7EB",
+          ? Colors.tint
+          : "#E5E7EB",
   });
 
   const getIconColor = (inputValue: string): string => {
     return !inputValue && hasAttemptedSubmit
       ? "red"
       : inputValue
-      ? Colors.tint
-      : Colors.secondaryText;
+        ? Colors.tint
+        : Colors.secondaryText;
   };
 
   const handleInputChange = (
     newValue: string,
     setFunction: React.Dispatch<React.SetStateAction<string>>,
-    setError: React.Dispatch<React.SetStateAction<string>>
+    setError: React.Dispatch<React.SetStateAction<string>>,
   ) => {
     if (newValue !== "") {
       setError("");
@@ -101,7 +101,7 @@ export default function Screen() {
       } else {
         console.log(
           "Error validating login:",
-          error.response?.data || error.message
+          error.response?.data || error.message,
         );
         setEmailError("Something went wrong, please try again.");
       }
