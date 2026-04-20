@@ -39,7 +39,7 @@ export default function Screen() {
   };
 
   const handleAddRecordPress = () => {
-    router.push("/add-record/");
+    router.push("/add-record");
   };
 
   const handlePresentModalPress = useCallback(() => {

@@ -109,7 +109,7 @@ export default function Screen() {
               onPress={() => setShowModal(false)}
             >
               <View style={styles.modalContent}>
-                <AntDesign name="checkcircle" size={50} color={Colors.tint} />
+                <AntDesign name="check-circle" size={50} color={Colors.tint} />
                 <Text style={styles.modalTitle}>
                   {t("helpCenterMailSentModal.title")}
                 </Text>

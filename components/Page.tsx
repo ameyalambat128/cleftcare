@@ -12,9 +12,11 @@ export default function Page(props: ViewProps) {
   return (
     <View
       style={[
+        {
+          backgroundColor: Colors.background,
+        },
         !headerShown && {
           paddingTop: top,
-          backgroundColor: Colors.background,
         },
         style,
       ]}

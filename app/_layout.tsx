@@ -1,12 +1,14 @@
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import * as SplashScreen from "expo-splash-screen";
+import * as SystemUI from "expo-system-ui";
 import { useFonts } from "expo-font";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Stack, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { TouchableOpacity, View } from "react-native";
+import { StatusBar } from "expo-status-bar";
 import Colors from "@/constants/Colors";
 import "react-native-get-random-values";
 import i18n from "i18next";
@@ -30,7 +32,6 @@ export const unstable_settings = {
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const [isFirstLaunch, setIsFirstLaunch] = useState(true);
   const [languageLoaded, setLanguageLoaded] = useState(false);
   const [loaded, error] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
@@ -78,28 +79,38 @@ export default function RootLayout() {
     }
   }, [loaded, languageLoaded]);
 
+  useEffect(() => {
+    void SystemUI.setBackgroundColorAsync(Colors.background);
+  }, []);
+
   if (!loaded || !languageLoaded) {
     return null; // Render nothing while fonts or language are loading
   }
 
-  return <RootLayoutNav isFirstLaunch={isFirstLaunch} />;
+  return <RootLayoutNav />;
 }
 
-function RootLayoutNav({ isFirstLaunch }: { isFirstLaunch: boolean }) {
+function RootLayoutNav() {
   const router = useRouter();
   const { initializeDevSettings } = useDevSettingsStore();
 
   useEffect(() => {
-    router.replace("/login");
     initializeDevSettings();
   }, []);
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView
+      style={{ flex: 1, backgroundColor: Colors.background }}
+    >
       <SafeAreaProvider>
+        <StatusBar style="dark" backgroundColor={Colors.background} />
         <Stack
           screenOptions={{
             contentStyle: { backgroundColor: Colors.background },
+            headerStyle: { backgroundColor: Colors.background },
+            headerTintColor: Colors.text,
+            statusBarStyle: "dark",
+            statusBarBackgroundColor: Colors.background,
           }}
         >
           <Stack.Screen name="login" options={{ headerShown: false }} />
