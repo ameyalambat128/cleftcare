@@ -248,7 +248,7 @@ export default function RecordingScreen() {
 
   const handleCompletionModalClose = async () => {
     setShowCompletionModal(false);
-    router.push("/");
+    router.push("/(tabs)/(index)");
   };
 
   const onStartRecording = async () => {

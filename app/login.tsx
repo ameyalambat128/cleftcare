@@ -89,7 +89,7 @@ export default function Screen() {
         await AsyncStorage.setItem("user-id", response.communityWorkerId);
         await AsyncStorage.setItem("user-email", email);
 
-        router.replace("/");
+        router.replace("/(tabs)/(index)");
         return true;
       } else {
         setEmailError("* The Email ID you entered is not registered");
@@ -138,7 +138,7 @@ export default function Screen() {
     }
 
     if (isValid) {
-      router.replace("/");
+      router.replace("/(tabs)/(index)");
     } else {
       setHasAttemptedSubmit(true);
     }
