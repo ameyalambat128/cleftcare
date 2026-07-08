@@ -7,9 +7,7 @@ export type UserInfo = {
   birthDate: Date | null;
   gender: "Male" | "Female" | "Other" | undefined;
   hearingStatus:
-    | "Yes, I have hearing loss"
-    | "No, I have no hearing loss"
-    | undefined;
+    "Yes, I have hearing loss" | "No, I have no hearing loss" | undefined;
   address: string;
   contactNumber: string;
   photo: string;

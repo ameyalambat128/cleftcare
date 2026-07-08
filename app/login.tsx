@@ -204,7 +204,7 @@ export default function Screen() {
                   style={styles.picker}
                 >
                   <Picker.Item
-                    label="Select you language"
+                    label="Select your language"
                     style={{ color: Colors.secondaryText }}
                     value=""
                   />
