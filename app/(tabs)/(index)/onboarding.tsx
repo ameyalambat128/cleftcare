@@ -160,10 +160,10 @@ export default function HomeOnboardingScreen() {
       const userId = await AsyncStorage.getItem("user-id");
       if (userId) {
         const onboarded = await AsyncStorage.getItem(
-          `home-onboarded-${userId}`
+          `home-onboarded-${userId}`,
         );
         if (onboarded === "true") {
-          router.replace("/(tabs)/(index)/");
+          router.replace("/(tabs)/(index)");
         }
       }
     };
@@ -265,8 +265,8 @@ export default function HomeOnboardingScreen() {
               {currentStep === onboardingSteps.length - 1
                 ? "Get Started"
                 : onboardingSteps[currentStep].showSpecialButton
-                ? "Continue to Recording"
-                : "Next"}
+                  ? "Continue to Recording"
+                  : "Next"}
             </Text>
           </TouchableOpacity>
         </View>
@@ -321,7 +321,9 @@ export default function HomeOnboardingScreen() {
           </View>
           <View style={styles.progressTextContainer}>
             <Text style={styles.progressText}>1/</Text>
-            <Text style={styles.finalProgressText}>{SENTENCE_SEQUENCE.length}</Text>
+            <Text style={styles.finalProgressText}>
+              {SENTENCE_SEQUENCE.length}
+            </Text>
           </View>
         </View>
       )}

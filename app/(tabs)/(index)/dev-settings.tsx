@@ -9,7 +9,11 @@ import { useDevSettingsStore } from "@/lib/store";
 
 export default function DevSettingsScreen() {
   const router = useRouter();
-  const { shortRecordingFlowEnabled, setShortRecordingFlowEnabled, initializeDevSettings } = useDevSettingsStore();
+  const {
+    shortRecordingFlowEnabled,
+    setShortRecordingFlowEnabled,
+    initializeDevSettings,
+  } = useDevSettingsStore();
 
   useEffect(() => {
     initializeDevSettings();
@@ -20,7 +24,10 @@ export default function DevSettingsScreen() {
   };
 
   return (
-    <Page style={{ flex: 1, backgroundColor: Colors.background }} headerShown={true}>
+    <Page
+      style={{ flex: 1, backgroundColor: Colors.background }}
+      headerShown={true}
+    >
       <Stack.Screen
         options={{
           title: "Dev Settings",
@@ -79,4 +86,3 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
 });
-

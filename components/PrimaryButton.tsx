@@ -1,7 +1,8 @@
 import Colors from "@/constants/Colors";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { Text, TouchableOpacity, StyleSheet } from "react-native";
+import type { ComponentProps } from "react";
 
-type ButtonProps = TouchableOpacity["props"] & {
+type ButtonProps = ComponentProps<typeof TouchableOpacity> & {
   type: "large" | "medium" | "small";
 };
 
@@ -18,8 +19,8 @@ export default function PrimaryButton({
         type === "large"
           ? styles.buttonLarge
           : type === "medium"
-          ? styles.buttonMedium
-          : styles.buttonSmall,
+            ? styles.buttonMedium
+            : styles.buttonSmall,
         disabled ? styles.buttonDisabled : {},
         style,
       ]}

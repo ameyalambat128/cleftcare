@@ -2,20 +2,16 @@
   "expo": {
     "name": "Cleft Care",
     "slug": "cleftCare",
-    "version": "1.1.11",
+    "version": "1.2.2",
     "orientation": "portrait",
     "icon": "./assets/images/cleftcare-icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/images/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#000000"
-    },
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.amprow.cleftCare"
+      "bundleIdentifier": "com.amprow.cleftCare",
+      "buildNumber": "2"
     },
     "android": {
       "adaptiveIcon": {
@@ -23,7 +19,8 @@
         "backgroundColor": "#ffffff"
       },
       "permissions": ["android.permission.RECORD_AUDIO"],
-      "package": "com.amprow.cleftCare"
+      "package": "com.amprow.cleftCare",
+      "versionCode": 2
     },
     "web": {
       "bundler": "metro",
@@ -32,6 +29,15 @@
     },
     "plugins": [
       "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#FFFFFF",
+          "image": "./assets/images/cleftcare-icon.png",
+          "imageWidth": 200,
+          "resizeMode": "contain"
+        }
+      ],
       [
         "expo-image-picker",
         {
@@ -50,7 +56,9 @@
       ],
       "expo-font",
       "expo-web-browser",
-      "expo-audio"
+      "expo-audio",
+      "expo-asset",
+      "expo-video"
     ],
     "experiments": {
       "typedRoutes": true

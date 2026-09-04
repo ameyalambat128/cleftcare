@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import { AntDesign, Feather } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
+import { Stack } from "expo-router";
 
 import Page from "@/components/Page";
 import Colors from "@/constants/Colors";
@@ -33,7 +34,7 @@ export default function Screen() {
 
   const handleModalClose = () => {
     setShowModal(false);
-    router.replace("/");
+    router.replace("/(tabs)/(index)");
   };
 
   const getInputStyle = (inputValue: string) => ({
@@ -49,6 +50,15 @@ export default function Screen() {
       style={{ flex: 1, backgroundColor: Colors.background }}
       headerShown={true}
     >
+      <Stack.Screen
+        options={{
+          headerRight: () => (
+            <TouchableOpacity onPress={() => router.back()}>
+              <AntDesign name="close" size={24} color="black" />
+            </TouchableOpacity>
+          ),
+        }}
+      />
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -109,7 +119,7 @@ export default function Screen() {
               onPress={() => setShowModal(false)}
             >
               <View style={styles.modalContent}>
-                <AntDesign name="checkcircle" size={50} color={Colors.tint} />
+                <AntDesign name="check-circle" size={50} color={Colors.tint} />
                 <Text style={styles.modalTitle}>
                   {t("helpCenterMailSentModal.title")}
                 </Text>

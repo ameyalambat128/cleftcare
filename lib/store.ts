@@ -7,9 +7,7 @@ export type UserInfo = {
   birthDate: Date | null;
   gender: "Male" | "Female" | "Other" | undefined;
   hearingStatus:
-    | "Yes, I have hearing loss"
-    | "No, I have no hearing loss"
-    | undefined;
+    "Yes, I have hearing loss" | "No, I have no hearing loss" | undefined;
   address: string;
   contactNumber: string;
   photo: string;
@@ -69,7 +67,7 @@ export const useAllUsersStore = create<AllUsersStore>((set, get) => ({
   updateUser: (id, updatedUser) =>
     set((state) => ({
       users: state.users.map(
-        (user) => (user.userId === id ? { ...user, ...updatedUser } : user) // Update only the matching user
+        (user) => (user.userId === id ? { ...user, ...updatedUser } : user), // Update only the matching user
       ),
     })),
 
@@ -117,7 +115,7 @@ export const useCommunityWorkerStore = create<CommunityWorkerStore>(
       set(() => ({
         communityWorker: null,
       })),
-  })
+  }),
 );
 
 // Dev Settings Store

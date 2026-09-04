@@ -1,9 +1,8 @@
 import React from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { Link, Tabs } from "expo-router";
+import { Tabs } from "expo-router";
 
 import Colors from "@/constants/Colors";
-import { TouchableOpacity } from "react-native";
 
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof Ionicons>["name"];
@@ -41,6 +40,20 @@ export default function TabLayout() {
               color={color}
             />
           ),
+        }}
+      />
+      <Tabs.Screen
+        name="tutorial-viewer"
+        options={{
+          href: null,
+          tabBarStyle: { display: "none" },
+        }}
+      />
+      <Tabs.Screen
+        name="tutorial-video-viewer"
+        options={{
+          href: null,
+          tabBarStyle: { display: "none" },
         }}
       />
       <Tabs.Screen

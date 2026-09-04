@@ -77,7 +77,7 @@ export default function Screen() {
         };
         await AsyncStorage.setItem(
           "currentChildUser",
-          JSON.stringify(currentChildUser)
+          JSON.stringify(currentChildUser),
         );
         console.log("Success", "User added successfully!", apiResponse.id);
         router.push(`/record/${apiResponse.id}/1`);

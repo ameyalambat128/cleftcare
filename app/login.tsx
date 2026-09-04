@@ -39,22 +39,22 @@ export default function Screen() {
       !inputValue && hasAttemptedSubmit
         ? "red"
         : inputValue
-        ? Colors.tint
-        : "#E5E7EB",
+          ? Colors.tint
+          : "#E5E7EB",
   });
 
   const getIconColor = (inputValue: string): string => {
     return !inputValue && hasAttemptedSubmit
       ? "red"
       : inputValue
-      ? Colors.tint
-      : Colors.secondaryText;
+        ? Colors.tint
+        : Colors.secondaryText;
   };
 
   const handleInputChange = (
     newValue: string,
     setFunction: React.Dispatch<React.SetStateAction<string>>,
-    setError: React.Dispatch<React.SetStateAction<string>>
+    setError: React.Dispatch<React.SetStateAction<string>>,
   ) => {
     if (newValue !== "") {
       setError("");
@@ -89,7 +89,7 @@ export default function Screen() {
         await AsyncStorage.setItem("user-id", response.communityWorkerId);
         await AsyncStorage.setItem("user-email", email);
 
-        router.replace("/");
+        router.replace("/(tabs)/(index)");
         return true;
       } else {
         setEmailError("* The Email ID you entered is not registered");
@@ -101,7 +101,7 @@ export default function Screen() {
       } else {
         console.log(
           "Error validating login:",
-          error.response?.data || error.message
+          error.response?.data || error.message,
         );
         setEmailError("Something went wrong, please try again.");
       }
@@ -138,7 +138,7 @@ export default function Screen() {
     }
 
     if (isValid) {
-      router.replace("/");
+      router.replace("/(tabs)/(index)");
     } else {
       setHasAttemptedSubmit(true);
     }
@@ -204,7 +204,7 @@ export default function Screen() {
                   style={styles.picker}
                 >
                   <Picker.Item
-                    label="Select you language"
+                    label="Select your language"
                     style={{ color: Colors.secondaryText }}
                     value=""
                   />

@@ -26,8 +26,8 @@ export default function Screen() {
   const allRecords = Array.isArray(records)
     ? records
     : records
-    ? JSON.parse(records)
-    : [];
+      ? JSON.parse(records)
+      : [];
 
   useEffect(() => {
     if (query.trim() === "") {

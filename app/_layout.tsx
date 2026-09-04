@@ -1,12 +1,13 @@
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import * as SplashScreen from "expo-splash-screen";
+import * as SystemUI from "expo-system-ui";
 import { useFonts } from "expo-font";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { Stack, useRouter } from "expo-router";
+import { Stack } from "expo-router";
 import { useEffect, useState } from "react";
-import { Ionicons } from "@expo/vector-icons";
-import { TouchableOpacity, View } from "react-native";
+import { View } from "react-native";
+import { StatusBar } from "expo-status-bar";
 import Colors from "@/constants/Colors";
 import "react-native-get-random-values";
 import i18n from "i18next";
@@ -26,11 +27,13 @@ export const unstable_settings = {
   initialRouteName: "login",
 };
 
+const AUTH_SESSION_KEYS = ["user-id", "user-role", "user-email"];
+let didResetAuthSessionForLaunch = false;
+
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const [isFirstLaunch, setIsFirstLaunch] = useState(true);
   const [languageLoaded, setLanguageLoaded] = useState(false);
   const [loaded, error] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
@@ -44,8 +47,13 @@ export default function RootLayout() {
 
   // Initialize i18next
   useEffect(() => {
-    const initializeLanguage = async () => {
+    const initializeApp = async () => {
       try {
+        if (!didResetAuthSessionForLaunch) {
+          await AsyncStorage.multiRemove(AUTH_SESSION_KEYS);
+          didResetAuthSessionForLaunch = true;
+        }
+
         // Check if a language is stored in AsyncStorage
         const storedLanguage = await AsyncStorage.getItem("user-language");
         const languageToSet = storedLanguage || "en"; // Default to English
@@ -65,7 +73,7 @@ export default function RootLayout() {
       }
     };
 
-    initializeLanguage();
+    initializeApp();
   }, []);
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
@@ -78,28 +86,37 @@ export default function RootLayout() {
     }
   }, [loaded, languageLoaded]);
 
+  useEffect(() => {
+    void SystemUI.setBackgroundColorAsync(Colors.background);
+  }, []);
+
   if (!loaded || !languageLoaded) {
     return null; // Render nothing while fonts or language are loading
   }
 
-  return <RootLayoutNav isFirstLaunch={isFirstLaunch} />;
+  return <RootLayoutNav />;
 }
 
-function RootLayoutNav({ isFirstLaunch }: { isFirstLaunch: boolean }) {
-  const router = useRouter();
+function RootLayoutNav() {
   const { initializeDevSettings } = useDevSettingsStore();
 
   useEffect(() => {
-    router.replace("/login");
     initializeDevSettings();
-  }, []);
+  }, [initializeDevSettings]);
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView
+      style={{ flex: 1, backgroundColor: Colors.background }}
+    >
       <SafeAreaProvider>
+        <StatusBar style="dark" backgroundColor={Colors.background} />
         <Stack
           screenOptions={{
             contentStyle: { backgroundColor: Colors.background },
+            headerStyle: { backgroundColor: Colors.background },
+            headerTintColor: Colors.text,
+            statusBarStyle: "dark",
+            statusBarBackgroundColor: Colors.background,
           }}
         >
           <Stack.Screen name="login" options={{ headerShown: false }} />
@@ -111,11 +128,6 @@ function RootLayoutNav({ isFirstLaunch }: { isFirstLaunch: boolean }) {
               headerShadowVisible: false,
               headerStyle: { backgroundColor: "white" },
               headerLeft: () => <View />,
-              headerRight: () => (
-                <TouchableOpacity onPress={() => router.back()}>
-                  <Ionicons name="close-outline" size={30} color="black" />
-                </TouchableOpacity>
-              ),
               presentation: "fullScreenModal",
             }}
           />

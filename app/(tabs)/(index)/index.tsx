@@ -69,7 +69,7 @@ export default function Screen() {
       if (mappedRecords.length === 0) {
         // Check if they've seen onboarding before
         const hasSeenOnboarding = await AsyncStorage.getItem(
-          `home-onboarded-${communityWorkerId}`
+          `home-onboarded-${communityWorkerId}`,
         );
         if (!hasSeenOnboarding) {
           // Navigate to onboarding if they have no records and haven't seen it
@@ -94,9 +94,8 @@ export default function Screen() {
       if (!communityWorkerId) {
         throw new Error("Community Worker ID is missing from storage.");
       }
-      const response = await getCommunityWorkerByCommunityWorkerId(
-        communityWorkerId
-      );
+      const response =
+        await getCommunityWorkerByCommunityWorkerId(communityWorkerId);
       setCommunityWorker({
         communityWorkerId: communityWorkerId,
         emailId: response.emailId,
@@ -116,7 +115,7 @@ export default function Screen() {
 
       console.log(
         "Onboarding status:",
-        await AsyncStorage.getItem("onboarded")
+        await AsyncStorage.getItem("onboarded"),
       );
 
       setRole(userRole);
@@ -147,7 +146,7 @@ export default function Screen() {
       return () => {
         console.log("This route is now unfocused.");
       };
-    }, [])
+    }, []),
   );
 
   useEffect(() => {
@@ -170,7 +169,7 @@ export default function Screen() {
   };
 
   const handleAddRecordPress = () => {
-    router.push("/add-record/");
+    router.push("/add-record");
   };
 
   const handleEditRecordPress = (id: string) => {
