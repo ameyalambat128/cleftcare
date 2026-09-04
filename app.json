@@ -2,7 +2,7 @@
   "expo": {
     "name": "Cleft Care",
     "slug": "cleftCare",
-    "version": "1.2.0",
+    "version": "1.2.2",
     "orientation": "portrait",
     "icon": "./assets/images/cleftcare-icon.png",
     "scheme": "myapp",
@@ -10,7 +10,8 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.amprow.cleftCare"
+      "bundleIdentifier": "com.amprow.cleftCare",
+      "buildNumber": "2"
     },
     "android": {
       "adaptiveIcon": {
@@ -18,7 +19,8 @@
         "backgroundColor": "#ffffff"
       },
       "permissions": ["android.permission.RECORD_AUDIO"],
-      "package": "com.amprow.cleftCare"
+      "package": "com.amprow.cleftCare",
+      "versionCode": 2
     },
     "web": {
       "bundler": "metro",
