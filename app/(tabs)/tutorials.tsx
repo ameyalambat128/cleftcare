@@ -12,6 +12,7 @@ import Animated, { FadeInLeft, FadeOutLeft } from "react-native-reanimated";
 import Page from "@/components/Page";
 import Colors from "@/constants/Colors";
 import { tutorialPdfs } from "@/lib/tutorialPdfs";
+import { tutorialVideos } from "@/lib/tutorialVideos";
 
 export default function Screen() {
   const router = useRouter();
@@ -38,40 +39,82 @@ export default function Screen() {
           </Text>
         </View>
 
-        <View style={styles.list}>
-          {tutorialPdfs.map((tutorial) => (
-            <TouchableOpacity
-              accessibilityRole="button"
-              key={tutorial.id}
-              onPress={() =>
-                router.push({
-                  pathname: "/tutorial-viewer",
-                  params: { document: tutorial.id },
-                } as never)
-              }
-              style={styles.card}
-            >
-              <View style={styles.iconContainer}>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Video tutorials</Text>
+          <View style={styles.list}>
+            {tutorialVideos.map((tutorial) => (
+              <TouchableOpacity
+                accessibilityRole="button"
+                key={tutorial.id}
+                onPress={() =>
+                  router.push({
+                    pathname: "/tutorial-video-viewer",
+                    params: { video: tutorial.id },
+                  } as never)
+                }
+                style={styles.card}
+              >
+                <View style={styles.iconContainer}>
+                  <Ionicons
+                    name="play-circle-outline"
+                    size={26}
+                    color={Colors.tint}
+                  />
+                </View>
+                <View style={styles.cardTextContainer}>
+                  <Text style={styles.cardTitle}>{tutorial.title}</Text>
+                  <Text style={styles.cardDescription}>
+                    {tutorial.description}
+                  </Text>
+                  <Text style={styles.cardMeta}>{tutorial.duration} video</Text>
+                </View>
                 <Ionicons
-                  name="document-text-outline"
-                  size={24}
-                  color={Colors.tint}
+                  name="chevron-forward"
+                  size={22}
+                  color={Colors.secondaryText}
                 />
-              </View>
-              <View style={styles.cardTextContainer}>
-                <Text style={styles.cardTitle}>{tutorial.title}</Text>
-                <Text style={styles.cardDescription}>
-                  {tutorial.description}
-                </Text>
-                <Text style={styles.cardMeta}>9-page PDF</Text>
-              </View>
-              <Ionicons
-                name="chevron-forward"
-                size={22}
-                color={Colors.secondaryText}
-              />
-            </TouchableOpacity>
-          ))}
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Written guides</Text>
+          <View style={styles.list}>
+            {tutorialPdfs.map((tutorial) => (
+              <TouchableOpacity
+                accessibilityRole="button"
+                key={tutorial.id}
+                onPress={() =>
+                  router.push({
+                    pathname: "/tutorial-viewer",
+                    params: { document: tutorial.id },
+                  } as never)
+                }
+                style={styles.card}
+              >
+                <View style={styles.iconContainer}>
+                  <Ionicons
+                    name="document-text-outline"
+                    size={24}
+                    color={Colors.tint}
+                  />
+                </View>
+                <View style={styles.cardTextContainer}>
+                  <Text style={styles.cardTitle}>{tutorial.title}</Text>
+                  <Text style={styles.cardDescription}>
+                    {tutorial.description}
+                  </Text>
+                  <Text style={styles.cardMeta}>9-page PDF</Text>
+                </View>
+                <Ionicons
+                  name="chevron-forward"
+                  size={22}
+                  color={Colors.secondaryText}
+                />
+              </TouchableOpacity>
+            ))}
+          </View>
         </View>
       </ScrollView>
     </Page>
@@ -100,6 +143,14 @@ const styles = StyleSheet.create({
   },
   list: {
     gap: 12,
+  },
+  section: {
+    gap: 10,
+  },
+  sectionTitle: {
+    color: Colors.text,
+    fontSize: 18,
+    fontWeight: "700",
   },
   card: {
     alignItems: "center",
